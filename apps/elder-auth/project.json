@@ -1,0 +1,83 @@
+{
+  "name": "elder-auth",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/elder-auth/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "webpack-cli build",
+        "args": ["--node-env=production"],
+        "cwd": "apps/elder-auth"
+      },
+      "configurations": {
+        "development": {
+          "args": ["--node-env=development"]
+        }
+      },
+      "dependsOn": ["prisma:generate"]
+    },
+    "prune-lockfile": {
+      "dependsOn": ["build"],
+      "cache": true,
+      "executor": "@nx/js:prune-lockfile",
+      "outputs": [
+        "{workspaceRoot}/dist/apps/elder-auth/package.json",
+        "{workspaceRoot}/dist/apps/elder-auth/package-lock.json"
+      ],
+      "options": {
+        "buildTarget": "build"
+      }
+    },
+    "copy-workspace-modules": {
+      "dependsOn": ["build"],
+      "cache": true,
+      "outputs": ["{workspaceRoot}/dist/apps/elder-auth/workspace_modules"],
+      "executor": "@nx/js:copy-workspace-modules",
+      "options": {
+        "buildTarget": "build"
+      }
+    },
+    "prune": {
+      "dependsOn": ["prune-lockfile", "copy-workspace-modules"],
+      "executor": "nx:noop"
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": ["build"],
+      "options": {
+        "buildTarget": "elder-auth:build",
+        "runBuildTargetDependencies": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "elder-auth:build:development"
+        },
+        "production": {
+          "buildTarget": "elder-auth:build:production"
+        }
+      }
+    },
+    "test": {
+      "options": {
+        "passWithNoTests": true
+      }
+    },
+    "prisma:generate": {
+      "command": "prisma generate",
+      "options": {
+        "cwd": "apps/elder-auth"
+      }
+    },
+    "prisma:migrate": {
+      "command": "prisma migrate dev",
+      "options": {
+        "cwd": "apps/elder-auth"
+      }
+    }
+  }
+}
