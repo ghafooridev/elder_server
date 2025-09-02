@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../../../node_modules/@prisma-clients/elder-auth"
+  output   = "./generated/prisma"
 }
 
 datasource db {
@@ -26,10 +26,11 @@ model User {
   lastName        String?
   avatar          String?
   nationalityCode String?    @unique()
-  mobileNumber    String     @unique()
+  mobileNumber    String?    @unique()
   email           String?    @unique()
-  gender          GenderEnum
-  role            RoleEnum
+  password        String?
+  gender          GenderEnum @default(NONE)
+  role            RoleEnum   @default(ELDER)
   dateOfBirth     DateTime?
   enabled         Boolean    @default(true)
 }

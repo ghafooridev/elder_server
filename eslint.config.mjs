@@ -5,7 +5,15 @@ export default [
   ...nx.configs['flat/typescript'],
   ...nx.configs['flat/javascript'],
   {
-    ignores: ['**/dist'],
+    ignores: [
+      '**/dist,**/node_modules',
+      '**/coverage',
+      '**/build,',
+      '**/prisma/generated/**',
+      '**/src/generated/prisma/**',
+      'apps/elder-auth/prisma/generated/prisma/**',
+      'apps/elder-auth/src/generated/prisma/**',
+    ],
   },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
@@ -14,7 +22,11 @@ export default [
         'error',
         {
           enforceBuildableLibDependency: true,
-          allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'],
+          allow: [
+            '^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$',
+            '^@prisma-clients/elder-auth$',
+            '^@prisma-clients/elder-auth/.+',
+          ],
           depConstraints: [
             {
               sourceTag: '*',

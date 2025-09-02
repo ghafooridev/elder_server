@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@elder/nestjs": ["apps/elder-auth/libs/nestjs/src/index.ts"]
+      "@elder/nestjs": ["libs/nestjs/src/index.ts"],
+      "@prisma-clients/elder-auth": ["apps/elder-auth/prisma/generated/prisma"]
     }
   },
   "exclude": ["node_modules", "tmp"]
