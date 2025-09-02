@@ -39,7 +39,7 @@ jobs:
         run: npx nx build elder-auth
 
       - name: Run unit tests
-        run: npx nx run-many -t test --parallel=3 --code-coverage
+        run: npx nx run-many -t test --parallel=3
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
