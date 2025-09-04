@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma-clients/elder-auth';
 import { PrismaService } from '../prisma/prisma.service';
 import { hash } from 'bcryptjs';
@@ -9,6 +13,7 @@ export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
   async createUser(data: Prisma.UserCreateInput) {
+    await this.checkUserExists(data);
     return this.prismaService.user.create({
       data: {
         ...data,
@@ -64,5 +69,25 @@ export class UsersService {
     }
 
     return _user;
+  }
+
+  async checkUserExists(data: Prisma.UserCreateInput) {
+    if (data.email) {
+      const existingByEmail = await this.prismaService.user.findUnique({
+        where: { email: data.email },
+      });
+      if (existingByEmail) {
+        throw new ConflictException('Email already in use');
+      }
+    }
+
+    if (data.mobileNumber) {
+      const existingByMobile = await this.prismaService.user.findUnique({
+        where: { mobileNumber: data.mobileNumber },
+      });
+      if (existingByMobile) {
+        throw new ConflictException('Mobile number already in use');
+      }
+    }
   }
 }

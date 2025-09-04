@@ -1,16 +1,20 @@
 import {
   IsString,
   IsStrongPassword,
-  ValidateIf,
   IsEmail,
+  IsOptional,
+  ValidateIf,
+  IsNotEmpty,
 } from 'class-validator';
 
 export class CreateUserDto {
-  @ValidateIf((o) => !o.email) // required if email is not provided
+  @ValidateIf((o) => !o.email)
   @IsString()
+  @IsNotEmpty({ message: 'Either email or mobileNumber is required' })
   mobileNumber: string;
 
-  @ValidateIf((o) => !o.mobileNumber) // required if mobileNumber is not provided
+  @ValidateIf((o) => !o.mobileNumber)
+  @IsNotEmpty({ message: 'Either email or mobileNumber is required' })
   @IsEmail()
   email: string;
 

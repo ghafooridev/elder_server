@@ -1,4 +1,5 @@
 export class LoginInputDto {
-  email: string;
+  email?: string;
+  mobileNumber?: string;
   password: string;
 }
