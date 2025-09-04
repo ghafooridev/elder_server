@@ -129,6 +129,19 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   dateOfBirth: 'dateOfBirth',
   enabled: 'enabled',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+};
+
+exports.Prisma.ElderScalarFieldEnum = {
+  userId: 'userId',
+  drugAllergy: 'drugAllergy',
+  disease: 'disease',
+};
+
+exports.Prisma.CaregiverScalarFieldEnum = {
+  userId: 'userId',
+  MSN: 'MSN',
 };
 
 exports.Prisma.SortOrder = {
@@ -159,6 +172,8 @@ exports.RoleEnum = exports.$Enums.RoleEnum = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  Elder: 'Elder',
+  Caregiver: 'Caregiver',
 };
 
 /**

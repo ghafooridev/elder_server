@@ -33,4 +33,28 @@ model User {
   role            RoleEnum   @default(ELDER)
   dateOfBirth     DateTime?
   enabled         Boolean    @default(true)
+
+  caregiver Caregiver?
+  elder     Elder?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([mobileNumber])
+  @@index([email])
+}
+
+model Elder {
+  userId      String   @id
+  drugAllergy String[]
+  disease     String[]
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Caregiver {
+  userId String @id
+  MSN    String @unique()
+
+  user User @relation(fields: [userId], references: [id])
 }
