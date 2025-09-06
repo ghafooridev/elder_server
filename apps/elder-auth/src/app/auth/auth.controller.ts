@@ -1,7 +1,7 @@
 import { AuthService } from './auth.service';
 import { User } from '../users/user.model';
-import { Controller, Post, Request, Res, UseGuards } from '@nestjs/common';
-import { Request as ExpressRequest, Response } from 'express';
+import { Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Request as ExpressRequest } from 'express';
 import { LocalAuthGuard } from './guard/auth.guard';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { ApiLoginDocs, ApiLogoutDocs } from './doc/auth.swagger';
@@ -13,20 +13,20 @@ interface AuthenticatedRequest extends ExpressRequest {
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @ApiLoginDocs()
-  async login(
-    @Request() req: AuthenticatedRequest,
-    @Res({ passthrough: true }) res: Response
-  ) {
-    return await this.authService.login(req.user, res);
+  async login(@Request() req: AuthenticatedRequest) {
+    // no more Response / cookies
+    return await this.authService.login(req.user);
   }
 
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   @ApiLogoutDocs()
-  async logout(@Res({ passthrough: true }) res: Response) {
-    return this.authService.logout(res);
+  async logout() {
+    // logout is now purely client-side (delete Bearer token from secure storage)
+    return this.authService.logout();
   }
 }

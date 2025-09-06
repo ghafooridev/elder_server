@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
 import { UsersService } from '../users/users.service';
 import {
   IdentityType,
@@ -18,7 +17,6 @@ import { Prisma, User } from '@prisma-clients/elder-auth';
 @Injectable()
 export class AuthService {
   private readonly jwtExpirationMs: number;
-  private readonly isProduction: boolean;
 
   constructor(
     private readonly usersService: UsersService,
@@ -29,16 +27,10 @@ export class AuthService {
       this.configService.getOrThrow('AUTH_JWT_EXPIRATION_MS'),
       10
     );
-    this.isProduction =
-      this.configService.getOrThrow('NODE_ENV') === 'production';
   }
 
-  async login(
-    user: User,
-    response: Response
-  ): Promise<{ userId: string; accessToken: string }> {
+  async login(user: User): Promise<{ userId: string; accessToken: string }> {
     const accessToken = this.generateAccessToken(user);
-    this.setAuthCookie(response, accessToken);
 
     return {
       userId: user.id,
@@ -72,37 +64,17 @@ export class AuthService {
     try {
       return this.jwtService.sign(payload, {
         expiresIn: `${this.jwtExpirationMs / 1000}s`, // seconds
+        secret: this.configService.getOrThrow('AUTH_JWT_SECRET'),
       });
     } catch (err) {
       throw new InternalServerErrorException('Failed to generate token');
     }
   }
 
-  private setAuthCookie(response: Response, accessToken: string): void {
-    if (!response || !response.cookie) return;
-
-    const expires = new Date(Date.now() + this.jwtExpirationMs);
-
-    response.cookie('Authentication', accessToken, {
-      httpOnly: true,
-      expires,
-      secure: this.isProduction,
-      sameSite: 'lax',
-    });
-  }
-
-  async logout(response: Response): Promise<{ message: string }> {
-    if (!response || !response.cookie) {
-      return { message: 'No response object found' };
-    }
-
-    response.cookie('Authentication', '', {
-      httpOnly: true,
-      expires: new Date(0),
-      secure: this.isProduction,
-      sameSite: 'lax',
-    });
-
-    return { message: 'Logged out successfully' };
+  async logout(): Promise<{ message: string }> {
+    // With Bearer tokens, logout is handled client-side
+    // by simply deleting the stored token from secure storage.
+    // Optionally, you can implement server-side token blacklisting.
+    return { message: 'Logged out successfully (client must delete token)' };
   }
 }
