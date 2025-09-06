@@ -73,6 +73,12 @@ export class User {
   enabled: boolean;
 
   @ApiProperty({
+    description: 'Avatar of the user',
+    example: 'https://example.com/avatar.jpg',
+  })
+  avatar: string | null;
+
+  @ApiProperty({
     description: 'Date when the user was created',
     type: String,
     format: 'date-time',

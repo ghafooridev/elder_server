@@ -1,5 +1,9 @@
 import { ConfigService } from '@nestjs/config';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
@@ -9,50 +13,96 @@ import {
   TokenPayload,
   ValidateUserParams,
 } from './types/auth.type';
-import { Prisma } from '@prisma-clients/elder-auth';
+import { Prisma, User } from '@prisma-clients/elder-auth';
 
 @Injectable()
 export class AuthService {
+  private readonly jwtExpirationMs: number;
+  private readonly isProduction: boolean;
+
   constructor(
     private readonly usersService: UsersService,
-    private readonly ConfigService: ConfigService,
+    private readonly configService: ConfigService,
     private readonly jwtService: JwtService
-  ) {}
-  async login(user, response: Response) {
-    const expires = new Date();
-    expires.setMilliseconds(
-      expires.getDate() +
-        parseInt(this.ConfigService.getOrThrow('AUTH_JWT_EXPIRATION_MS'))
+  ) {
+    this.jwtExpirationMs = parseInt(
+      this.configService.getOrThrow('AUTH_JWT_EXPIRATION_MS'),
+      10
     );
+    this.isProduction =
+      this.configService.getOrThrow('NODE_ENV') === 'production';
+  }
 
-    const TokenPayload: TokenPayload = { userId: user.id };
-    const accessToken = this.jwtService.sign(TokenPayload);
-    response.cookie('Authentication', accessToken, {
-      httpOnly: true,
-      expires,
-      secure: this.ConfigService.getOrThrow('NODE_ENV') === 'production',
-      sameSite: 'lax',
-    });
+  async login(
+    user: User,
+    response: Response
+  ): Promise<{ userId: string; accessToken: string }> {
+    const accessToken = this.generateAccessToken(user);
+    this.setAuthCookie(response, accessToken);
+
+    return {
+      userId: user.id,
+      accessToken,
+    };
+  }
+
+  async validateUser(params: ValidateUserParams): Promise<User> {
+    const { identityType, identityValue, password } = params;
+
+    const where: Prisma.UserWhereUniqueInput =
+      identityType === IdentityType.EMAIL
+        ? { email: identityValue }
+        : { mobileNumber: identityValue };
+
+    const user = await this.usersService.getUser(where);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const passwordMatches = await compare(password, user.password);
+    if (!passwordMatches) {
+      throw new UnauthorizedException('Invalid password');
+    }
+
     return user;
   }
 
-  async validateUser(params: ValidateUserParams) {
-    const { identityType, identityValue, password } = params;
+  private generateAccessToken(user: User): string {
+    const payload: TokenPayload = { userId: user.id };
     try {
-      const where: Prisma.UserWhereUniqueInput =
-        identityType === IdentityType.EMAIL
-          ? { email: identityValue }
-          : { mobileNumber: identityValue };
-
-      const user = await this.usersService.getUser(where);
-      const authenticated = await compare(password, user.password);
-      if (!authenticated) {
-        throw new UnauthorizedException();
-      }
-
-      return user;
-    } catch (error) {
-      throw new UnauthorizedException('Invalid credentials');
+      return this.jwtService.sign(payload, {
+        expiresIn: `${this.jwtExpirationMs / 1000}s`, // seconds
+      });
+    } catch (err) {
+      throw new InternalServerErrorException('Failed to generate token');
     }
+  }
+
+  private setAuthCookie(response: Response, accessToken: string): void {
+    if (!response || !response.cookie) return;
+
+    const expires = new Date(Date.now() + this.jwtExpirationMs);
+
+    response.cookie('Authentication', accessToken, {
+      httpOnly: true,
+      expires,
+      secure: this.isProduction,
+      sameSite: 'lax',
+    });
+  }
+
+  async logout(response: Response): Promise<{ message: string }> {
+    if (!response || !response.cookie) {
+      return { message: 'No response object found' };
+    }
+
+    response.cookie('Authentication', '', {
+      httpOnly: true,
+      expires: new Date(0),
+      secure: this.isProduction,
+      sameSite: 'lax',
+    });
+
+    return { message: 'Logged out successfully' };
   }
 }

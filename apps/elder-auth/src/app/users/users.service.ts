@@ -2,88 +2,91 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
-import { Prisma } from '@prisma-clients/elder-auth';
+import { Prisma, RoleEnum } from '@prisma-clients/elder-auth';
 import { PrismaService } from '../prisma/prisma.service';
 import { hash } from 'bcryptjs';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async createUser(data: Prisma.UserCreateInput) {
-    await this.checkUserExists(data);
-    return this.prismaService.user.create({
-      data: {
-        ...data,
-        password: await hash(data.password, 10),
-      },
+    await this.ensureUniqueUser(data);
+
+    const hashedPassword = await hash(data.password, 10);
+
+    return this.prisma.user.create({
+      data: { ...data, password: hashedPassword },
     });
   }
 
   async updateUser(id: string, user: UpdateUserDto) {
     if (!id) {
-      throw new Error('id is not exist');
+      throw new BadRequestException('User ID is required');
     }
 
-    const _user = await this.prismaService.user.update({
+    const updatedUser = await this.prisma.user.update({
       where: { id },
       data: user,
     });
 
-    if (!_user) {
-      throw new NotFoundException(`User not found`);
+    if (!updatedUser) {
+      throw new NotFoundException('User not found');
     }
 
-    return _user;
+    return updatedUser;
   }
 
   async deleteUser(id: string) {
     if (!id) {
-      throw new Error('id is not exist');
+      throw new BadRequestException('User ID is required');
     }
-    const _user = await this.prismaService.user.delete({
+
+    const deletedUser = await this.prisma.user.delete({
       where: { id },
     });
 
-    if (!_user) {
-      throw new NotFoundException(`User not found`);
+    if (!deletedUser) {
+      throw new NotFoundException('User not found');
     }
 
-    return _user;
+    return deletedUser;
   }
 
-  async getUsers() {
-    const _users = this.prismaService.user.findMany();
-    return _users;
-  }
-
-  async getUser(args: Prisma.UserWhereUniqueInput) {
-    const _user = this.prismaService.user.findUniqueOrThrow({
-      where: args,
+  async getUsers(role?: RoleEnum) {
+    return this.prisma.user.findMany({
+      where: role ? { role } : {},
     });
-
-    if (!_user) {
-      throw new NotFoundException(`User not found`);
-    }
-
-    return _user;
   }
 
-  async checkUserExists(data: Prisma.UserCreateInput) {
-    if (data.email) {
-      const existingByEmail = await this.prismaService.user.findUnique({
-        where: { email: data.email },
+  async getUser(where: Prisma.UserWhereUniqueInput) {
+    const user = await this.prisma.user.findUnique({ where });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
+  private async ensureUniqueUser(data: Prisma.UserCreateInput) {
+    const { email, mobileNumber } = data;
+
+    if (email) {
+      const existingByEmail = await this.prisma.user.findUnique({
+        where: { email },
       });
       if (existingByEmail) {
         throw new ConflictException('Email already in use');
       }
     }
 
-    if (data.mobileNumber) {
-      const existingByMobile = await this.prismaService.user.findUnique({
-        where: { mobileNumber: data.mobileNumber },
+    if (mobileNumber) {
+      const existingByMobile = await this.prisma.user.findUnique({
+        where: { mobileNumber },
       });
       if (existingByMobile) {
         throw new ConflictException('Mobile number already in use');

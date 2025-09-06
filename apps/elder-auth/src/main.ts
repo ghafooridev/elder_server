@@ -9,6 +9,7 @@ import { AppModule } from './app/app.module';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule } from '@nestjs/swagger';
 import { swaggerConfig } from '@elder/nestjs';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,6 +27,8 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Origin', 'Accept', 'Authorization'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   });
+
+  app.use(cookieParser());
 
   const globalPrefix = 'api';
   app.useGlobalPipes(

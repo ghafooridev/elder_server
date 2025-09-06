@@ -1,49 +1,54 @@
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import {
-  Body,
   Controller,
   Delete,
   Get,
   Param,
   Patch,
   Post,
+  Body,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiQuery } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import {
+  ApiCreateUserDocs,
+  ApiUpdateUserDocs,
+  ApiDeleteUserDocs,
+  ApiGetAllUsersDocs,
+} from './doc/user.swagger';
 import { RoleEnum } from '@prisma-clients/elder-auth';
-import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UsersService) {}
 
   @Post()
+  @ApiCreateUserDocs()
   async createUser(@Body() createUserDto: CreateUserDto) {
-    try {
-      return this.userService.createUser(createUserDto);
-    } catch (e) {
-      console.log('>>>>>', e);
-    }
+    return this.userService.createUser(createUserDto);
   }
 
   @Patch(':userId')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
+  @ApiUpdateUserDocs()
   async update(@Param('userId') userId: string, @Body() user: UpdateUserDto) {
-    const _user = await this.userService.updateUser(userId, user);
-    return _user;
+    return this.userService.updateUser(userId, user);
   }
 
   @Delete(':userId')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
+  @ApiDeleteUserDocs()
   async delete(@Param('userId') userId: string) {
-    const _user = await this.userService.deleteUser(userId);
+    return this.userService.deleteUser(userId);
   }
 
   @Get()
-  // @UseGuards(JwtAuthGuard)
-  @ApiQuery({ name: 'role', enum: RoleEnum, required: false })
+  @UseGuards(JwtAuthGuard)
+  @ApiGetAllUsersDocs()
   async getAll(@Query('role') role?: RoleEnum) {
-    return await this.userService.getUsers();
+    return this.userService.getUsers(role);
   }
 }

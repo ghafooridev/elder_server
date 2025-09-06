@@ -7,7 +7,7 @@ import {
   IsNotEmpty,
 } from 'class-validator';
 
-export class CreateUserDto {
+export class LoginDto {
   @ValidateIf((o) => !o.email)
   @IsString()
   @IsNotEmpty({ message: 'Either email or mobileNumber is required' })

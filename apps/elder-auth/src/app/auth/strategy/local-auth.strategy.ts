@@ -1,20 +1,42 @@
-// import { Strategy } from "passport-local";
-// import { PassportStrategy } from "@nestjs/passport";
-// import { Injectable, UnauthorizedException } from "@nestjs/common";
-// import { ValidateUserParams } from "../types/auth.type";
-// import { AuthService } from "../auth.service";
+import { Injectable } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { Strategy } from 'passport-local';
+import { AuthService } from '../auth.service';
+import { IdentityType } from '../types/auth.type';
 
-// // just for login
+@Injectable()
+export class LocalAuthStrategy extends PassportStrategy(Strategy) {
+  constructor(private authService: AuthService) {
+    super({
+      usernameField: 'identityValue',
+      passwordField: 'password',
+      passReqToCallback: true,
+    });
+  }
 
-// @Injectable()
-// export class LocalAuthStrategy extends PassportStrategy(Strategy) {
-//   constructor(private readonly authService: AuthService) {
-//     super({ usernameField: "mobileNumber" });
-//   }
+  async validate(
+    req: any,
+    identityValue: string,
+    password: string
+  ): Promise<any> {
+    const identityType = req.body.identityType as IdentityType;
 
-//   async validate(params: ValidateUserParams) {
-//     const user = await this.authService.validateUser(params);
-//     if (!user) throw new UnauthorizedException("Invalid credentials");
-//     return user;
-//   }
-// }
+    if (
+      ![IdentityType.EMAIL, IdentityType.MOBILE_NUMBER].includes(identityType)
+    ) {
+      throw new Error('Invalid identity type');
+    }
+
+    const user = await this.authService.validateUser({
+      identityType,
+      identityValue,
+      password,
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return user;
+  }
+}

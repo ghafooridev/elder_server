@@ -1,14 +1,10 @@
 import { AuthService } from './auth.service';
 import { User } from '../users/user.model';
-import { LoginInputDto } from './dto/login-input.dto';
-import { Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Controller, Post, Request, Res, UseGuards } from '@nestjs/common';
 import { Request as ExpressRequest, Response } from 'express';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiResponse,
-  ApiUnauthorizedResponse,
-} from '@nestjs/swagger';
+import { LocalAuthGuard } from './guard/auth.guard';
+import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { ApiLoginDocs, ApiLogoutDocs } from './doc/auth.swagger';
 
 interface AuthenticatedRequest extends ExpressRequest {
   user: User;
@@ -18,13 +14,19 @@ interface AuthenticatedRequest extends ExpressRequest {
 export class AuthController {
   constructor(private authService: AuthService) {}
   @Post('login')
-  // @UseGuards(LocalAuthGuard)
-  @ApiOperation({ summary: 'login user' })
-  @ApiBody({ type: LoginInputDto })
-  @ApiResponse({ status: 200, description: 'Return tokens' })
-  @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
-  async login(@Request() req: AuthenticatedRequest, res: Response) {
-    const _user = await this.authService.login(req.user, res);
-    return _user;
+  @UseGuards(LocalAuthGuard)
+  @ApiLoginDocs()
+  async login(
+    @Request() req: AuthenticatedRequest,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    return await this.authService.login(req.user, res);
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  @ApiLogoutDocs()
+  async logout(@Res({ passthrough: true }) res: Response) {
+    return this.authService.logout(res);
   }
 }
