@@ -3,7 +3,7 @@ import { applyDecorators } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { RoleEnum } from '@prisma-clients/elder-auth';
+import { RoleEnum } from '@prisma-clients/auth';
 
 export function ApiCreateUserDocs() {
   return applyDecorators(

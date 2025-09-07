@@ -1,7 +1,7 @@
 {
-  "name": "elder-auth",
+  "name": "auth",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/elder-auth/src",
+  "sourceRoot": "apps/auth/src",
   "projectType": "application",
   "tags": [],
   "targets": {
@@ -10,7 +10,7 @@
       "options": {
         "command": "webpack-cli build",
         "args": ["--node-env=production"],
-        "cwd": "apps/elder-auth"
+        "cwd": "apps/auth"
       },
       "configurations": {
         "development": {
@@ -23,8 +23,8 @@
       "cache": true,
       "executor": "@nx/js:prune-lockfile",
       "outputs": [
-        "{workspaceRoot}/dist/apps/elder-auth/package.json",
-        "{workspaceRoot}/dist/apps/elder-auth/package-lock.json"
+        "{workspaceRoot}/dist/apps/auth/package.json",
+        "{workspaceRoot}/dist/apps/auth/package-lock.json"
       ],
       "options": {
         "buildTarget": "build"
@@ -33,7 +33,7 @@
     "copy-workspace-modules": {
       "dependsOn": ["build"],
       "cache": true,
-      "outputs": ["{workspaceRoot}/dist/apps/elder-auth/workspace_modules"],
+      "outputs": ["{workspaceRoot}/dist/apps/auth/workspace_modules"],
       "executor": "@nx/js:copy-workspace-modules",
       "options": {
         "buildTarget": "build"
@@ -49,15 +49,15 @@
       "defaultConfiguration": "development",
       "dependsOn": ["build"],
       "options": {
-        "buildTarget": "elder-auth:build",
+        "buildTarget": "auth:build",
         "runBuildTargetDependencies": false
       },
       "configurations": {
         "development": {
-          "buildTarget": "elder-auth:build:development"
+          "buildTarget": "auth:build:development"
         },
         "production": {
-          "buildTarget": "elder-auth:build:production"
+          "buildTarget": "auth:build:production"
         }
       }
     },
@@ -69,13 +69,13 @@
     "prisma:generate": {
       "command": "prisma generate",
       "options": {
-        "cwd": "apps/elder-auth"
+        "cwd": "apps/auth"
       }
     },
     "prisma:migrate": {
       "command": "prisma migrate dev",
       "options": {
-        "cwd": "apps/elder-auth"
+        "cwd": "apps/auth"
       }
     }
   }

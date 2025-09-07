@@ -30,13 +30,13 @@ jobs:
         run: npm ci
 
       - name: Generate Prisma client
-        run: npx nx run elder-auth:prisma:generate
+        run: npx nx run auth:prisma:generate
 
       - name: Lint
         run: npx nx run-many -t lint --parallel=3 || true
 
-      - name: Build elder-auth
-        run: npx nx build elder-auth
+      - name: Build auth
+        run: npx nx build auth
 
       - name: Run unit tests
         run: npx nx run-many -t test --parallel=3
@@ -44,6 +44,6 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: elder-auth-dist
-          path: dist/apps/elder-auth
+          name: auth-dist
+          path: dist/apps/auth
           if-no-files-found: warn

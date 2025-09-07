@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { GenderEnum, RoleEnum } from '@prisma-clients/elder-auth';
+import { GenderEnum, RoleEnum } from '@prisma-clients/auth';
 
 export class User {
   @ApiProperty({

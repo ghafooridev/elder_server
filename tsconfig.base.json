@@ -16,7 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@elder/nestjs": ["libs/nestjs/src/index.ts"],
-      "@prisma-clients/elder-auth": ["apps/elder-auth/prisma/generated/prisma"]
+      "@prisma-clients/auth": ["apps/auth/prisma/generated/prisma"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -11,8 +11,8 @@ export default [
       '**/build,',
       '**/prisma/generated/**',
       '**/src/generated/prisma/**',
-      'apps/elder-auth/prisma/generated/prisma/**',
-      'apps/elder-auth/src/generated/prisma/**',
+      'apps/auth/prisma/generated/prisma/**',
+      'apps/auth/src/generated/prisma/**',
     ],
   },
   {
@@ -24,8 +24,8 @@ export default [
           enforceBuildableLibDependency: true,
           allow: [
             '^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$',
-            '^@prisma-clients/elder-auth$',
-            '^@prisma-clients/elder-auth/.+',
+            '^@prisma-clients/auth$',
+            '^@prisma-clients/auth/.+',
           ],
           depConstraints: [
             {

@@ -4,7 +4,7 @@ import {
   ConflictException,
   BadRequestException,
 } from '@nestjs/common';
-import { Prisma, RoleEnum } from '@prisma-clients/elder-auth';
+import { Prisma, RoleEnum } from '@prisma-clients/auth';
 import { PrismaService } from '../prisma/prisma.service';
 import { hash } from 'bcryptjs';
 import { UpdateUserDto } from './dto/update-user.dto';

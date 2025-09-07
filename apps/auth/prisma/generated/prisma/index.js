@@ -159,7 +159,7 @@ const config = {
     },
     output: {
       value:
-        '/Users/ali/Desktop/elderCare/server/elder/apps/elder-auth/prisma/generated/prisma',
+        '/Users/ali/Desktop/elderCare/server/elder/apps/auth/prisma/generated/prisma',
       fromEnvVar: null,
     },
     config: {
@@ -174,19 +174,17 @@ const config = {
     ],
     previewFeatures: [],
     sourceFilePath:
-      '/Users/ali/Desktop/elderCare/server/elder/apps/elder-auth/prisma/schema.prisma',
+      '/Users/ali/Desktop/elderCare/server/elder/apps/auth/prisma/schema.prisma',
     isCustomOutput: true,
   },
   relativeEnvPaths: {
     rootEnvPath: null,
-    schemaEnvPath: '../../../.env',
   },
   relativePath: '../..',
   clientVersion: '6.15.0',
   engineVersion: '85179d7826409ee107a6ba334b5e305ae3fba9fb',
   datasourceNames: ['db'],
   activeProvider: 'postgresql',
-  postinstall: false,
   inlineDatasources: {
     db: {
       url: {

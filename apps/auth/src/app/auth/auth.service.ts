@@ -12,7 +12,7 @@ import {
   TokenPayload,
   ValidateUserParams,
 } from './types/auth.type';
-import { Prisma, User } from '@prisma-clients/elder-auth';
+import { Prisma, User } from '@prisma-clients/auth';
 
 @Injectable()
 export class AuthService {

@@ -19,7 +19,7 @@ import {
   ApiDeleteUserDocs,
   ApiGetAllUsersDocs,
 } from './doc/user.swagger';
-import { RoleEnum } from '@prisma-clients/elder-auth';
+import { RoleEnum } from '@prisma-clients/auth';
 
 @Controller('users')
 export class UserController {
