@@ -24,7 +24,7 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) {
     this.jwtExpirationMs = parseInt(
-      this.configService.getOrThrow('AUTH_JWT_EXPIRATION_MS'),
+      this.configService.getOrThrow('JWT_EXPIRATION_MS'),
       10
     );
   }
@@ -64,7 +64,7 @@ export class AuthService {
     try {
       return this.jwtService.sign(payload, {
         expiresIn: `${this.jwtExpirationMs / 1000}s`, // seconds
-        secret: this.configService.getOrThrow('AUTH_JWT_SECRET'),
+        secret: this.configService.getOrThrow('JWT_SECRET'),
       });
     } catch (err) {
       throw new InternalServerErrorException('Failed to generate token');

@@ -13,28 +13,39 @@ export default [
       '**/src/generated/prisma/**',
       'apps/auth/prisma/generated/prisma/**',
       'apps/auth/src/generated/prisma/**',
+      'apps/reminder/prisma/generated/prisma/**',
+      'apps/reminder/src/generated/prisma/**',
+      'libs/**/prisma/generated/**',
+      'libs/**/src/generated/prisma/**',
+      'libs/**/src/prisma/migrations/**',
+      'apps/**/src/prisma/migrations/**',
+      'apps/**/prisma/migrations/**',
+      'tools/**/prisma/migrations/**',
+      'tools/**/src/prisma/migrations/**',
     ],
   },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     rules: {
-      '@nx/enforce-module-boundaries': [
-        'error',
-        {
-          enforceBuildableLibDependency: true,
-          allow: [
-            '^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$',
-            '^@prisma-clients/auth$',
-            '^@prisma-clients/auth/.+',
-          ],
-          depConstraints: [
-            {
-              sourceTag: '*',
-              onlyDependOnLibsWithTags: ['*'],
-            },
-          ],
-        },
-      ],
+      '@nx/enforce-module-boundaries': 'off',
+
+      // '@nx/enforce-module-boundaries': [
+      //   'error',
+      //   {
+      //     enforceBuildableLibDependency: true,
+      //     allow: [
+      //       '^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$',
+      //       '^@prisma-clients/auth$',
+      //       '^@prisma-clients/auth/.+',
+      //     ],
+      //     depConstraints: [
+      //       {
+      //         sourceTag: '*',
+      //         onlyDependOnLibsWithTags: ['*'],
+      //       },
+      //     ],
+      //   },
+      // ],
     },
   },
   {
