@@ -6,6 +6,7 @@
   "tags": [],
   "targets": {
     "build": {
+      "dependsOn": ["prisma:generate", "proto:generate"],
       "executor": "nx:run-commands",
       "options": {
         "command": "webpack-cli build",
@@ -69,14 +70,19 @@
     "prisma:generate": {
       "command": "prisma generate",
       "options": {
-        "cwd": "apps/auth"
-      }
+        "cwd": "{projectRoot}",
+        "inputs": ["{projectRoot}/prisma/schema.prisma"]
+      },
+      "cache": true
     },
     "prisma:migrate": {
       "command": "prisma migrate dev",
       "options": {
-        "cwd": "apps/auth"
+        "cwd": "{projectRoot}"
       }
+    },
+    "proto:generate": {
+      "command": "nx generate:proto"
     }
   }
 }

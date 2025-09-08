@@ -11,8 +11,9 @@ import {
   Post,
   Body,
   UseGuards,
+  // UseGuards,
 } from '@nestjs/common';
-// import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { AuthGuard } from '@elder/nestjs'; //here from auth app
 import {
   ApiCreateReminderDocs,
   ApiUpdateReminderDocs,
@@ -25,7 +26,7 @@ export class ReminderController {
   constructor(private readonly reminderService: RemindersService) {}
 
   @Post()
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard)
   @ApiCreateReminderDocs()
   async createReminder(
     @Body() createReminderDto: CreateReminderDto
@@ -54,7 +55,7 @@ export class ReminderController {
   }
 
   @Get()
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard)
   @ApiGetAllRemindersDocs()
   async getAll(): Promise<Reminder[]> {
     return this.reminderService.getReminders();

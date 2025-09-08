@@ -1,3 +1,4 @@
+import { AUTH_PACKAGE_NAME } from './../../../types/proto/auth';
 /**
  * This is not a production server yet!
  * This is only a minimal backend to get started.
@@ -10,6 +11,8 @@ import { ConfigService } from '@nestjs/config';
 import { SwaggerModule } from '@nestjs/swagger';
 import { swaggerConfig } from '@elder/nestjs';
 import * as cookieParser from 'cookie-parser';
+import { GrpcOptions, Transport } from '@nestjs/microservices';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -40,6 +43,16 @@ async function bootstrap() {
   );
   app.setGlobalPrefix(globalPrefix);
   const port = config.getOrThrow('AUTH_PORT');
+  app.connectMicroservice<GrpcOptions>({
+    transport: Transport.GRPC,
+    options: {
+      url: `0.0.0.0:50051`,
+      package: AUTH_PACKAGE_NAME,
+      protoPath: join(process.cwd(), 'proto/auth.proto'),
+    },
+  });
+
+  await app.startAllMicroservices();
   await app.listen(port);
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`

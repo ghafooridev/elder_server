@@ -59,6 +59,21 @@ export class AuthService {
     return user;
   }
 
+  async validateToken(token: string): Promise<User> {
+    try {
+      const payload: TokenPayload = this.jwtService.verify(token, {
+        secret: this.configService.getOrThrow('JWT_SECRET'),
+      });
+      const user = await this.usersService.getUser({ id: payload.userId });
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+      return user;
+    } catch (err) {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+  }
+
   private generateAccessToken(user: User): string {
     const payload: TokenPayload = { userId: user.id };
     try {

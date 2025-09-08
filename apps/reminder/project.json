@@ -69,13 +69,15 @@
     "prisma:generate": {
       "command": "prisma generate",
       "options": {
-        "cwd": "apps/reminder"
-      }
+        "cwd": "{projectRoot}",
+        "inputs": ["{projectRoot}/prisma/schema.prisma"]
+      },
+      "cache": true
     },
     "prisma:migrate": {
       "command": "prisma migrate dev",
       "options": {
-        "cwd": "apps/reminder"
+        "cwd": "{projectRoot}"
       }
     }
   }
