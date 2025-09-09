@@ -17,6 +17,7 @@
     "paths": {
       "@elder/nestjs": ["libs/nestjs/src/index.ts"],
       "@prisma-clients/auth": ["apps/auth/prisma/generated/prisma"],
+      "@prisma-clients/care": ["apps/care/prisma/generated/prisma"],
       "@prisma-clients/reminder": ["apps/reminder/prisma/generated/prisma"]
     }
   },

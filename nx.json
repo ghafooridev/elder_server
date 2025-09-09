@@ -37,7 +37,11 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/auth-e2e/**/*", "apps/reminder-e2e/**/*"]
+      "exclude": [
+        "apps/auth-e2e/**/*",
+        "apps/reminder-e2e/**/*",
+        "apps/care-e2e/**/*"
+      ]
     }
   ],
   "targetDefaults": {

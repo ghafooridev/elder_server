@@ -28,24 +28,6 @@ export default [
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     rules: {
       '@nx/enforce-module-boundaries': 'off',
-
-      // '@nx/enforce-module-boundaries': [
-      //   'error',
-      //   {
-      //     enforceBuildableLibDependency: true,
-      //     allow: [
-      //       '^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$',
-      //       '^@prisma-clients/auth$',
-      //       '^@prisma-clients/auth/.+',
-      //     ],
-      //     depConstraints: [
-      //       {
-      //         sourceTag: '*',
-      //         onlyDependOnLibsWithTags: ['*'],
-      //       },
-      //     ],
-      //   },
-      // ],
     },
   },
   {

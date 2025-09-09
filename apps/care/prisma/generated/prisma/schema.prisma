@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("CARE_DATABASE_URL")
+}
+
+model CareCategory {
+  id          String   @id @default(cuid())
+  name        String   @unique // e.g. Caregiver, Nurse, Doctor
+  description String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  cares Care[]
+}
+
+model Care {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  price       Float
+  durationMin Int? // e.g. 60 min
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  categoryId String
+  category   CareCategory @relation(fields: [categoryId], references: [id])
+
+  providerId String
+
+  bookings Booking[]
+}
+
+model Booking {
+  id          String        @id @default(cuid())
+  status      BookingStatus @default(PENDING)
+  scheduledAt DateTime
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relations
+  careId String
+  care   Care   @relation(fields: [careId], references: [id])
+
+  clientId String
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
