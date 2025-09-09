@@ -11,7 +11,6 @@ import {
   AuthServiceControllerMethods,
   User as UserProto,
 } from 'types/proto/auth';
-import { Observable } from 'rxjs';
 
 interface AuthenticatedRequest extends ExpressRequest {
   user: User;

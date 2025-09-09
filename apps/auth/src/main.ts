@@ -48,7 +48,7 @@ async function bootstrap() {
     options: {
       url: `0.0.0.0:50051`,
       package: AUTH_PACKAGE_NAME,
-      protoPath: join(process.cwd(), 'proto/auth.proto'),
+      protoPath: join(process.cwd(), 'proto/auth.proto'), //TODO: check path using __dirname instead of process.cwd()
     },
   });
 
