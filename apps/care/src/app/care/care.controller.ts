@@ -11,6 +11,8 @@ import {
   Post,
   Body,
   UseGuards,
+  Req,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@elder/nestjs'; // from auth app
 import {
@@ -27,8 +29,12 @@ export class CareController {
   @Post()
   @UseGuards(AuthGuard)
   @ApiCreateCareDocs()
-  async createCare(@Body() createCareDto: CreateCareDto): Promise<Care> {
-    return this.careService.createCare(createCareDto);
+  async createCare(
+    @Body() createCareDto: CreateCareDto,
+    @Req() req: any
+  ): Promise<Care> {
+    const caregiverId = req.user.id;
+    return this.careService.createCare(createCareDto, caregiverId);
   }
 
   @Patch(':careId')
@@ -50,7 +56,7 @@ export class CareController {
   @Get()
   // @UseGuards(AuthGuard)
   @ApiGetAllCareDocs()
-  async getAll(): Promise<Care[]> {
-    return this.careService.getCares();
+  async getAll(@Query('caregiverId') caregiverId?: string): Promise<Care[]> {
+    return this.careService.getCares(caregiverId);
   }
 }

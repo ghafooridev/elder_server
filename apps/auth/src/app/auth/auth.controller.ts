@@ -5,20 +5,13 @@ import { Request as ExpressRequest } from 'express';
 import { LocalAuthGuard } from './guard/auth.guard';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { ApiLoginDocs, ApiLogoutDocs } from './doc/auth.swagger';
-import {
-  AuthenticateRequest,
-  AuthServiceController,
-  AuthServiceControllerMethods,
-  User as UserProto,
-} from 'types/proto/auth';
 
 interface AuthenticatedRequest extends ExpressRequest {
   user: User;
 }
 
 @Controller('auth')
-@AuthServiceControllerMethods()
-export class AuthController implements AuthServiceController {
+export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('login')
@@ -34,10 +27,5 @@ export class AuthController implements AuthServiceController {
   async logout() {
     // logout is now purely client-side (delete Bearer token from secure storage)
     return { message: 'Logged out successfully (client must delete token)' };
-  }
-
-  async authenticate(request: AuthenticateRequest): Promise<UserProto> {
-    const user = await this.authService.validateToken(request.token);
-    return { id: user.id, email: user.email };
   }
 }

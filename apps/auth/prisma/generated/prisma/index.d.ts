@@ -26,6 +26,11 @@ export type Elder = $Result.DefaultSelection<Prisma.$ElderPayload>;
  *
  */
 export type Caregiver = $Result.DefaultSelection<Prisma.$CaregiverPayload>;
+/**
+ * Model Relative
+ *
+ */
+export type Relative = $Result.DefaultSelection<Prisma.$RelativePayload>;
 
 /**
  * Enums
@@ -42,10 +47,22 @@ export namespace $Enums {
   export const RoleEnum: {
     ADMIN: 'ADMIN';
     ELDER: 'ELDER';
+    RELATIVE: 'RELATIVE';
     CAREGIVER: 'CAREGIVER';
   };
 
   export type RoleEnum = (typeof RoleEnum)[keyof typeof RoleEnum];
+
+  export const CaregiverType: {
+    CAREGIVER: 'CAREGIVER';
+    NURSE: 'NURSE';
+    DOCTOR: 'DOCTOR';
+    PHYSIOTHERAPIST: 'PHYSIOTHERAPIST';
+    OTHER: 'OTHER';
+  };
+
+  export type CaregiverType =
+    (typeof CaregiverType)[keyof typeof CaregiverType];
 }
 
 export type GenderEnum = $Enums.GenderEnum;
@@ -55,6 +72,10 @@ export const GenderEnum: typeof $Enums.GenderEnum;
 export type RoleEnum = $Enums.RoleEnum;
 
 export const RoleEnum: typeof $Enums.RoleEnum;
+
+export type CaregiverType = $Enums.CaregiverType;
+
+export const CaregiverType: typeof $Enums.CaregiverType;
 
 /**
  * ##  Prisma Client ʲˢ
@@ -244,6 +265,16 @@ export class PrismaClient<
    * ```
    */
   get caregiver(): Prisma.CaregiverDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.relative`: Exposes CRUD operations for the **Relative** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more Relatives
+   * const relatives = await prisma.relative.findMany()
+   * ```
+   */
+  get relative(): Prisma.RelativeDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -707,6 +738,7 @@ export namespace Prisma {
     User: 'User';
     Elder: 'Elder';
     Caregiver: 'Caregiver';
+    Relative: 'Relative';
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -734,7 +766,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions;
     };
     meta: {
-      modelProps: 'user' | 'elder' | 'caregiver';
+      modelProps: 'user' | 'elder' | 'caregiver' | 'relative';
       txIsolationLevel: Prisma.TransactionIsolationLevel;
     };
     model: {
@@ -960,6 +992,80 @@ export namespace Prisma {
           };
         };
       };
+      Relative: {
+        payload: Prisma.$RelativePayload<ExtArgs>;
+        fields: Prisma.RelativeFieldRefs;
+        operations: {
+          findUnique: {
+            args: Prisma.RelativeFindUniqueArgs<ExtArgs>;
+            result: $Utils.PayloadToResult<Prisma.$RelativePayload> | null;
+          };
+          findUniqueOrThrow: {
+            args: Prisma.RelativeFindUniqueOrThrowArgs<ExtArgs>;
+            result: $Utils.PayloadToResult<Prisma.$RelativePayload>;
+          };
+          findFirst: {
+            args: Prisma.RelativeFindFirstArgs<ExtArgs>;
+            result: $Utils.PayloadToResult<Prisma.$RelativePayload> | null;
+          };
+          findFirstOrThrow: {
+            args: Prisma.RelativeFindFirstOrThrowArgs<ExtArgs>;
+            result: $Utils.PayloadToResult<Prisma.$RelativePayload>;
+          };
+          findMany: {
+            args: Prisma.RelativeFindManyArgs<ExtArgs>;
+            result: $Utils.PayloadToResult<Prisma.$RelativePayload>[];
+          };
+          create: {
+            args: Prisma.RelativeCreateArgs<ExtArgs>;
+            result: $Utils.PayloadToResult<Prisma.$RelativePayload>;
+          };
+          createMany: {
+            args: Prisma.RelativeCreateManyArgs<ExtArgs>;
+            result: BatchPayload;
+          };
+          createManyAndReturn: {
+            args: Prisma.RelativeCreateManyAndReturnArgs<ExtArgs>;
+            result: $Utils.PayloadToResult<Prisma.$RelativePayload>[];
+          };
+          delete: {
+            args: Prisma.RelativeDeleteArgs<ExtArgs>;
+            result: $Utils.PayloadToResult<Prisma.$RelativePayload>;
+          };
+          update: {
+            args: Prisma.RelativeUpdateArgs<ExtArgs>;
+            result: $Utils.PayloadToResult<Prisma.$RelativePayload>;
+          };
+          deleteMany: {
+            args: Prisma.RelativeDeleteManyArgs<ExtArgs>;
+            result: BatchPayload;
+          };
+          updateMany: {
+            args: Prisma.RelativeUpdateManyArgs<ExtArgs>;
+            result: BatchPayload;
+          };
+          updateManyAndReturn: {
+            args: Prisma.RelativeUpdateManyAndReturnArgs<ExtArgs>;
+            result: $Utils.PayloadToResult<Prisma.$RelativePayload>[];
+          };
+          upsert: {
+            args: Prisma.RelativeUpsertArgs<ExtArgs>;
+            result: $Utils.PayloadToResult<Prisma.$RelativePayload>;
+          };
+          aggregate: {
+            args: Prisma.RelativeAggregateArgs<ExtArgs>;
+            result: $Utils.Optional<AggregateRelative>;
+          };
+          groupBy: {
+            args: Prisma.RelativeGroupByArgs<ExtArgs>;
+            result: $Utils.Optional<RelativeGroupByOutputType>[];
+          };
+          count: {
+            args: Prisma.RelativeCountArgs<ExtArgs>;
+            result: $Utils.Optional<RelativeCountAggregateOutputType> | number;
+          };
+        };
+      };
     };
   } & {
     other: {
@@ -1059,6 +1165,7 @@ export namespace Prisma {
     user?: UserOmit;
     elder?: ElderOmit;
     caregiver?: CaregiverOmit;
+    relative?: RelativeOmit;
   };
 
   /* Types for Logging */
@@ -1138,6 +1245,42 @@ export namespace Prisma {
   /**
    * Count Types
    */
+
+  /**
+   * Count Type ElderCountOutputType
+   */
+
+  export type ElderCountOutputType = {
+    relative: number;
+  };
+
+  export type ElderCountOutputTypeSelect<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    relative?: boolean | ElderCountOutputTypeCountRelativeArgs;
+  };
+
+  // Custom InputTypes
+  /**
+   * ElderCountOutputType without action
+   */
+  export type ElderCountOutputTypeDefaultArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Select specific fields to fetch from the ElderCountOutputType
+     */
+    select?: ElderCountOutputTypeSelect<ExtArgs> | null;
+  };
+
+  /**
+   * ElderCountOutputType without action
+   */
+  export type ElderCountOutputTypeCountRelativeArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    where?: RelativeWhereInput;
+  };
 
   /**
    * Models
@@ -1384,6 +1527,7 @@ export namespace Prisma {
       updatedAt?: boolean;
       caregiver?: boolean | User$caregiverArgs<ExtArgs>;
       elder?: boolean | User$elderArgs<ExtArgs>;
+      relative?: boolean | User$relativeArgs<ExtArgs>;
     },
     ExtArgs['result']['user']
   >;
@@ -1473,6 +1617,7 @@ export namespace Prisma {
   > = {
     caregiver?: boolean | User$caregiverArgs<ExtArgs>;
     elder?: boolean | User$elderArgs<ExtArgs>;
+    relative?: boolean | User$relativeArgs<ExtArgs>;
   };
   export type UserIncludeCreateManyAndReturn<
     ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
@@ -1488,6 +1633,7 @@ export namespace Prisma {
     objects: {
       caregiver: Prisma.$CaregiverPayload<ExtArgs> | null;
       elder: Prisma.$ElderPayload<ExtArgs> | null;
+      relative: Prisma.$RelativePayload<ExtArgs> | null;
     };
     scalars: $Extensions.GetPayloadResult<
       {
@@ -2076,6 +2222,19 @@ export namespace Prisma {
       ExtArgs,
       GlobalOmitOptions
     >;
+    relative<T extends User$relativeArgs<ExtArgs> = {}>(
+      args?: Subset<T, User$relativeArgs<ExtArgs>>
+    ): Prisma__RelativeClient<
+      $Result.GetResult<
+        Prisma.$RelativePayload<ExtArgs>,
+        T,
+        'findUniqueOrThrow',
+        GlobalOmitOptions
+      > | null,
+      null,
+      ExtArgs,
+      GlobalOmitOptions
+    >;
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2587,6 +2746,27 @@ export namespace Prisma {
   };
 
   /**
+   * User.relative
+   */
+  export type User$relativeArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Select specific fields to fetch from the Relative
+     */
+    select?: RelativeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Relative
+     */
+    omit?: RelativeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RelativeInclude<ExtArgs> | null;
+    where?: RelativeWhereInput;
+  };
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<
@@ -2618,31 +2798,101 @@ export namespace Prisma {
 
   export type ElderMinAggregateOutputType = {
     userId: string | null;
+    bloodType: string | null;
+    disability: string | null;
+    mobilityStatus: string | null;
+    cognitiveStatus: string | null;
+    maritalStatus: string | null;
+    occupation: string | null;
+    religion: string | null;
+    dietaryNeeds: string | null;
+    emergencyContactName: string | null;
+    emergencyContactPhone: string | null;
+    emergencyContactRelation: string | null;
   };
 
   export type ElderMaxAggregateOutputType = {
     userId: string | null;
+    bloodType: string | null;
+    disability: string | null;
+    mobilityStatus: string | null;
+    cognitiveStatus: string | null;
+    maritalStatus: string | null;
+    occupation: string | null;
+    religion: string | null;
+    dietaryNeeds: string | null;
+    emergencyContactName: string | null;
+    emergencyContactPhone: string | null;
+    emergencyContactRelation: string | null;
   };
 
   export type ElderCountAggregateOutputType = {
     userId: number;
-    drugAllergy: number;
-    disease: number;
+    bloodType: number;
+    medicalConditions: number;
+    allergies: number;
+    medications: number;
+    disability: number;
+    mobilityStatus: number;
+    cognitiveStatus: number;
+    maritalStatus: number;
+    occupation: number;
+    languages: number;
+    religion: number;
+    dietaryNeeds: number;
+    emergencyContactName: number;
+    emergencyContactPhone: number;
+    emergencyContactRelation: number;
     _all: number;
   };
 
   export type ElderMinAggregateInputType = {
     userId?: true;
+    bloodType?: true;
+    disability?: true;
+    mobilityStatus?: true;
+    cognitiveStatus?: true;
+    maritalStatus?: true;
+    occupation?: true;
+    religion?: true;
+    dietaryNeeds?: true;
+    emergencyContactName?: true;
+    emergencyContactPhone?: true;
+    emergencyContactRelation?: true;
   };
 
   export type ElderMaxAggregateInputType = {
     userId?: true;
+    bloodType?: true;
+    disability?: true;
+    mobilityStatus?: true;
+    cognitiveStatus?: true;
+    maritalStatus?: true;
+    occupation?: true;
+    religion?: true;
+    dietaryNeeds?: true;
+    emergencyContactName?: true;
+    emergencyContactPhone?: true;
+    emergencyContactRelation?: true;
   };
 
   export type ElderCountAggregateInputType = {
     userId?: true;
-    drugAllergy?: true;
-    disease?: true;
+    bloodType?: true;
+    medicalConditions?: true;
+    allergies?: true;
+    medications?: true;
+    disability?: true;
+    mobilityStatus?: true;
+    cognitiveStatus?: true;
+    maritalStatus?: true;
+    occupation?: true;
+    languages?: true;
+    religion?: true;
+    dietaryNeeds?: true;
+    emergencyContactName?: true;
+    emergencyContactPhone?: true;
+    emergencyContactRelation?: true;
     _all?: true;
   };
 
@@ -2723,8 +2973,21 @@ export namespace Prisma {
 
   export type ElderGroupByOutputType = {
     userId: string;
-    drugAllergy: string[];
-    disease: string[];
+    bloodType: string | null;
+    medicalConditions: string[];
+    allergies: string[];
+    medications: string[];
+    disability: string | null;
+    mobilityStatus: string | null;
+    cognitiveStatus: string | null;
+    maritalStatus: string | null;
+    occupation: string | null;
+    languages: string[];
+    religion: string | null;
+    dietaryNeeds: string | null;
+    emergencyContactName: string | null;
+    emergencyContactPhone: string | null;
+    emergencyContactRelation: string | null;
     _count: ElderCountAggregateOutputType | null;
     _min: ElderMinAggregateOutputType | null;
     _max: ElderMaxAggregateOutputType | null;
@@ -2748,9 +3011,24 @@ export namespace Prisma {
   > = $Extensions.GetSelect<
     {
       userId?: boolean;
-      drugAllergy?: boolean;
-      disease?: boolean;
+      bloodType?: boolean;
+      medicalConditions?: boolean;
+      allergies?: boolean;
+      medications?: boolean;
+      disability?: boolean;
+      mobilityStatus?: boolean;
+      cognitiveStatus?: boolean;
+      maritalStatus?: boolean;
+      occupation?: boolean;
+      languages?: boolean;
+      religion?: boolean;
+      dietaryNeeds?: boolean;
+      emergencyContactName?: boolean;
+      emergencyContactPhone?: boolean;
+      emergencyContactRelation?: boolean;
       user?: boolean | UserDefaultArgs<ExtArgs>;
+      relative?: boolean | Elder$relativeArgs<ExtArgs>;
+      _count?: boolean | ElderCountOutputTypeDefaultArgs<ExtArgs>;
     },
     ExtArgs['result']['elder']
   >;
@@ -2760,8 +3038,21 @@ export namespace Prisma {
   > = $Extensions.GetSelect<
     {
       userId?: boolean;
-      drugAllergy?: boolean;
-      disease?: boolean;
+      bloodType?: boolean;
+      medicalConditions?: boolean;
+      allergies?: boolean;
+      medications?: boolean;
+      disability?: boolean;
+      mobilityStatus?: boolean;
+      cognitiveStatus?: boolean;
+      maritalStatus?: boolean;
+      occupation?: boolean;
+      languages?: boolean;
+      religion?: boolean;
+      dietaryNeeds?: boolean;
+      emergencyContactName?: boolean;
+      emergencyContactPhone?: boolean;
+      emergencyContactRelation?: boolean;
       user?: boolean | UserDefaultArgs<ExtArgs>;
     },
     ExtArgs['result']['elder']
@@ -2772,8 +3063,21 @@ export namespace Prisma {
   > = $Extensions.GetSelect<
     {
       userId?: boolean;
-      drugAllergy?: boolean;
-      disease?: boolean;
+      bloodType?: boolean;
+      medicalConditions?: boolean;
+      allergies?: boolean;
+      medications?: boolean;
+      disability?: boolean;
+      mobilityStatus?: boolean;
+      cognitiveStatus?: boolean;
+      maritalStatus?: boolean;
+      occupation?: boolean;
+      languages?: boolean;
+      religion?: boolean;
+      dietaryNeeds?: boolean;
+      emergencyContactName?: boolean;
+      emergencyContactPhone?: boolean;
+      emergencyContactRelation?: boolean;
       user?: boolean | UserDefaultArgs<ExtArgs>;
     },
     ExtArgs['result']['elder']
@@ -2781,20 +3085,50 @@ export namespace Prisma {
 
   export type ElderSelectScalar = {
     userId?: boolean;
-    drugAllergy?: boolean;
-    disease?: boolean;
+    bloodType?: boolean;
+    medicalConditions?: boolean;
+    allergies?: boolean;
+    medications?: boolean;
+    disability?: boolean;
+    mobilityStatus?: boolean;
+    cognitiveStatus?: boolean;
+    maritalStatus?: boolean;
+    occupation?: boolean;
+    languages?: boolean;
+    religion?: boolean;
+    dietaryNeeds?: boolean;
+    emergencyContactName?: boolean;
+    emergencyContactPhone?: boolean;
+    emergencyContactRelation?: boolean;
   };
 
   export type ElderOmit<
     ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
   > = $Extensions.GetOmit<
-    'userId' | 'drugAllergy' | 'disease',
+    | 'userId'
+    | 'bloodType'
+    | 'medicalConditions'
+    | 'allergies'
+    | 'medications'
+    | 'disability'
+    | 'mobilityStatus'
+    | 'cognitiveStatus'
+    | 'maritalStatus'
+    | 'occupation'
+    | 'languages'
+    | 'religion'
+    | 'dietaryNeeds'
+    | 'emergencyContactName'
+    | 'emergencyContactPhone'
+    | 'emergencyContactRelation',
     ExtArgs['result']['elder']
   >;
   export type ElderInclude<
     ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
   > = {
     user?: boolean | UserDefaultArgs<ExtArgs>;
+    relative?: boolean | Elder$relativeArgs<ExtArgs>;
+    _count?: boolean | ElderCountOutputTypeDefaultArgs<ExtArgs>;
   };
   export type ElderIncludeCreateManyAndReturn<
     ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
@@ -2813,12 +3147,26 @@ export namespace Prisma {
     name: 'Elder';
     objects: {
       user: Prisma.$UserPayload<ExtArgs>;
+      relative: Prisma.$RelativePayload<ExtArgs>[];
     };
     scalars: $Extensions.GetPayloadResult<
       {
         userId: string;
-        drugAllergy: string[];
-        disease: string[];
+        bloodType: string | null;
+        medicalConditions: string[];
+        allergies: string[];
+        medications: string[];
+        disability: string | null;
+        mobilityStatus: string | null;
+        cognitiveStatus: string | null;
+        maritalStatus: string | null;
+        occupation: string | null;
+        languages: string[];
+        religion: string | null;
+        dietaryNeeds: string | null;
+        emergencyContactName: string | null;
+        emergencyContactPhone: string | null;
+        emergencyContactRelation: string | null;
       },
       ExtArgs['result']['elder']
     >;
@@ -3379,6 +3727,17 @@ export namespace Prisma {
       ExtArgs,
       GlobalOmitOptions
     >;
+    relative<T extends Elder$relativeArgs<ExtArgs> = {}>(
+      args?: Subset<T, Elder$relativeArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<
+      | $Result.GetResult<
+          Prisma.$RelativePayload<ExtArgs>,
+          T,
+          'findMany',
+          GlobalOmitOptions
+        >
+      | Null
+    >;
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3420,8 +3779,21 @@ export namespace Prisma {
    */
   interface ElderFieldRefs {
     readonly userId: FieldRef<'Elder', 'String'>;
-    readonly drugAllergy: FieldRef<'Elder', 'String[]'>;
-    readonly disease: FieldRef<'Elder', 'String[]'>;
+    readonly bloodType: FieldRef<'Elder', 'String'>;
+    readonly medicalConditions: FieldRef<'Elder', 'String[]'>;
+    readonly allergies: FieldRef<'Elder', 'String[]'>;
+    readonly medications: FieldRef<'Elder', 'String[]'>;
+    readonly disability: FieldRef<'Elder', 'String'>;
+    readonly mobilityStatus: FieldRef<'Elder', 'String'>;
+    readonly cognitiveStatus: FieldRef<'Elder', 'String'>;
+    readonly maritalStatus: FieldRef<'Elder', 'String'>;
+    readonly occupation: FieldRef<'Elder', 'String'>;
+    readonly languages: FieldRef<'Elder', 'String[]'>;
+    readonly religion: FieldRef<'Elder', 'String'>;
+    readonly dietaryNeeds: FieldRef<'Elder', 'String'>;
+    readonly emergencyContactName: FieldRef<'Elder', 'String'>;
+    readonly emergencyContactPhone: FieldRef<'Elder', 'String'>;
+    readonly emergencyContactRelation: FieldRef<'Elder', 'String'>;
   }
 
   // Custom InputTypes
@@ -3845,6 +4217,34 @@ export namespace Prisma {
   };
 
   /**
+   * Elder.relative
+   */
+  export type Elder$relativeArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Select specific fields to fetch from the Relative
+     */
+    select?: RelativeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Relative
+     */
+    omit?: RelativeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RelativeInclude<ExtArgs> | null;
+    where?: RelativeWhereInput;
+    orderBy?:
+      | RelativeOrderByWithRelationInput
+      | RelativeOrderByWithRelationInput[];
+    cursor?: RelativeWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: RelativeScalarFieldEnum | RelativeScalarFieldEnum[];
+  };
+
+  /**
    * Elder without action
    */
   export type ElderDefaultArgs<
@@ -3870,39 +4270,83 @@ export namespace Prisma {
 
   export type AggregateCaregiver = {
     _count: CaregiverCountAggregateOutputType | null;
+    _avg: CaregiverAvgAggregateOutputType | null;
+    _sum: CaregiverSumAggregateOutputType | null;
     _min: CaregiverMinAggregateOutputType | null;
     _max: CaregiverMaxAggregateOutputType | null;
   };
 
+  export type CaregiverAvgAggregateOutputType = {
+    experienceYears: number | null;
+  };
+
+  export type CaregiverSumAggregateOutputType = {
+    experienceYears: number | null;
+  };
+
   export type CaregiverMinAggregateOutputType = {
     userId: string | null;
-    MSN: string | null;
+    caregiverType: $Enums.CaregiverType | null;
+    specialization: string | null;
+    licenseNumber: string | null;
+    experienceYears: number | null;
+    available: boolean | null;
   };
 
   export type CaregiverMaxAggregateOutputType = {
     userId: string | null;
-    MSN: string | null;
+    caregiverType: $Enums.CaregiverType | null;
+    specialization: string | null;
+    licenseNumber: string | null;
+    experienceYears: number | null;
+    available: boolean | null;
   };
 
   export type CaregiverCountAggregateOutputType = {
     userId: number;
-    MSN: number;
+    caregiverType: number;
+    specialization: number;
+    licenseNumber: number;
+    experienceYears: number;
+    languages: number;
+    available: number;
     _all: number;
+  };
+
+  export type CaregiverAvgAggregateInputType = {
+    experienceYears?: true;
+  };
+
+  export type CaregiverSumAggregateInputType = {
+    experienceYears?: true;
   };
 
   export type CaregiverMinAggregateInputType = {
     userId?: true;
-    MSN?: true;
+    caregiverType?: true;
+    specialization?: true;
+    licenseNumber?: true;
+    experienceYears?: true;
+    available?: true;
   };
 
   export type CaregiverMaxAggregateInputType = {
     userId?: true;
-    MSN?: true;
+    caregiverType?: true;
+    specialization?: true;
+    licenseNumber?: true;
+    experienceYears?: true;
+    available?: true;
   };
 
   export type CaregiverCountAggregateInputType = {
     userId?: true;
-    MSN?: true;
+    caregiverType?: true;
+    specialization?: true;
+    licenseNumber?: true;
+    experienceYears?: true;
+    languages?: true;
+    available?: true;
     _all?: true;
   };
 
@@ -3948,6 +4392,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      *
+     * Select which fields to average
+     **/
+    _avg?: CaregiverAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+     **/
+    _sum?: CaregiverSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
      * Select which fields to find the minimum value
      **/
     _min?: CaregiverMinAggregateInputType;
@@ -3979,14 +4435,23 @@ export namespace Prisma {
     take?: number;
     skip?: number;
     _count?: CaregiverCountAggregateInputType | true;
+    _avg?: CaregiverAvgAggregateInputType;
+    _sum?: CaregiverSumAggregateInputType;
     _min?: CaregiverMinAggregateInputType;
     _max?: CaregiverMaxAggregateInputType;
   };
 
   export type CaregiverGroupByOutputType = {
     userId: string;
-    MSN: string;
+    caregiverType: $Enums.CaregiverType;
+    specialization: string | null;
+    licenseNumber: string | null;
+    experienceYears: number | null;
+    languages: string[];
+    available: boolean;
     _count: CaregiverCountAggregateOutputType | null;
+    _avg: CaregiverAvgAggregateOutputType | null;
+    _sum: CaregiverSumAggregateOutputType | null;
     _min: CaregiverMinAggregateOutputType | null;
     _max: CaregiverMaxAggregateOutputType | null;
   };
@@ -4009,7 +4474,12 @@ export namespace Prisma {
   > = $Extensions.GetSelect<
     {
       userId?: boolean;
-      MSN?: boolean;
+      caregiverType?: boolean;
+      specialization?: boolean;
+      licenseNumber?: boolean;
+      experienceYears?: boolean;
+      languages?: boolean;
+      available?: boolean;
       user?: boolean | UserDefaultArgs<ExtArgs>;
     },
     ExtArgs['result']['caregiver']
@@ -4020,7 +4490,12 @@ export namespace Prisma {
   > = $Extensions.GetSelect<
     {
       userId?: boolean;
-      MSN?: boolean;
+      caregiverType?: boolean;
+      specialization?: boolean;
+      licenseNumber?: boolean;
+      experienceYears?: boolean;
+      languages?: boolean;
+      available?: boolean;
       user?: boolean | UserDefaultArgs<ExtArgs>;
     },
     ExtArgs['result']['caregiver']
@@ -4031,7 +4506,12 @@ export namespace Prisma {
   > = $Extensions.GetSelect<
     {
       userId?: boolean;
-      MSN?: boolean;
+      caregiverType?: boolean;
+      specialization?: boolean;
+      licenseNumber?: boolean;
+      experienceYears?: boolean;
+      languages?: boolean;
+      available?: boolean;
       user?: boolean | UserDefaultArgs<ExtArgs>;
     },
     ExtArgs['result']['caregiver']
@@ -4039,12 +4519,26 @@ export namespace Prisma {
 
   export type CaregiverSelectScalar = {
     userId?: boolean;
-    MSN?: boolean;
+    caregiverType?: boolean;
+    specialization?: boolean;
+    licenseNumber?: boolean;
+    experienceYears?: boolean;
+    languages?: boolean;
+    available?: boolean;
   };
 
   export type CaregiverOmit<
     ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
-  > = $Extensions.GetOmit<'userId' | 'MSN', ExtArgs['result']['caregiver']>;
+  > = $Extensions.GetOmit<
+    | 'userId'
+    | 'caregiverType'
+    | 'specialization'
+    | 'licenseNumber'
+    | 'experienceYears'
+    | 'languages'
+    | 'available',
+    ExtArgs['result']['caregiver']
+  >;
   export type CaregiverInclude<
     ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
   > = {
@@ -4071,7 +4565,12 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<
       {
         userId: string;
-        MSN: string;
+        caregiverType: $Enums.CaregiverType;
+        specialization: string | null;
+        licenseNumber: string | null;
+        experienceYears: number | null;
+        languages: string[];
+        available: boolean;
       },
       ExtArgs['result']['caregiver']
     >;
@@ -4677,7 +5176,12 @@ export namespace Prisma {
    */
   interface CaregiverFieldRefs {
     readonly userId: FieldRef<'Caregiver', 'String'>;
-    readonly MSN: FieldRef<'Caregiver', 'String'>;
+    readonly caregiverType: FieldRef<'Caregiver', 'CaregiverType'>;
+    readonly specialization: FieldRef<'Caregiver', 'String'>;
+    readonly licenseNumber: FieldRef<'Caregiver', 'String'>;
+    readonly experienceYears: FieldRef<'Caregiver', 'Int'>;
+    readonly languages: FieldRef<'Caregiver', 'String[]'>;
+    readonly available: FieldRef<'Caregiver', 'Boolean'>;
   }
 
   // Custom InputTypes
@@ -5133,6 +5637,1307 @@ export namespace Prisma {
   };
 
   /**
+   * Model Relative
+   */
+
+  export type AggregateRelative = {
+    _count: RelativeCountAggregateOutputType | null;
+    _min: RelativeMinAggregateOutputType | null;
+    _max: RelativeMaxAggregateOutputType | null;
+  };
+
+  export type RelativeMinAggregateOutputType = {
+    userId: string | null;
+    relationshipToElder: string | null;
+    elderId: string | null;
+  };
+
+  export type RelativeMaxAggregateOutputType = {
+    userId: string | null;
+    relationshipToElder: string | null;
+    elderId: string | null;
+  };
+
+  export type RelativeCountAggregateOutputType = {
+    userId: number;
+    relationshipToElder: number;
+    elderId: number;
+    _all: number;
+  };
+
+  export type RelativeMinAggregateInputType = {
+    userId?: true;
+    relationshipToElder?: true;
+    elderId?: true;
+  };
+
+  export type RelativeMaxAggregateInputType = {
+    userId?: true;
+    relationshipToElder?: true;
+    elderId?: true;
+  };
+
+  export type RelativeCountAggregateInputType = {
+    userId?: true;
+    relationshipToElder?: true;
+    elderId?: true;
+    _all?: true;
+  };
+
+  export type RelativeAggregateArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Filter which Relative to aggregate.
+     */
+    where?: RelativeWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of Relatives to fetch.
+     */
+    orderBy?:
+      | RelativeOrderByWithRelationInput
+      | RelativeOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: RelativeWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` Relatives from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` Relatives.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned Relatives
+     **/
+    _count?: true | RelativeCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+     **/
+    _min?: RelativeMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+     **/
+    _max?: RelativeMaxAggregateInputType;
+  };
+
+  export type GetRelativeAggregateType<T extends RelativeAggregateArgs> = {
+    [P in keyof T & keyof AggregateRelative]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRelative[P]>
+      : GetScalarType<T[P], AggregateRelative[P]>;
+  };
+
+  export type RelativeGroupByArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    where?: RelativeWhereInput;
+    orderBy?:
+      | RelativeOrderByWithAggregationInput
+      | RelativeOrderByWithAggregationInput[];
+    by: RelativeScalarFieldEnum[] | RelativeScalarFieldEnum;
+    having?: RelativeScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: RelativeCountAggregateInputType | true;
+    _min?: RelativeMinAggregateInputType;
+    _max?: RelativeMaxAggregateInputType;
+  };
+
+  export type RelativeGroupByOutputType = {
+    userId: string;
+    relationshipToElder: string;
+    elderId: string;
+    _count: RelativeCountAggregateOutputType | null;
+    _min: RelativeMinAggregateOutputType | null;
+    _max: RelativeMaxAggregateOutputType | null;
+  };
+
+  type GetRelativeGroupByPayload<T extends RelativeGroupByArgs> =
+    Prisma.PrismaPromise<
+      Array<
+        PickEnumerable<RelativeGroupByOutputType, T['by']> & {
+          [P in keyof T & keyof RelativeGroupByOutputType]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RelativeGroupByOutputType[P]>
+            : GetScalarType<T[P], RelativeGroupByOutputType[P]>;
+        }
+      >
+    >;
+
+  export type RelativeSelect<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = $Extensions.GetSelect<
+    {
+      userId?: boolean;
+      relationshipToElder?: boolean;
+      elderId?: boolean;
+      user?: boolean | UserDefaultArgs<ExtArgs>;
+      elder?: boolean | ElderDefaultArgs<ExtArgs>;
+    },
+    ExtArgs['result']['relative']
+  >;
+
+  export type RelativeSelectCreateManyAndReturn<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = $Extensions.GetSelect<
+    {
+      userId?: boolean;
+      relationshipToElder?: boolean;
+      elderId?: boolean;
+      user?: boolean | UserDefaultArgs<ExtArgs>;
+      elder?: boolean | ElderDefaultArgs<ExtArgs>;
+    },
+    ExtArgs['result']['relative']
+  >;
+
+  export type RelativeSelectUpdateManyAndReturn<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = $Extensions.GetSelect<
+    {
+      userId?: boolean;
+      relationshipToElder?: boolean;
+      elderId?: boolean;
+      user?: boolean | UserDefaultArgs<ExtArgs>;
+      elder?: boolean | ElderDefaultArgs<ExtArgs>;
+    },
+    ExtArgs['result']['relative']
+  >;
+
+  export type RelativeSelectScalar = {
+    userId?: boolean;
+    relationshipToElder?: boolean;
+    elderId?: boolean;
+  };
+
+  export type RelativeOmit<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = $Extensions.GetOmit<
+    'userId' | 'relationshipToElder' | 'elderId',
+    ExtArgs['result']['relative']
+  >;
+  export type RelativeInclude<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    user?: boolean | UserDefaultArgs<ExtArgs>;
+    elder?: boolean | ElderDefaultArgs<ExtArgs>;
+  };
+  export type RelativeIncludeCreateManyAndReturn<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    user?: boolean | UserDefaultArgs<ExtArgs>;
+    elder?: boolean | ElderDefaultArgs<ExtArgs>;
+  };
+  export type RelativeIncludeUpdateManyAndReturn<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    user?: boolean | UserDefaultArgs<ExtArgs>;
+    elder?: boolean | ElderDefaultArgs<ExtArgs>;
+  };
+
+  export type $RelativePayload<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    name: 'Relative';
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>;
+      elder: Prisma.$ElderPayload<ExtArgs>;
+    };
+    scalars: $Extensions.GetPayloadResult<
+      {
+        userId: string;
+        relationshipToElder: string;
+        elderId: string;
+      },
+      ExtArgs['result']['relative']
+    >;
+    composites: {};
+  };
+
+  type RelativeGetPayload<
+    S extends boolean | null | undefined | RelativeDefaultArgs
+  > = $Result.GetResult<Prisma.$RelativePayload, S>;
+
+  type RelativeCountArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = Omit<RelativeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: RelativeCountAggregateInputType | true;
+  };
+
+  export interface RelativeDelegate<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    GlobalOmitOptions = {}
+  > {
+    [K: symbol]: {
+      types: Prisma.TypeMap<ExtArgs>['model']['Relative'];
+      meta: { name: 'Relative' };
+    };
+    /**
+     * Find zero or one Relative that matches the filter.
+     * @param {RelativeFindUniqueArgs} args - Arguments to find a Relative
+     * @example
+     * // Get one Relative
+     * const relative = await prisma.relative.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RelativeFindUniqueArgs>(
+      args: SelectSubset<T, RelativeFindUniqueArgs<ExtArgs>>
+    ): Prisma__RelativeClient<
+      $Result.GetResult<
+        Prisma.$RelativePayload<ExtArgs>,
+        T,
+        'findUnique',
+        GlobalOmitOptions
+      > | null,
+      null,
+      ExtArgs,
+      GlobalOmitOptions
+    >;
+
+    /**
+     * Find one Relative that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RelativeFindUniqueOrThrowArgs} args - Arguments to find a Relative
+     * @example
+     * // Get one Relative
+     * const relative = await prisma.relative.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RelativeFindUniqueOrThrowArgs>(
+      args: SelectSubset<T, RelativeFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__RelativeClient<
+      $Result.GetResult<
+        Prisma.$RelativePayload<ExtArgs>,
+        T,
+        'findUniqueOrThrow',
+        GlobalOmitOptions
+      >,
+      never,
+      ExtArgs,
+      GlobalOmitOptions
+    >;
+
+    /**
+     * Find the first Relative that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RelativeFindFirstArgs} args - Arguments to find a Relative
+     * @example
+     * // Get one Relative
+     * const relative = await prisma.relative.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RelativeFindFirstArgs>(
+      args?: SelectSubset<T, RelativeFindFirstArgs<ExtArgs>>
+    ): Prisma__RelativeClient<
+      $Result.GetResult<
+        Prisma.$RelativePayload<ExtArgs>,
+        T,
+        'findFirst',
+        GlobalOmitOptions
+      > | null,
+      null,
+      ExtArgs,
+      GlobalOmitOptions
+    >;
+
+    /**
+     * Find the first Relative that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RelativeFindFirstOrThrowArgs} args - Arguments to find a Relative
+     * @example
+     * // Get one Relative
+     * const relative = await prisma.relative.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RelativeFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, RelativeFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__RelativeClient<
+      $Result.GetResult<
+        Prisma.$RelativePayload<ExtArgs>,
+        T,
+        'findFirstOrThrow',
+        GlobalOmitOptions
+      >,
+      never,
+      ExtArgs,
+      GlobalOmitOptions
+    >;
+
+    /**
+     * Find zero or more Relatives that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RelativeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Relatives
+     * const relatives = await prisma.relative.findMany()
+     *
+     * // Get first 10 Relatives
+     * const relatives = await prisma.relative.findMany({ take: 10 })
+     *
+     * // Only select the `userId`
+     * const relativeWithUserIdOnly = await prisma.relative.findMany({ select: { userId: true } })
+     *
+     */
+    findMany<T extends RelativeFindManyArgs>(
+      args?: SelectSubset<T, RelativeFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<
+      $Result.GetResult<
+        Prisma.$RelativePayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    >;
+
+    /**
+     * Create a Relative.
+     * @param {RelativeCreateArgs} args - Arguments to create a Relative.
+     * @example
+     * // Create one Relative
+     * const Relative = await prisma.relative.create({
+     *   data: {
+     *     // ... data to create a Relative
+     *   }
+     * })
+     *
+     */
+    create<T extends RelativeCreateArgs>(
+      args: SelectSubset<T, RelativeCreateArgs<ExtArgs>>
+    ): Prisma__RelativeClient<
+      $Result.GetResult<
+        Prisma.$RelativePayload<ExtArgs>,
+        T,
+        'create',
+        GlobalOmitOptions
+      >,
+      never,
+      ExtArgs,
+      GlobalOmitOptions
+    >;
+
+    /**
+     * Create many Relatives.
+     * @param {RelativeCreateManyArgs} args - Arguments to create many Relatives.
+     * @example
+     * // Create many Relatives
+     * const relative = await prisma.relative.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends RelativeCreateManyArgs>(
+      args?: SelectSubset<T, RelativeCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>;
+
+    /**
+     * Create many Relatives and returns the data saved in the database.
+     * @param {RelativeCreateManyAndReturnArgs} args - Arguments to create many Relatives.
+     * @example
+     * // Create many Relatives
+     * const relative = await prisma.relative.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many Relatives and only return the `userId`
+     * const relativeWithUserIdOnly = await prisma.relative.createManyAndReturn({
+     *   select: { userId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends RelativeCreateManyAndReturnArgs>(
+      args?: SelectSubset<T, RelativeCreateManyAndReturnArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<
+      $Result.GetResult<
+        Prisma.$RelativePayload<ExtArgs>,
+        T,
+        'createManyAndReturn',
+        GlobalOmitOptions
+      >
+    >;
+
+    /**
+     * Delete a Relative.
+     * @param {RelativeDeleteArgs} args - Arguments to delete one Relative.
+     * @example
+     * // Delete one Relative
+     * const Relative = await prisma.relative.delete({
+     *   where: {
+     *     // ... filter to delete one Relative
+     *   }
+     * })
+     *
+     */
+    delete<T extends RelativeDeleteArgs>(
+      args: SelectSubset<T, RelativeDeleteArgs<ExtArgs>>
+    ): Prisma__RelativeClient<
+      $Result.GetResult<
+        Prisma.$RelativePayload<ExtArgs>,
+        T,
+        'delete',
+        GlobalOmitOptions
+      >,
+      never,
+      ExtArgs,
+      GlobalOmitOptions
+    >;
+
+    /**
+     * Update one Relative.
+     * @param {RelativeUpdateArgs} args - Arguments to update one Relative.
+     * @example
+     * // Update one Relative
+     * const relative = await prisma.relative.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends RelativeUpdateArgs>(
+      args: SelectSubset<T, RelativeUpdateArgs<ExtArgs>>
+    ): Prisma__RelativeClient<
+      $Result.GetResult<
+        Prisma.$RelativePayload<ExtArgs>,
+        T,
+        'update',
+        GlobalOmitOptions
+      >,
+      never,
+      ExtArgs,
+      GlobalOmitOptions
+    >;
+
+    /**
+     * Delete zero or more Relatives.
+     * @param {RelativeDeleteManyArgs} args - Arguments to filter Relatives to delete.
+     * @example
+     * // Delete a few Relatives
+     * const { count } = await prisma.relative.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends RelativeDeleteManyArgs>(
+      args?: SelectSubset<T, RelativeDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>;
+
+    /**
+     * Update zero or more Relatives.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RelativeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Relatives
+     * const relative = await prisma.relative.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends RelativeUpdateManyArgs>(
+      args: SelectSubset<T, RelativeUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>;
+
+    /**
+     * Update zero or more Relatives and returns the data updated in the database.
+     * @param {RelativeUpdateManyAndReturnArgs} args - Arguments to update many Relatives.
+     * @example
+     * // Update many Relatives
+     * const relative = await prisma.relative.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more Relatives and only return the `userId`
+     * const relativeWithUserIdOnly = await prisma.relative.updateManyAndReturn({
+     *   select: { userId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends RelativeUpdateManyAndReturnArgs>(
+      args: SelectSubset<T, RelativeUpdateManyAndReturnArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<
+      $Result.GetResult<
+        Prisma.$RelativePayload<ExtArgs>,
+        T,
+        'updateManyAndReturn',
+        GlobalOmitOptions
+      >
+    >;
+
+    /**
+     * Create or update one Relative.
+     * @param {RelativeUpsertArgs} args - Arguments to update or create a Relative.
+     * @example
+     * // Update or create a Relative
+     * const relative = await prisma.relative.upsert({
+     *   create: {
+     *     // ... data to create a Relative
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Relative we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RelativeUpsertArgs>(
+      args: SelectSubset<T, RelativeUpsertArgs<ExtArgs>>
+    ): Prisma__RelativeClient<
+      $Result.GetResult<
+        Prisma.$RelativePayload<ExtArgs>,
+        T,
+        'upsert',
+        GlobalOmitOptions
+      >,
+      never,
+      ExtArgs,
+      GlobalOmitOptions
+    >;
+
+    /**
+     * Count the number of Relatives.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RelativeCountArgs} args - Arguments to filter Relatives to count.
+     * @example
+     * // Count the number of Relatives
+     * const count = await prisma.relative.count({
+     *   where: {
+     *     // ... the filter for the Relatives we want to count
+     *   }
+     * })
+     **/
+    count<T extends RelativeCountArgs>(
+      args?: Subset<T, RelativeCountArgs>
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RelativeCountAggregateOutputType>
+        : number
+    >;
+
+    /**
+     * Allows you to perform aggregations operations on a Relative.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RelativeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+     **/
+    aggregate<T extends RelativeAggregateArgs>(
+      args: Subset<T, RelativeAggregateArgs>
+    ): Prisma.PrismaPromise<GetRelativeAggregateType<T>>;
+
+    /**
+     * Group by Relative.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RelativeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+     **/
+    groupBy<
+      T extends RelativeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RelativeGroupByArgs['orderBy'] }
+        : { orderBy?: RelativeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<
+        Keys<MaybeTupleToUnion<T['orderBy']>>
+      >,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+        ? `Error: "by" must not be empty.`
+        : HavingValid extends False
+        ? {
+            [P in HavingFields]: P extends ByFields
+              ? never
+              : P extends string
+              ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+              : [
+                  Error,
+                  'Field ',
+                  P,
+                  ` in "having" needs to be provided in "by"`
+                ];
+          }[HavingFields]
+        : 'take' extends Keys<T>
+        ? 'orderBy' extends Keys<T>
+          ? ByValid extends True
+            ? {}
+            : {
+                [P in OrderFields]: P extends ByFields
+                  ? never
+                  : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+              }[OrderFields]
+          : 'Error: If you provide "take", you also need to provide "orderBy"'
+        : 'skip' extends Keys<T>
+        ? 'orderBy' extends Keys<T>
+          ? ByValid extends True
+            ? {}
+            : {
+                [P in OrderFields]: P extends ByFields
+                  ? never
+                  : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+              }[OrderFields]
+          : 'Error: If you provide "skip", you also need to provide "orderBy"'
+        : ByValid extends True
+        ? {}
+        : {
+            [P in OrderFields]: P extends ByFields
+              ? never
+              : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+          }[OrderFields]
+    >(
+      args: SubsetIntersection<T, RelativeGroupByArgs, OrderByArg> & InputErrors
+    ): {} extends InputErrors
+      ? GetRelativeGroupByPayload<T>
+      : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the Relative model
+     */
+    readonly fields: RelativeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Relative.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RelativeClient<
+    T,
+    Null = never,
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs,
+    GlobalOmitOptions = {}
+  > extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(
+      args?: Subset<T, UserDefaultArgs<ExtArgs>>
+    ): Prisma__UserClient<
+      | $Result.GetResult<
+          Prisma.$UserPayload<ExtArgs>,
+          T,
+          'findUniqueOrThrow',
+          GlobalOmitOptions
+        >
+      | Null,
+      Null,
+      ExtArgs,
+      GlobalOmitOptions
+    >;
+    elder<T extends ElderDefaultArgs<ExtArgs> = {}>(
+      args?: Subset<T, ElderDefaultArgs<ExtArgs>>
+    ): Prisma__ElderClient<
+      | $Result.GetResult<
+          Prisma.$ElderPayload<ExtArgs>,
+          T,
+          'findUniqueOrThrow',
+          GlobalOmitOptions
+        >
+      | Null,
+      Null,
+      ExtArgs,
+      GlobalOmitOptions
+    >;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(
+      onfulfilled?:
+        | ((value: T) => TResult1 | PromiseLike<TResult1>)
+        | undefined
+        | null,
+      onrejected?:
+        | ((reason: any) => TResult2 | PromiseLike<TResult2>)
+        | undefined
+        | null
+    ): $Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(
+      onrejected?:
+        | ((reason: any) => TResult | PromiseLike<TResult>)
+        | undefined
+        | null
+    ): $Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
+  }
+
+  /**
+   * Fields of the Relative model
+   */
+  interface RelativeFieldRefs {
+    readonly userId: FieldRef<'Relative', 'String'>;
+    readonly relationshipToElder: FieldRef<'Relative', 'String'>;
+    readonly elderId: FieldRef<'Relative', 'String'>;
+  }
+
+  // Custom InputTypes
+  /**
+   * Relative findUnique
+   */
+  export type RelativeFindUniqueArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Select specific fields to fetch from the Relative
+     */
+    select?: RelativeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Relative
+     */
+    omit?: RelativeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RelativeInclude<ExtArgs> | null;
+    /**
+     * Filter, which Relative to fetch.
+     */
+    where: RelativeWhereUniqueInput;
+  };
+
+  /**
+   * Relative findUniqueOrThrow
+   */
+  export type RelativeFindUniqueOrThrowArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Select specific fields to fetch from the Relative
+     */
+    select?: RelativeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Relative
+     */
+    omit?: RelativeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RelativeInclude<ExtArgs> | null;
+    /**
+     * Filter, which Relative to fetch.
+     */
+    where: RelativeWhereUniqueInput;
+  };
+
+  /**
+   * Relative findFirst
+   */
+  export type RelativeFindFirstArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Select specific fields to fetch from the Relative
+     */
+    select?: RelativeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Relative
+     */
+    omit?: RelativeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RelativeInclude<ExtArgs> | null;
+    /**
+     * Filter, which Relative to fetch.
+     */
+    where?: RelativeWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of Relatives to fetch.
+     */
+    orderBy?:
+      | RelativeOrderByWithRelationInput
+      | RelativeOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for Relatives.
+     */
+    cursor?: RelativeWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` Relatives from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` Relatives.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of Relatives.
+     */
+    distinct?: RelativeScalarFieldEnum | RelativeScalarFieldEnum[];
+  };
+
+  /**
+   * Relative findFirstOrThrow
+   */
+  export type RelativeFindFirstOrThrowArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Select specific fields to fetch from the Relative
+     */
+    select?: RelativeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Relative
+     */
+    omit?: RelativeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RelativeInclude<ExtArgs> | null;
+    /**
+     * Filter, which Relative to fetch.
+     */
+    where?: RelativeWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of Relatives to fetch.
+     */
+    orderBy?:
+      | RelativeOrderByWithRelationInput
+      | RelativeOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for Relatives.
+     */
+    cursor?: RelativeWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` Relatives from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` Relatives.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of Relatives.
+     */
+    distinct?: RelativeScalarFieldEnum | RelativeScalarFieldEnum[];
+  };
+
+  /**
+   * Relative findMany
+   */
+  export type RelativeFindManyArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Select specific fields to fetch from the Relative
+     */
+    select?: RelativeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Relative
+     */
+    omit?: RelativeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RelativeInclude<ExtArgs> | null;
+    /**
+     * Filter, which Relatives to fetch.
+     */
+    where?: RelativeWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of Relatives to fetch.
+     */
+    orderBy?:
+      | RelativeOrderByWithRelationInput
+      | RelativeOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing Relatives.
+     */
+    cursor?: RelativeWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` Relatives from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` Relatives.
+     */
+    skip?: number;
+    distinct?: RelativeScalarFieldEnum | RelativeScalarFieldEnum[];
+  };
+
+  /**
+   * Relative create
+   */
+  export type RelativeCreateArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Select specific fields to fetch from the Relative
+     */
+    select?: RelativeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Relative
+     */
+    omit?: RelativeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RelativeInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a Relative.
+     */
+    data: XOR<RelativeCreateInput, RelativeUncheckedCreateInput>;
+  };
+
+  /**
+   * Relative createMany
+   */
+  export type RelativeCreateManyArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * The data used to create many Relatives.
+     */
+    data: RelativeCreateManyInput | RelativeCreateManyInput[];
+    skipDuplicates?: boolean;
+  };
+
+  /**
+   * Relative createManyAndReturn
+   */
+  export type RelativeCreateManyAndReturnArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Select specific fields to fetch from the Relative
+     */
+    select?: RelativeSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Relative
+     */
+    omit?: RelativeOmit<ExtArgs> | null;
+    /**
+     * The data used to create many Relatives.
+     */
+    data: RelativeCreateManyInput | RelativeCreateManyInput[];
+    skipDuplicates?: boolean;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RelativeIncludeCreateManyAndReturn<ExtArgs> | null;
+  };
+
+  /**
+   * Relative update
+   */
+  export type RelativeUpdateArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Select specific fields to fetch from the Relative
+     */
+    select?: RelativeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Relative
+     */
+    omit?: RelativeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RelativeInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a Relative.
+     */
+    data: XOR<RelativeUpdateInput, RelativeUncheckedUpdateInput>;
+    /**
+     * Choose, which Relative to update.
+     */
+    where: RelativeWhereUniqueInput;
+  };
+
+  /**
+   * Relative updateMany
+   */
+  export type RelativeUpdateManyArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * The data used to update Relatives.
+     */
+    data: XOR<
+      RelativeUpdateManyMutationInput,
+      RelativeUncheckedUpdateManyInput
+    >;
+    /**
+     * Filter which Relatives to update
+     */
+    where?: RelativeWhereInput;
+    /**
+     * Limit how many Relatives to update.
+     */
+    limit?: number;
+  };
+
+  /**
+   * Relative updateManyAndReturn
+   */
+  export type RelativeUpdateManyAndReturnArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Select specific fields to fetch from the Relative
+     */
+    select?: RelativeSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Relative
+     */
+    omit?: RelativeOmit<ExtArgs> | null;
+    /**
+     * The data used to update Relatives.
+     */
+    data: XOR<
+      RelativeUpdateManyMutationInput,
+      RelativeUncheckedUpdateManyInput
+    >;
+    /**
+     * Filter which Relatives to update
+     */
+    where?: RelativeWhereInput;
+    /**
+     * Limit how many Relatives to update.
+     */
+    limit?: number;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RelativeIncludeUpdateManyAndReturn<ExtArgs> | null;
+  };
+
+  /**
+   * Relative upsert
+   */
+  export type RelativeUpsertArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Select specific fields to fetch from the Relative
+     */
+    select?: RelativeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Relative
+     */
+    omit?: RelativeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RelativeInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the Relative to update in case it exists.
+     */
+    where: RelativeWhereUniqueInput;
+    /**
+     * In case the Relative found by the `where` argument doesn't exist, create a new Relative with this data.
+     */
+    create: XOR<RelativeCreateInput, RelativeUncheckedCreateInput>;
+    /**
+     * In case the Relative was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RelativeUpdateInput, RelativeUncheckedUpdateInput>;
+  };
+
+  /**
+   * Relative delete
+   */
+  export type RelativeDeleteArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Select specific fields to fetch from the Relative
+     */
+    select?: RelativeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Relative
+     */
+    omit?: RelativeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RelativeInclude<ExtArgs> | null;
+    /**
+     * Filter which Relative to delete.
+     */
+    where: RelativeWhereUniqueInput;
+  };
+
+  /**
+   * Relative deleteMany
+   */
+  export type RelativeDeleteManyArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Filter which Relatives to delete
+     */
+    where?: RelativeWhereInput;
+    /**
+     * Limit how many Relatives to delete.
+     */
+    limit?: number;
+  };
+
+  /**
+   * Relative without action
+   */
+  export type RelativeDefaultArgs<
+    ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+  > = {
+    /**
+     * Select specific fields to fetch from the Relative
+     */
+    select?: RelativeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Relative
+     */
+    omit?: RelativeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RelativeInclude<ExtArgs> | null;
+  };
+
+  /**
    * Enums
    */
 
@@ -5168,8 +6973,21 @@ export namespace Prisma {
 
   export const ElderScalarFieldEnum: {
     userId: 'userId';
-    drugAllergy: 'drugAllergy';
-    disease: 'disease';
+    bloodType: 'bloodType';
+    medicalConditions: 'medicalConditions';
+    allergies: 'allergies';
+    medications: 'medications';
+    disability: 'disability';
+    mobilityStatus: 'mobilityStatus';
+    cognitiveStatus: 'cognitiveStatus';
+    maritalStatus: 'maritalStatus';
+    occupation: 'occupation';
+    languages: 'languages';
+    religion: 'religion';
+    dietaryNeeds: 'dietaryNeeds';
+    emergencyContactName: 'emergencyContactName';
+    emergencyContactPhone: 'emergencyContactPhone';
+    emergencyContactRelation: 'emergencyContactRelation';
   };
 
   export type ElderScalarFieldEnum =
@@ -5177,11 +6995,25 @@ export namespace Prisma {
 
   export const CaregiverScalarFieldEnum: {
     userId: 'userId';
-    MSN: 'MSN';
+    caregiverType: 'caregiverType';
+    specialization: 'specialization';
+    licenseNumber: 'licenseNumber';
+    experienceYears: 'experienceYears';
+    languages: 'languages';
+    available: 'available';
   };
 
   export type CaregiverScalarFieldEnum =
     (typeof CaregiverScalarFieldEnum)[keyof typeof CaregiverScalarFieldEnum];
+
+  export const RelativeScalarFieldEnum: {
+    userId: 'userId';
+    relationshipToElder: 'relationshipToElder';
+    elderId: 'elderId';
+  };
+
+  export type RelativeScalarFieldEnum =
+    (typeof RelativeScalarFieldEnum)[keyof typeof RelativeScalarFieldEnum];
 
   export const SortOrder: {
     asc: 'asc';
@@ -5281,6 +7113,20 @@ export namespace Prisma {
   >;
 
   /**
+   * Reference to a field of type 'CaregiverType'
+   */
+  export type EnumCaregiverTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+    $PrismaModel,
+    'CaregiverType'
+  >;
+
+  /**
+   * Reference to a field of type 'CaregiverType[]'
+   */
+  export type ListEnumCaregiverTypeFieldRefInput<$PrismaModel> =
+    FieldRefInputType<$PrismaModel, 'CaregiverType[]'>;
+
+  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<
@@ -5294,6 +7140,22 @@ export namespace Prisma {
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<
     $PrismaModel,
     'Int[]'
+  >;
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<
+    $PrismaModel,
+    'Float'
+  >;
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<
+    $PrismaModel,
+    'Float[]'
   >;
 
   /**
@@ -5323,6 +7185,10 @@ export namespace Prisma {
       CaregiverWhereInput
     > | null;
     elder?: XOR<ElderNullableScalarRelationFilter, ElderWhereInput> | null;
+    relative?: XOR<
+      RelativeNullableScalarRelationFilter,
+      RelativeWhereInput
+    > | null;
   };
 
   export type UserOrderByWithRelationInput = {
@@ -5342,6 +7208,7 @@ export namespace Prisma {
     updatedAt?: SortOrder;
     caregiver?: CaregiverOrderByWithRelationInput;
     elder?: ElderOrderByWithRelationInput;
+    relative?: RelativeOrderByWithRelationInput;
   };
 
   export type UserWhereUniqueInput = Prisma.AtLeast<
@@ -5368,6 +7235,10 @@ export namespace Prisma {
         CaregiverWhereInput
       > | null;
       elder?: XOR<ElderNullableScalarRelationFilter, ElderWhereInput> | null;
+      relative?: XOR<
+        RelativeNullableScalarRelationFilter,
+        RelativeWhereInput
+      > | null;
     },
     'id' | 'nationalityCode' | 'mobileNumber' | 'email'
   >;
@@ -5428,16 +7299,44 @@ export namespace Prisma {
     OR?: ElderWhereInput[];
     NOT?: ElderWhereInput | ElderWhereInput[];
     userId?: StringFilter<'Elder'> | string;
-    drugAllergy?: StringNullableListFilter<'Elder'>;
-    disease?: StringNullableListFilter<'Elder'>;
+    bloodType?: StringNullableFilter<'Elder'> | string | null;
+    medicalConditions?: StringNullableListFilter<'Elder'>;
+    allergies?: StringNullableListFilter<'Elder'>;
+    medications?: StringNullableListFilter<'Elder'>;
+    disability?: StringNullableFilter<'Elder'> | string | null;
+    mobilityStatus?: StringNullableFilter<'Elder'> | string | null;
+    cognitiveStatus?: StringNullableFilter<'Elder'> | string | null;
+    maritalStatus?: StringNullableFilter<'Elder'> | string | null;
+    occupation?: StringNullableFilter<'Elder'> | string | null;
+    languages?: StringNullableListFilter<'Elder'>;
+    religion?: StringNullableFilter<'Elder'> | string | null;
+    dietaryNeeds?: StringNullableFilter<'Elder'> | string | null;
+    emergencyContactName?: StringNullableFilter<'Elder'> | string | null;
+    emergencyContactPhone?: StringNullableFilter<'Elder'> | string | null;
+    emergencyContactRelation?: StringNullableFilter<'Elder'> | string | null;
     user?: XOR<UserScalarRelationFilter, UserWhereInput>;
+    relative?: RelativeListRelationFilter;
   };
 
   export type ElderOrderByWithRelationInput = {
     userId?: SortOrder;
-    drugAllergy?: SortOrder;
-    disease?: SortOrder;
+    bloodType?: SortOrderInput | SortOrder;
+    medicalConditions?: SortOrder;
+    allergies?: SortOrder;
+    medications?: SortOrder;
+    disability?: SortOrderInput | SortOrder;
+    mobilityStatus?: SortOrderInput | SortOrder;
+    cognitiveStatus?: SortOrderInput | SortOrder;
+    maritalStatus?: SortOrderInput | SortOrder;
+    occupation?: SortOrderInput | SortOrder;
+    languages?: SortOrder;
+    religion?: SortOrderInput | SortOrder;
+    dietaryNeeds?: SortOrderInput | SortOrder;
+    emergencyContactName?: SortOrderInput | SortOrder;
+    emergencyContactPhone?: SortOrderInput | SortOrder;
+    emergencyContactRelation?: SortOrderInput | SortOrder;
     user?: UserOrderByWithRelationInput;
+    relative?: RelativeOrderByRelationAggregateInput;
   };
 
   export type ElderWhereUniqueInput = Prisma.AtLeast<
@@ -5446,17 +7345,44 @@ export namespace Prisma {
       AND?: ElderWhereInput | ElderWhereInput[];
       OR?: ElderWhereInput[];
       NOT?: ElderWhereInput | ElderWhereInput[];
-      drugAllergy?: StringNullableListFilter<'Elder'>;
-      disease?: StringNullableListFilter<'Elder'>;
+      bloodType?: StringNullableFilter<'Elder'> | string | null;
+      medicalConditions?: StringNullableListFilter<'Elder'>;
+      allergies?: StringNullableListFilter<'Elder'>;
+      medications?: StringNullableListFilter<'Elder'>;
+      disability?: StringNullableFilter<'Elder'> | string | null;
+      mobilityStatus?: StringNullableFilter<'Elder'> | string | null;
+      cognitiveStatus?: StringNullableFilter<'Elder'> | string | null;
+      maritalStatus?: StringNullableFilter<'Elder'> | string | null;
+      occupation?: StringNullableFilter<'Elder'> | string | null;
+      languages?: StringNullableListFilter<'Elder'>;
+      religion?: StringNullableFilter<'Elder'> | string | null;
+      dietaryNeeds?: StringNullableFilter<'Elder'> | string | null;
+      emergencyContactName?: StringNullableFilter<'Elder'> | string | null;
+      emergencyContactPhone?: StringNullableFilter<'Elder'> | string | null;
+      emergencyContactRelation?: StringNullableFilter<'Elder'> | string | null;
       user?: XOR<UserScalarRelationFilter, UserWhereInput>;
+      relative?: RelativeListRelationFilter;
     },
     'userId'
   >;
 
   export type ElderOrderByWithAggregationInput = {
     userId?: SortOrder;
-    drugAllergy?: SortOrder;
-    disease?: SortOrder;
+    bloodType?: SortOrderInput | SortOrder;
+    medicalConditions?: SortOrder;
+    allergies?: SortOrder;
+    medications?: SortOrder;
+    disability?: SortOrderInput | SortOrder;
+    mobilityStatus?: SortOrderInput | SortOrder;
+    cognitiveStatus?: SortOrderInput | SortOrder;
+    maritalStatus?: SortOrderInput | SortOrder;
+    occupation?: SortOrderInput | SortOrder;
+    languages?: SortOrder;
+    religion?: SortOrderInput | SortOrder;
+    dietaryNeeds?: SortOrderInput | SortOrder;
+    emergencyContactName?: SortOrderInput | SortOrder;
+    emergencyContactPhone?: SortOrderInput | SortOrder;
+    emergencyContactRelation?: SortOrderInput | SortOrder;
     _count?: ElderCountOrderByAggregateInput;
     _max?: ElderMaxOrderByAggregateInput;
     _min?: ElderMinOrderByAggregateInput;
@@ -5471,8 +7397,36 @@ export namespace Prisma {
       | ElderScalarWhereWithAggregatesInput
       | ElderScalarWhereWithAggregatesInput[];
     userId?: StringWithAggregatesFilter<'Elder'> | string;
-    drugAllergy?: StringNullableListFilter<'Elder'>;
-    disease?: StringNullableListFilter<'Elder'>;
+    bloodType?: StringNullableWithAggregatesFilter<'Elder'> | string | null;
+    medicalConditions?: StringNullableListFilter<'Elder'>;
+    allergies?: StringNullableListFilter<'Elder'>;
+    medications?: StringNullableListFilter<'Elder'>;
+    disability?: StringNullableWithAggregatesFilter<'Elder'> | string | null;
+    mobilityStatus?:
+      | StringNullableWithAggregatesFilter<'Elder'>
+      | string
+      | null;
+    cognitiveStatus?:
+      | StringNullableWithAggregatesFilter<'Elder'>
+      | string
+      | null;
+    maritalStatus?: StringNullableWithAggregatesFilter<'Elder'> | string | null;
+    occupation?: StringNullableWithAggregatesFilter<'Elder'> | string | null;
+    languages?: StringNullableListFilter<'Elder'>;
+    religion?: StringNullableWithAggregatesFilter<'Elder'> | string | null;
+    dietaryNeeds?: StringNullableWithAggregatesFilter<'Elder'> | string | null;
+    emergencyContactName?:
+      | StringNullableWithAggregatesFilter<'Elder'>
+      | string
+      | null;
+    emergencyContactPhone?:
+      | StringNullableWithAggregatesFilter<'Elder'>
+      | string
+      | null;
+    emergencyContactRelation?:
+      | StringNullableWithAggregatesFilter<'Elder'>
+      | string
+      | null;
   };
 
   export type CaregiverWhereInput = {
@@ -5480,34 +7434,58 @@ export namespace Prisma {
     OR?: CaregiverWhereInput[];
     NOT?: CaregiverWhereInput | CaregiverWhereInput[];
     userId?: StringFilter<'Caregiver'> | string;
-    MSN?: StringFilter<'Caregiver'> | string;
+    caregiverType?: EnumCaregiverTypeFilter<'Caregiver'> | $Enums.CaregiverType;
+    specialization?: StringNullableFilter<'Caregiver'> | string | null;
+    licenseNumber?: StringNullableFilter<'Caregiver'> | string | null;
+    experienceYears?: IntNullableFilter<'Caregiver'> | number | null;
+    languages?: StringNullableListFilter<'Caregiver'>;
+    available?: BoolFilter<'Caregiver'> | boolean;
     user?: XOR<UserScalarRelationFilter, UserWhereInput>;
   };
 
   export type CaregiverOrderByWithRelationInput = {
     userId?: SortOrder;
-    MSN?: SortOrder;
+    caregiverType?: SortOrder;
+    specialization?: SortOrderInput | SortOrder;
+    licenseNumber?: SortOrderInput | SortOrder;
+    experienceYears?: SortOrderInput | SortOrder;
+    languages?: SortOrder;
+    available?: SortOrder;
     user?: UserOrderByWithRelationInput;
   };
 
   export type CaregiverWhereUniqueInput = Prisma.AtLeast<
     {
       userId?: string;
-      MSN?: string;
       AND?: CaregiverWhereInput | CaregiverWhereInput[];
       OR?: CaregiverWhereInput[];
       NOT?: CaregiverWhereInput | CaregiverWhereInput[];
+      caregiverType?:
+        | EnumCaregiverTypeFilter<'Caregiver'>
+        | $Enums.CaregiverType;
+      specialization?: StringNullableFilter<'Caregiver'> | string | null;
+      licenseNumber?: StringNullableFilter<'Caregiver'> | string | null;
+      experienceYears?: IntNullableFilter<'Caregiver'> | number | null;
+      languages?: StringNullableListFilter<'Caregiver'>;
+      available?: BoolFilter<'Caregiver'> | boolean;
       user?: XOR<UserScalarRelationFilter, UserWhereInput>;
     },
-    'userId' | 'MSN'
+    'userId'
   >;
 
   export type CaregiverOrderByWithAggregationInput = {
     userId?: SortOrder;
-    MSN?: SortOrder;
+    caregiverType?: SortOrder;
+    specialization?: SortOrderInput | SortOrder;
+    licenseNumber?: SortOrderInput | SortOrder;
+    experienceYears?: SortOrderInput | SortOrder;
+    languages?: SortOrder;
+    available?: SortOrder;
     _count?: CaregiverCountOrderByAggregateInput;
+    _avg?: CaregiverAvgOrderByAggregateInput;
     _max?: CaregiverMaxOrderByAggregateInput;
     _min?: CaregiverMinOrderByAggregateInput;
+    _sum?: CaregiverSumOrderByAggregateInput;
   };
 
   export type CaregiverScalarWhereWithAggregatesInput = {
@@ -5519,7 +7497,78 @@ export namespace Prisma {
       | CaregiverScalarWhereWithAggregatesInput
       | CaregiverScalarWhereWithAggregatesInput[];
     userId?: StringWithAggregatesFilter<'Caregiver'> | string;
-    MSN?: StringWithAggregatesFilter<'Caregiver'> | string;
+    caregiverType?:
+      | EnumCaregiverTypeWithAggregatesFilter<'Caregiver'>
+      | $Enums.CaregiverType;
+    specialization?:
+      | StringNullableWithAggregatesFilter<'Caregiver'>
+      | string
+      | null;
+    licenseNumber?:
+      | StringNullableWithAggregatesFilter<'Caregiver'>
+      | string
+      | null;
+    experienceYears?:
+      | IntNullableWithAggregatesFilter<'Caregiver'>
+      | number
+      | null;
+    languages?: StringNullableListFilter<'Caregiver'>;
+    available?: BoolWithAggregatesFilter<'Caregiver'> | boolean;
+  };
+
+  export type RelativeWhereInput = {
+    AND?: RelativeWhereInput | RelativeWhereInput[];
+    OR?: RelativeWhereInput[];
+    NOT?: RelativeWhereInput | RelativeWhereInput[];
+    userId?: StringFilter<'Relative'> | string;
+    relationshipToElder?: StringFilter<'Relative'> | string;
+    elderId?: StringFilter<'Relative'> | string;
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>;
+    elder?: XOR<ElderScalarRelationFilter, ElderWhereInput>;
+  };
+
+  export type RelativeOrderByWithRelationInput = {
+    userId?: SortOrder;
+    relationshipToElder?: SortOrder;
+    elderId?: SortOrder;
+    user?: UserOrderByWithRelationInput;
+    elder?: ElderOrderByWithRelationInput;
+  };
+
+  export type RelativeWhereUniqueInput = Prisma.AtLeast<
+    {
+      userId?: string;
+      AND?: RelativeWhereInput | RelativeWhereInput[];
+      OR?: RelativeWhereInput[];
+      NOT?: RelativeWhereInput | RelativeWhereInput[];
+      relationshipToElder?: StringFilter<'Relative'> | string;
+      elderId?: StringFilter<'Relative'> | string;
+      user?: XOR<UserScalarRelationFilter, UserWhereInput>;
+      elder?: XOR<ElderScalarRelationFilter, ElderWhereInput>;
+    },
+    'userId'
+  >;
+
+  export type RelativeOrderByWithAggregationInput = {
+    userId?: SortOrder;
+    relationshipToElder?: SortOrder;
+    elderId?: SortOrder;
+    _count?: RelativeCountOrderByAggregateInput;
+    _max?: RelativeMaxOrderByAggregateInput;
+    _min?: RelativeMinOrderByAggregateInput;
+  };
+
+  export type RelativeScalarWhereWithAggregatesInput = {
+    AND?:
+      | RelativeScalarWhereWithAggregatesInput
+      | RelativeScalarWhereWithAggregatesInput[];
+    OR?: RelativeScalarWhereWithAggregatesInput[];
+    NOT?:
+      | RelativeScalarWhereWithAggregatesInput
+      | RelativeScalarWhereWithAggregatesInput[];
+    userId?: StringWithAggregatesFilter<'Relative'> | string;
+    relationshipToElder?: StringWithAggregatesFilter<'Relative'> | string;
+    elderId?: StringWithAggregatesFilter<'Relative'> | string;
   };
 
   export type UserCreateInput = {
@@ -5539,6 +7588,7 @@ export namespace Prisma {
     updatedAt?: Date | string;
     caregiver?: CaregiverCreateNestedOneWithoutUserInput;
     elder?: ElderCreateNestedOneWithoutUserInput;
+    relative?: RelativeCreateNestedOneWithoutUserInput;
   };
 
   export type UserUncheckedCreateInput = {
@@ -5558,6 +7608,7 @@ export namespace Prisma {
     updatedAt?: Date | string;
     caregiver?: CaregiverUncheckedCreateNestedOneWithoutUserInput;
     elder?: ElderUncheckedCreateNestedOneWithoutUserInput;
+    relative?: RelativeUncheckedCreateNestedOneWithoutUserInput;
   };
 
   export type UserUpdateInput = {
@@ -5581,6 +7632,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     caregiver?: CaregiverUpdateOneWithoutUserNestedInput;
     elder?: ElderUpdateOneWithoutUserNestedInput;
+    relative?: RelativeUpdateOneWithoutUserNestedInput;
   };
 
   export type UserUncheckedUpdateInput = {
@@ -5604,6 +7656,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     caregiver?: CaregiverUncheckedUpdateOneWithoutUserNestedInput;
     elder?: ElderUncheckedUpdateOneWithoutUserNestedInput;
+    relative?: RelativeUncheckedUpdateOneWithoutUserNestedInput;
   };
 
   export type UserCreateManyInput = {
@@ -5666,78 +7719,292 @@ export namespace Prisma {
   };
 
   export type ElderCreateInput = {
-    drugAllergy?: ElderCreatedrugAllergyInput | string[];
-    disease?: ElderCreatediseaseInput | string[];
+    bloodType?: string | null;
+    medicalConditions?: ElderCreatemedicalConditionsInput | string[];
+    allergies?: ElderCreateallergiesInput | string[];
+    medications?: ElderCreatemedicationsInput | string[];
+    disability?: string | null;
+    mobilityStatus?: string | null;
+    cognitiveStatus?: string | null;
+    maritalStatus?: string | null;
+    occupation?: string | null;
+    languages?: ElderCreatelanguagesInput | string[];
+    religion?: string | null;
+    dietaryNeeds?: string | null;
+    emergencyContactName?: string | null;
+    emergencyContactPhone?: string | null;
+    emergencyContactRelation?: string | null;
     user: UserCreateNestedOneWithoutElderInput;
+    relative?: RelativeCreateNestedManyWithoutElderInput;
   };
 
   export type ElderUncheckedCreateInput = {
     userId: string;
-    drugAllergy?: ElderCreatedrugAllergyInput | string[];
-    disease?: ElderCreatediseaseInput | string[];
+    bloodType?: string | null;
+    medicalConditions?: ElderCreatemedicalConditionsInput | string[];
+    allergies?: ElderCreateallergiesInput | string[];
+    medications?: ElderCreatemedicationsInput | string[];
+    disability?: string | null;
+    mobilityStatus?: string | null;
+    cognitiveStatus?: string | null;
+    maritalStatus?: string | null;
+    occupation?: string | null;
+    languages?: ElderCreatelanguagesInput | string[];
+    religion?: string | null;
+    dietaryNeeds?: string | null;
+    emergencyContactName?: string | null;
+    emergencyContactPhone?: string | null;
+    emergencyContactRelation?: string | null;
+    relative?: RelativeUncheckedCreateNestedManyWithoutElderInput;
   };
 
   export type ElderUpdateInput = {
-    drugAllergy?: ElderUpdatedrugAllergyInput | string[];
-    disease?: ElderUpdatediseaseInput | string[];
+    bloodType?: NullableStringFieldUpdateOperationsInput | string | null;
+    medicalConditions?: ElderUpdatemedicalConditionsInput | string[];
+    allergies?: ElderUpdateallergiesInput | string[];
+    medications?: ElderUpdatemedicationsInput | string[];
+    disability?: NullableStringFieldUpdateOperationsInput | string | null;
+    mobilityStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    cognitiveStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    maritalStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    occupation?: NullableStringFieldUpdateOperationsInput | string | null;
+    languages?: ElderUpdatelanguagesInput | string[];
+    religion?: NullableStringFieldUpdateOperationsInput | string | null;
+    dietaryNeeds?: NullableStringFieldUpdateOperationsInput | string | null;
+    emergencyContactName?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    emergencyContactPhone?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    emergencyContactRelation?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
     user?: UserUpdateOneRequiredWithoutElderNestedInput;
+    relative?: RelativeUpdateManyWithoutElderNestedInput;
   };
 
   export type ElderUncheckedUpdateInput = {
     userId?: StringFieldUpdateOperationsInput | string;
-    drugAllergy?: ElderUpdatedrugAllergyInput | string[];
-    disease?: ElderUpdatediseaseInput | string[];
+    bloodType?: NullableStringFieldUpdateOperationsInput | string | null;
+    medicalConditions?: ElderUpdatemedicalConditionsInput | string[];
+    allergies?: ElderUpdateallergiesInput | string[];
+    medications?: ElderUpdatemedicationsInput | string[];
+    disability?: NullableStringFieldUpdateOperationsInput | string | null;
+    mobilityStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    cognitiveStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    maritalStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    occupation?: NullableStringFieldUpdateOperationsInput | string | null;
+    languages?: ElderUpdatelanguagesInput | string[];
+    religion?: NullableStringFieldUpdateOperationsInput | string | null;
+    dietaryNeeds?: NullableStringFieldUpdateOperationsInput | string | null;
+    emergencyContactName?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    emergencyContactPhone?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    emergencyContactRelation?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    relative?: RelativeUncheckedUpdateManyWithoutElderNestedInput;
   };
 
   export type ElderCreateManyInput = {
     userId: string;
-    drugAllergy?: ElderCreatedrugAllergyInput | string[];
-    disease?: ElderCreatediseaseInput | string[];
+    bloodType?: string | null;
+    medicalConditions?: ElderCreatemedicalConditionsInput | string[];
+    allergies?: ElderCreateallergiesInput | string[];
+    medications?: ElderCreatemedicationsInput | string[];
+    disability?: string | null;
+    mobilityStatus?: string | null;
+    cognitiveStatus?: string | null;
+    maritalStatus?: string | null;
+    occupation?: string | null;
+    languages?: ElderCreatelanguagesInput | string[];
+    religion?: string | null;
+    dietaryNeeds?: string | null;
+    emergencyContactName?: string | null;
+    emergencyContactPhone?: string | null;
+    emergencyContactRelation?: string | null;
   };
 
   export type ElderUpdateManyMutationInput = {
-    drugAllergy?: ElderUpdatedrugAllergyInput | string[];
-    disease?: ElderUpdatediseaseInput | string[];
+    bloodType?: NullableStringFieldUpdateOperationsInput | string | null;
+    medicalConditions?: ElderUpdatemedicalConditionsInput | string[];
+    allergies?: ElderUpdateallergiesInput | string[];
+    medications?: ElderUpdatemedicationsInput | string[];
+    disability?: NullableStringFieldUpdateOperationsInput | string | null;
+    mobilityStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    cognitiveStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    maritalStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    occupation?: NullableStringFieldUpdateOperationsInput | string | null;
+    languages?: ElderUpdatelanguagesInput | string[];
+    religion?: NullableStringFieldUpdateOperationsInput | string | null;
+    dietaryNeeds?: NullableStringFieldUpdateOperationsInput | string | null;
+    emergencyContactName?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    emergencyContactPhone?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    emergencyContactRelation?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
   };
 
   export type ElderUncheckedUpdateManyInput = {
     userId?: StringFieldUpdateOperationsInput | string;
-    drugAllergy?: ElderUpdatedrugAllergyInput | string[];
-    disease?: ElderUpdatediseaseInput | string[];
+    bloodType?: NullableStringFieldUpdateOperationsInput | string | null;
+    medicalConditions?: ElderUpdatemedicalConditionsInput | string[];
+    allergies?: ElderUpdateallergiesInput | string[];
+    medications?: ElderUpdatemedicationsInput | string[];
+    disability?: NullableStringFieldUpdateOperationsInput | string | null;
+    mobilityStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    cognitiveStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    maritalStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    occupation?: NullableStringFieldUpdateOperationsInput | string | null;
+    languages?: ElderUpdatelanguagesInput | string[];
+    religion?: NullableStringFieldUpdateOperationsInput | string | null;
+    dietaryNeeds?: NullableStringFieldUpdateOperationsInput | string | null;
+    emergencyContactName?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    emergencyContactPhone?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    emergencyContactRelation?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
   };
 
   export type CaregiverCreateInput = {
-    MSN: string;
+    caregiverType: $Enums.CaregiverType;
+    specialization?: string | null;
+    licenseNumber?: string | null;
+    experienceYears?: number | null;
+    languages?: CaregiverCreatelanguagesInput | string[];
+    available?: boolean;
     user: UserCreateNestedOneWithoutCaregiverInput;
   };
 
   export type CaregiverUncheckedCreateInput = {
     userId: string;
-    MSN: string;
+    caregiverType: $Enums.CaregiverType;
+    specialization?: string | null;
+    licenseNumber?: string | null;
+    experienceYears?: number | null;
+    languages?: CaregiverCreatelanguagesInput | string[];
+    available?: boolean;
   };
 
   export type CaregiverUpdateInput = {
-    MSN?: StringFieldUpdateOperationsInput | string;
+    caregiverType?:
+      | EnumCaregiverTypeFieldUpdateOperationsInput
+      | $Enums.CaregiverType;
+    specialization?: NullableStringFieldUpdateOperationsInput | string | null;
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null;
+    experienceYears?: NullableIntFieldUpdateOperationsInput | number | null;
+    languages?: CaregiverUpdatelanguagesInput | string[];
+    available?: BoolFieldUpdateOperationsInput | boolean;
     user?: UserUpdateOneRequiredWithoutCaregiverNestedInput;
   };
 
   export type CaregiverUncheckedUpdateInput = {
     userId?: StringFieldUpdateOperationsInput | string;
-    MSN?: StringFieldUpdateOperationsInput | string;
+    caregiverType?:
+      | EnumCaregiverTypeFieldUpdateOperationsInput
+      | $Enums.CaregiverType;
+    specialization?: NullableStringFieldUpdateOperationsInput | string | null;
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null;
+    experienceYears?: NullableIntFieldUpdateOperationsInput | number | null;
+    languages?: CaregiverUpdatelanguagesInput | string[];
+    available?: BoolFieldUpdateOperationsInput | boolean;
   };
 
   export type CaregiverCreateManyInput = {
     userId: string;
-    MSN: string;
+    caregiverType: $Enums.CaregiverType;
+    specialization?: string | null;
+    licenseNumber?: string | null;
+    experienceYears?: number | null;
+    languages?: CaregiverCreatelanguagesInput | string[];
+    available?: boolean;
   };
 
   export type CaregiverUpdateManyMutationInput = {
-    MSN?: StringFieldUpdateOperationsInput | string;
+    caregiverType?:
+      | EnumCaregiverTypeFieldUpdateOperationsInput
+      | $Enums.CaregiverType;
+    specialization?: NullableStringFieldUpdateOperationsInput | string | null;
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null;
+    experienceYears?: NullableIntFieldUpdateOperationsInput | number | null;
+    languages?: CaregiverUpdatelanguagesInput | string[];
+    available?: BoolFieldUpdateOperationsInput | boolean;
   };
 
   export type CaregiverUncheckedUpdateManyInput = {
     userId?: StringFieldUpdateOperationsInput | string;
-    MSN?: StringFieldUpdateOperationsInput | string;
+    caregiverType?:
+      | EnumCaregiverTypeFieldUpdateOperationsInput
+      | $Enums.CaregiverType;
+    specialization?: NullableStringFieldUpdateOperationsInput | string | null;
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null;
+    experienceYears?: NullableIntFieldUpdateOperationsInput | number | null;
+    languages?: CaregiverUpdatelanguagesInput | string[];
+    available?: BoolFieldUpdateOperationsInput | boolean;
+  };
+
+  export type RelativeCreateInput = {
+    relationshipToElder: string;
+    user: UserCreateNestedOneWithoutRelativeInput;
+    elder: ElderCreateNestedOneWithoutRelativeInput;
+  };
+
+  export type RelativeUncheckedCreateInput = {
+    userId: string;
+    relationshipToElder: string;
+    elderId: string;
+  };
+
+  export type RelativeUpdateInput = {
+    relationshipToElder?: StringFieldUpdateOperationsInput | string;
+    user?: UserUpdateOneRequiredWithoutRelativeNestedInput;
+    elder?: ElderUpdateOneRequiredWithoutRelativeNestedInput;
+  };
+
+  export type RelativeUncheckedUpdateInput = {
+    userId?: StringFieldUpdateOperationsInput | string;
+    relationshipToElder?: StringFieldUpdateOperationsInput | string;
+    elderId?: StringFieldUpdateOperationsInput | string;
+  };
+
+  export type RelativeCreateManyInput = {
+    userId: string;
+    relationshipToElder: string;
+    elderId: string;
+  };
+
+  export type RelativeUpdateManyMutationInput = {
+    relationshipToElder?: StringFieldUpdateOperationsInput | string;
+  };
+
+  export type RelativeUncheckedUpdateManyInput = {
+    userId?: StringFieldUpdateOperationsInput | string;
+    relationshipToElder?: StringFieldUpdateOperationsInput | string;
+    elderId?: StringFieldUpdateOperationsInput | string;
   };
 
   export type StringFilter<$PrismaModel = never> = {
@@ -5819,6 +8086,11 @@ export namespace Prisma {
   export type ElderNullableScalarRelationFilter = {
     is?: ElderWhereInput | null;
     isNot?: ElderWhereInput | null;
+  };
+
+  export type RelativeNullableScalarRelationFilter = {
+    is?: RelativeWhereInput | null;
+    isNot?: RelativeWhereInput | null;
   };
 
   export type SortOrderInput = {
@@ -5993,33 +8265,180 @@ export namespace Prisma {
     isNot?: UserWhereInput;
   };
 
+  export type RelativeListRelationFilter = {
+    every?: RelativeWhereInput;
+    some?: RelativeWhereInput;
+    none?: RelativeWhereInput;
+  };
+
+  export type RelativeOrderByRelationAggregateInput = {
+    _count?: SortOrder;
+  };
+
   export type ElderCountOrderByAggregateInput = {
     userId?: SortOrder;
-    drugAllergy?: SortOrder;
-    disease?: SortOrder;
+    bloodType?: SortOrder;
+    medicalConditions?: SortOrder;
+    allergies?: SortOrder;
+    medications?: SortOrder;
+    disability?: SortOrder;
+    mobilityStatus?: SortOrder;
+    cognitiveStatus?: SortOrder;
+    maritalStatus?: SortOrder;
+    occupation?: SortOrder;
+    languages?: SortOrder;
+    religion?: SortOrder;
+    dietaryNeeds?: SortOrder;
+    emergencyContactName?: SortOrder;
+    emergencyContactPhone?: SortOrder;
+    emergencyContactRelation?: SortOrder;
   };
 
   export type ElderMaxOrderByAggregateInput = {
     userId?: SortOrder;
+    bloodType?: SortOrder;
+    disability?: SortOrder;
+    mobilityStatus?: SortOrder;
+    cognitiveStatus?: SortOrder;
+    maritalStatus?: SortOrder;
+    occupation?: SortOrder;
+    religion?: SortOrder;
+    dietaryNeeds?: SortOrder;
+    emergencyContactName?: SortOrder;
+    emergencyContactPhone?: SortOrder;
+    emergencyContactRelation?: SortOrder;
   };
 
   export type ElderMinOrderByAggregateInput = {
     userId?: SortOrder;
+    bloodType?: SortOrder;
+    disability?: SortOrder;
+    mobilityStatus?: SortOrder;
+    cognitiveStatus?: SortOrder;
+    maritalStatus?: SortOrder;
+    occupation?: SortOrder;
+    religion?: SortOrder;
+    dietaryNeeds?: SortOrder;
+    emergencyContactName?: SortOrder;
+    emergencyContactPhone?: SortOrder;
+    emergencyContactRelation?: SortOrder;
+  };
+
+  export type EnumCaregiverTypeFilter<$PrismaModel = never> = {
+    equals?:
+      | $Enums.CaregiverType
+      | EnumCaregiverTypeFieldRefInput<$PrismaModel>;
+    in?:
+      | $Enums.CaregiverType[]
+      | ListEnumCaregiverTypeFieldRefInput<$PrismaModel>;
+    notIn?:
+      | $Enums.CaregiverType[]
+      | ListEnumCaregiverTypeFieldRefInput<$PrismaModel>;
+    not?: NestedEnumCaregiverTypeFilter<$PrismaModel> | $Enums.CaregiverType;
+  };
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null;
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
+    lt?: number | IntFieldRefInput<$PrismaModel>;
+    lte?: number | IntFieldRefInput<$PrismaModel>;
+    gt?: number | IntFieldRefInput<$PrismaModel>;
+    gte?: number | IntFieldRefInput<$PrismaModel>;
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null;
   };
 
   export type CaregiverCountOrderByAggregateInput = {
     userId?: SortOrder;
-    MSN?: SortOrder;
+    caregiverType?: SortOrder;
+    specialization?: SortOrder;
+    licenseNumber?: SortOrder;
+    experienceYears?: SortOrder;
+    languages?: SortOrder;
+    available?: SortOrder;
+  };
+
+  export type CaregiverAvgOrderByAggregateInput = {
+    experienceYears?: SortOrder;
   };
 
   export type CaregiverMaxOrderByAggregateInput = {
     userId?: SortOrder;
-    MSN?: SortOrder;
+    caregiverType?: SortOrder;
+    specialization?: SortOrder;
+    licenseNumber?: SortOrder;
+    experienceYears?: SortOrder;
+    available?: SortOrder;
   };
 
   export type CaregiverMinOrderByAggregateInput = {
     userId?: SortOrder;
-    MSN?: SortOrder;
+    caregiverType?: SortOrder;
+    specialization?: SortOrder;
+    licenseNumber?: SortOrder;
+    experienceYears?: SortOrder;
+    available?: SortOrder;
+  };
+
+  export type CaregiverSumOrderByAggregateInput = {
+    experienceYears?: SortOrder;
+  };
+
+  export type EnumCaregiverTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?:
+      | $Enums.CaregiverType
+      | EnumCaregiverTypeFieldRefInput<$PrismaModel>;
+    in?:
+      | $Enums.CaregiverType[]
+      | ListEnumCaregiverTypeFieldRefInput<$PrismaModel>;
+    notIn?:
+      | $Enums.CaregiverType[]
+      | ListEnumCaregiverTypeFieldRefInput<$PrismaModel>;
+    not?:
+      | NestedEnumCaregiverTypeWithAggregatesFilter<$PrismaModel>
+      | $Enums.CaregiverType;
+    _count?: NestedIntFilter<$PrismaModel>;
+    _min?: NestedEnumCaregiverTypeFilter<$PrismaModel>;
+    _max?: NestedEnumCaregiverTypeFilter<$PrismaModel>;
+  };
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null;
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
+    lt?: number | IntFieldRefInput<$PrismaModel>;
+    lte?: number | IntFieldRefInput<$PrismaModel>;
+    gt?: number | IntFieldRefInput<$PrismaModel>;
+    gte?: number | IntFieldRefInput<$PrismaModel>;
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null;
+    _count?: NestedIntNullableFilter<$PrismaModel>;
+    _avg?: NestedFloatNullableFilter<$PrismaModel>;
+    _sum?: NestedIntNullableFilter<$PrismaModel>;
+    _min?: NestedIntNullableFilter<$PrismaModel>;
+    _max?: NestedIntNullableFilter<$PrismaModel>;
+  };
+
+  export type ElderScalarRelationFilter = {
+    is?: ElderWhereInput;
+    isNot?: ElderWhereInput;
+  };
+
+  export type RelativeCountOrderByAggregateInput = {
+    userId?: SortOrder;
+    relationshipToElder?: SortOrder;
+    elderId?: SortOrder;
+  };
+
+  export type RelativeMaxOrderByAggregateInput = {
+    userId?: SortOrder;
+    relationshipToElder?: SortOrder;
+    elderId?: SortOrder;
+  };
+
+  export type RelativeMinOrderByAggregateInput = {
+    userId?: SortOrder;
+    relationshipToElder?: SortOrder;
+    elderId?: SortOrder;
   };
 
   export type CaregiverCreateNestedOneWithoutUserInput = {
@@ -6040,6 +8459,15 @@ export namespace Prisma {
     connect?: ElderWhereUniqueInput;
   };
 
+  export type RelativeCreateNestedOneWithoutUserInput = {
+    create?: XOR<
+      RelativeCreateWithoutUserInput,
+      RelativeUncheckedCreateWithoutUserInput
+    >;
+    connectOrCreate?: RelativeCreateOrConnectWithoutUserInput;
+    connect?: RelativeWhereUniqueInput;
+  };
+
   export type CaregiverUncheckedCreateNestedOneWithoutUserInput = {
     create?: XOR<
       CaregiverCreateWithoutUserInput,
@@ -6056,6 +8484,15 @@ export namespace Prisma {
     >;
     connectOrCreate?: ElderCreateOrConnectWithoutUserInput;
     connect?: ElderWhereUniqueInput;
+  };
+
+  export type RelativeUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<
+      RelativeCreateWithoutUserInput,
+      RelativeUncheckedCreateWithoutUserInput
+    >;
+    connectOrCreate?: RelativeCreateOrConnectWithoutUserInput;
+    connect?: RelativeWhereUniqueInput;
   };
 
   export type StringFieldUpdateOperationsInput = {
@@ -6124,6 +8561,25 @@ export namespace Prisma {
     >;
   };
 
+  export type RelativeUpdateOneWithoutUserNestedInput = {
+    create?: XOR<
+      RelativeCreateWithoutUserInput,
+      RelativeUncheckedCreateWithoutUserInput
+    >;
+    connectOrCreate?: RelativeCreateOrConnectWithoutUserInput;
+    upsert?: RelativeUpsertWithoutUserInput;
+    disconnect?: RelativeWhereInput | boolean;
+    delete?: RelativeWhereInput | boolean;
+    connect?: RelativeWhereUniqueInput;
+    update?: XOR<
+      XOR<
+        RelativeUpdateToOneWithWhereWithoutUserInput,
+        RelativeUpdateWithoutUserInput
+      >,
+      RelativeUncheckedUpdateWithoutUserInput
+    >;
+  };
+
   export type CaregiverUncheckedUpdateOneWithoutUserNestedInput = {
     create?: XOR<
       CaregiverCreateWithoutUserInput,
@@ -6162,11 +8618,38 @@ export namespace Prisma {
     >;
   };
 
-  export type ElderCreatedrugAllergyInput = {
+  export type RelativeUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<
+      RelativeCreateWithoutUserInput,
+      RelativeUncheckedCreateWithoutUserInput
+    >;
+    connectOrCreate?: RelativeCreateOrConnectWithoutUserInput;
+    upsert?: RelativeUpsertWithoutUserInput;
+    disconnect?: RelativeWhereInput | boolean;
+    delete?: RelativeWhereInput | boolean;
+    connect?: RelativeWhereUniqueInput;
+    update?: XOR<
+      XOR<
+        RelativeUpdateToOneWithWhereWithoutUserInput,
+        RelativeUpdateWithoutUserInput
+      >,
+      RelativeUncheckedUpdateWithoutUserInput
+    >;
+  };
+
+  export type ElderCreatemedicalConditionsInput = {
     set: string[];
   };
 
-  export type ElderCreatediseaseInput = {
+  export type ElderCreateallergiesInput = {
+    set: string[];
+  };
+
+  export type ElderCreatemedicationsInput = {
+    set: string[];
+  };
+
+  export type ElderCreatelanguagesInput = {
     set: string[];
   };
 
@@ -6179,12 +8662,52 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput;
   };
 
-  export type ElderUpdatedrugAllergyInput = {
+  export type RelativeCreateNestedManyWithoutElderInput = {
+    create?:
+      | XOR<
+          RelativeCreateWithoutElderInput,
+          RelativeUncheckedCreateWithoutElderInput
+        >
+      | RelativeCreateWithoutElderInput[]
+      | RelativeUncheckedCreateWithoutElderInput[];
+    connectOrCreate?:
+      | RelativeCreateOrConnectWithoutElderInput
+      | RelativeCreateOrConnectWithoutElderInput[];
+    createMany?: RelativeCreateManyElderInputEnvelope;
+    connect?: RelativeWhereUniqueInput | RelativeWhereUniqueInput[];
+  };
+
+  export type RelativeUncheckedCreateNestedManyWithoutElderInput = {
+    create?:
+      | XOR<
+          RelativeCreateWithoutElderInput,
+          RelativeUncheckedCreateWithoutElderInput
+        >
+      | RelativeCreateWithoutElderInput[]
+      | RelativeUncheckedCreateWithoutElderInput[];
+    connectOrCreate?:
+      | RelativeCreateOrConnectWithoutElderInput
+      | RelativeCreateOrConnectWithoutElderInput[];
+    createMany?: RelativeCreateManyElderInputEnvelope;
+    connect?: RelativeWhereUniqueInput | RelativeWhereUniqueInput[];
+  };
+
+  export type ElderUpdatemedicalConditionsInput = {
     set?: string[];
     push?: string | string[];
   };
 
-  export type ElderUpdatediseaseInput = {
+  export type ElderUpdateallergiesInput = {
+    set?: string[];
+    push?: string | string[];
+  };
+
+  export type ElderUpdatemedicationsInput = {
+    set?: string[];
+    push?: string | string[];
+  };
+
+  export type ElderUpdatelanguagesInput = {
     set?: string[];
     push?: string | string[];
   };
@@ -6206,6 +8729,66 @@ export namespace Prisma {
     >;
   };
 
+  export type RelativeUpdateManyWithoutElderNestedInput = {
+    create?:
+      | XOR<
+          RelativeCreateWithoutElderInput,
+          RelativeUncheckedCreateWithoutElderInput
+        >
+      | RelativeCreateWithoutElderInput[]
+      | RelativeUncheckedCreateWithoutElderInput[];
+    connectOrCreate?:
+      | RelativeCreateOrConnectWithoutElderInput
+      | RelativeCreateOrConnectWithoutElderInput[];
+    upsert?:
+      | RelativeUpsertWithWhereUniqueWithoutElderInput
+      | RelativeUpsertWithWhereUniqueWithoutElderInput[];
+    createMany?: RelativeCreateManyElderInputEnvelope;
+    set?: RelativeWhereUniqueInput | RelativeWhereUniqueInput[];
+    disconnect?: RelativeWhereUniqueInput | RelativeWhereUniqueInput[];
+    delete?: RelativeWhereUniqueInput | RelativeWhereUniqueInput[];
+    connect?: RelativeWhereUniqueInput | RelativeWhereUniqueInput[];
+    update?:
+      | RelativeUpdateWithWhereUniqueWithoutElderInput
+      | RelativeUpdateWithWhereUniqueWithoutElderInput[];
+    updateMany?:
+      | RelativeUpdateManyWithWhereWithoutElderInput
+      | RelativeUpdateManyWithWhereWithoutElderInput[];
+    deleteMany?: RelativeScalarWhereInput | RelativeScalarWhereInput[];
+  };
+
+  export type RelativeUncheckedUpdateManyWithoutElderNestedInput = {
+    create?:
+      | XOR<
+          RelativeCreateWithoutElderInput,
+          RelativeUncheckedCreateWithoutElderInput
+        >
+      | RelativeCreateWithoutElderInput[]
+      | RelativeUncheckedCreateWithoutElderInput[];
+    connectOrCreate?:
+      | RelativeCreateOrConnectWithoutElderInput
+      | RelativeCreateOrConnectWithoutElderInput[];
+    upsert?:
+      | RelativeUpsertWithWhereUniqueWithoutElderInput
+      | RelativeUpsertWithWhereUniqueWithoutElderInput[];
+    createMany?: RelativeCreateManyElderInputEnvelope;
+    set?: RelativeWhereUniqueInput | RelativeWhereUniqueInput[];
+    disconnect?: RelativeWhereUniqueInput | RelativeWhereUniqueInput[];
+    delete?: RelativeWhereUniqueInput | RelativeWhereUniqueInput[];
+    connect?: RelativeWhereUniqueInput | RelativeWhereUniqueInput[];
+    update?:
+      | RelativeUpdateWithWhereUniqueWithoutElderInput
+      | RelativeUpdateWithWhereUniqueWithoutElderInput[];
+    updateMany?:
+      | RelativeUpdateManyWithWhereWithoutElderInput
+      | RelativeUpdateManyWithWhereWithoutElderInput[];
+    deleteMany?: RelativeScalarWhereInput | RelativeScalarWhereInput[];
+  };
+
+  export type CaregiverCreatelanguagesInput = {
+    set: string[];
+  };
+
   export type UserCreateNestedOneWithoutCaregiverInput = {
     create?: XOR<
       UserCreateWithoutCaregiverInput,
@@ -6213,6 +8796,23 @@ export namespace Prisma {
     >;
     connectOrCreate?: UserCreateOrConnectWithoutCaregiverInput;
     connect?: UserWhereUniqueInput;
+  };
+
+  export type EnumCaregiverTypeFieldUpdateOperationsInput = {
+    set?: $Enums.CaregiverType;
+  };
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null;
+    increment?: number;
+    decrement?: number;
+    multiply?: number;
+    divide?: number;
+  };
+
+  export type CaregiverUpdatelanguagesInput = {
+    set?: string[];
+    push?: string | string[];
   };
 
   export type UserUpdateOneRequiredWithoutCaregiverNestedInput = {
@@ -6229,6 +8829,58 @@ export namespace Prisma {
         UserUpdateWithoutCaregiverInput
       >,
       UserUncheckedUpdateWithoutCaregiverInput
+    >;
+  };
+
+  export type UserCreateNestedOneWithoutRelativeInput = {
+    create?: XOR<
+      UserCreateWithoutRelativeInput,
+      UserUncheckedCreateWithoutRelativeInput
+    >;
+    connectOrCreate?: UserCreateOrConnectWithoutRelativeInput;
+    connect?: UserWhereUniqueInput;
+  };
+
+  export type ElderCreateNestedOneWithoutRelativeInput = {
+    create?: XOR<
+      ElderCreateWithoutRelativeInput,
+      ElderUncheckedCreateWithoutRelativeInput
+    >;
+    connectOrCreate?: ElderCreateOrConnectWithoutRelativeInput;
+    connect?: ElderWhereUniqueInput;
+  };
+
+  export type UserUpdateOneRequiredWithoutRelativeNestedInput = {
+    create?: XOR<
+      UserCreateWithoutRelativeInput,
+      UserUncheckedCreateWithoutRelativeInput
+    >;
+    connectOrCreate?: UserCreateOrConnectWithoutRelativeInput;
+    upsert?: UserUpsertWithoutRelativeInput;
+    connect?: UserWhereUniqueInput;
+    update?: XOR<
+      XOR<
+        UserUpdateToOneWithWhereWithoutRelativeInput,
+        UserUpdateWithoutRelativeInput
+      >,
+      UserUncheckedUpdateWithoutRelativeInput
+    >;
+  };
+
+  export type ElderUpdateOneRequiredWithoutRelativeNestedInput = {
+    create?: XOR<
+      ElderCreateWithoutRelativeInput,
+      ElderUncheckedCreateWithoutRelativeInput
+    >;
+    connectOrCreate?: ElderCreateOrConnectWithoutRelativeInput;
+    upsert?: ElderUpsertWithoutRelativeInput;
+    connect?: ElderWhereUniqueInput;
+    update?: XOR<
+      XOR<
+        ElderUpdateToOneWithWhereWithoutRelativeInput,
+        ElderUpdateWithoutRelativeInput
+      >,
+      ElderUncheckedUpdateWithoutRelativeInput
     >;
   };
 
@@ -6429,12 +9081,82 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>;
   };
 
+  export type NestedEnumCaregiverTypeFilter<$PrismaModel = never> = {
+    equals?:
+      | $Enums.CaregiverType
+      | EnumCaregiverTypeFieldRefInput<$PrismaModel>;
+    in?:
+      | $Enums.CaregiverType[]
+      | ListEnumCaregiverTypeFieldRefInput<$PrismaModel>;
+    notIn?:
+      | $Enums.CaregiverType[]
+      | ListEnumCaregiverTypeFieldRefInput<$PrismaModel>;
+    not?: NestedEnumCaregiverTypeFilter<$PrismaModel> | $Enums.CaregiverType;
+  };
+
+  export type NestedEnumCaregiverTypeWithAggregatesFilter<
+    $PrismaModel = never
+  > = {
+    equals?:
+      | $Enums.CaregiverType
+      | EnumCaregiverTypeFieldRefInput<$PrismaModel>;
+    in?:
+      | $Enums.CaregiverType[]
+      | ListEnumCaregiverTypeFieldRefInput<$PrismaModel>;
+    notIn?:
+      | $Enums.CaregiverType[]
+      | ListEnumCaregiverTypeFieldRefInput<$PrismaModel>;
+    not?:
+      | NestedEnumCaregiverTypeWithAggregatesFilter<$PrismaModel>
+      | $Enums.CaregiverType;
+    _count?: NestedIntFilter<$PrismaModel>;
+    _min?: NestedEnumCaregiverTypeFilter<$PrismaModel>;
+    _max?: NestedEnumCaregiverTypeFilter<$PrismaModel>;
+  };
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null;
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null;
+    lt?: number | IntFieldRefInput<$PrismaModel>;
+    lte?: number | IntFieldRefInput<$PrismaModel>;
+    gt?: number | IntFieldRefInput<$PrismaModel>;
+    gte?: number | IntFieldRefInput<$PrismaModel>;
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null;
+    _count?: NestedIntNullableFilter<$PrismaModel>;
+    _avg?: NestedFloatNullableFilter<$PrismaModel>;
+    _sum?: NestedIntNullableFilter<$PrismaModel>;
+    _min?: NestedIntNullableFilter<$PrismaModel>;
+    _max?: NestedIntNullableFilter<$PrismaModel>;
+  };
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null;
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null;
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null;
+    lt?: number | FloatFieldRefInput<$PrismaModel>;
+    lte?: number | FloatFieldRefInput<$PrismaModel>;
+    gt?: number | FloatFieldRefInput<$PrismaModel>;
+    gte?: number | FloatFieldRefInput<$PrismaModel>;
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null;
+  };
+
   export type CaregiverCreateWithoutUserInput = {
-    MSN: string;
+    caregiverType: $Enums.CaregiverType;
+    specialization?: string | null;
+    licenseNumber?: string | null;
+    experienceYears?: number | null;
+    languages?: CaregiverCreatelanguagesInput | string[];
+    available?: boolean;
   };
 
   export type CaregiverUncheckedCreateWithoutUserInput = {
-    MSN: string;
+    caregiverType: $Enums.CaregiverType;
+    specialization?: string | null;
+    licenseNumber?: string | null;
+    experienceYears?: number | null;
+    languages?: CaregiverCreatelanguagesInput | string[];
+    available?: boolean;
   };
 
   export type CaregiverCreateOrConnectWithoutUserInput = {
@@ -6446,13 +9168,41 @@ export namespace Prisma {
   };
 
   export type ElderCreateWithoutUserInput = {
-    drugAllergy?: ElderCreatedrugAllergyInput | string[];
-    disease?: ElderCreatediseaseInput | string[];
+    bloodType?: string | null;
+    medicalConditions?: ElderCreatemedicalConditionsInput | string[];
+    allergies?: ElderCreateallergiesInput | string[];
+    medications?: ElderCreatemedicationsInput | string[];
+    disability?: string | null;
+    mobilityStatus?: string | null;
+    cognitiveStatus?: string | null;
+    maritalStatus?: string | null;
+    occupation?: string | null;
+    languages?: ElderCreatelanguagesInput | string[];
+    religion?: string | null;
+    dietaryNeeds?: string | null;
+    emergencyContactName?: string | null;
+    emergencyContactPhone?: string | null;
+    emergencyContactRelation?: string | null;
+    relative?: RelativeCreateNestedManyWithoutElderInput;
   };
 
   export type ElderUncheckedCreateWithoutUserInput = {
-    drugAllergy?: ElderCreatedrugAllergyInput | string[];
-    disease?: ElderCreatediseaseInput | string[];
+    bloodType?: string | null;
+    medicalConditions?: ElderCreatemedicalConditionsInput | string[];
+    allergies?: ElderCreateallergiesInput | string[];
+    medications?: ElderCreatemedicationsInput | string[];
+    disability?: string | null;
+    mobilityStatus?: string | null;
+    cognitiveStatus?: string | null;
+    maritalStatus?: string | null;
+    occupation?: string | null;
+    languages?: ElderCreatelanguagesInput | string[];
+    religion?: string | null;
+    dietaryNeeds?: string | null;
+    emergencyContactName?: string | null;
+    emergencyContactPhone?: string | null;
+    emergencyContactRelation?: string | null;
+    relative?: RelativeUncheckedCreateNestedManyWithoutElderInput;
   };
 
   export type ElderCreateOrConnectWithoutUserInput = {
@@ -6460,6 +9210,24 @@ export namespace Prisma {
     create: XOR<
       ElderCreateWithoutUserInput,
       ElderUncheckedCreateWithoutUserInput
+    >;
+  };
+
+  export type RelativeCreateWithoutUserInput = {
+    relationshipToElder: string;
+    elder: ElderCreateNestedOneWithoutRelativeInput;
+  };
+
+  export type RelativeUncheckedCreateWithoutUserInput = {
+    relationshipToElder: string;
+    elderId: string;
+  };
+
+  export type RelativeCreateOrConnectWithoutUserInput = {
+    where: RelativeWhereUniqueInput;
+    create: XOR<
+      RelativeCreateWithoutUserInput,
+      RelativeUncheckedCreateWithoutUserInput
     >;
   };
 
@@ -6484,11 +9252,25 @@ export namespace Prisma {
   };
 
   export type CaregiverUpdateWithoutUserInput = {
-    MSN?: StringFieldUpdateOperationsInput | string;
+    caregiverType?:
+      | EnumCaregiverTypeFieldUpdateOperationsInput
+      | $Enums.CaregiverType;
+    specialization?: NullableStringFieldUpdateOperationsInput | string | null;
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null;
+    experienceYears?: NullableIntFieldUpdateOperationsInput | number | null;
+    languages?: CaregiverUpdatelanguagesInput | string[];
+    available?: BoolFieldUpdateOperationsInput | boolean;
   };
 
   export type CaregiverUncheckedUpdateWithoutUserInput = {
-    MSN?: StringFieldUpdateOperationsInput | string;
+    caregiverType?:
+      | EnumCaregiverTypeFieldUpdateOperationsInput
+      | $Enums.CaregiverType;
+    specialization?: NullableStringFieldUpdateOperationsInput | string | null;
+    licenseNumber?: NullableStringFieldUpdateOperationsInput | string | null;
+    experienceYears?: NullableIntFieldUpdateOperationsInput | number | null;
+    languages?: CaregiverUpdatelanguagesInput | string[];
+    available?: BoolFieldUpdateOperationsInput | boolean;
   };
 
   export type ElderUpsertWithoutUserInput = {
@@ -6512,13 +9294,89 @@ export namespace Prisma {
   };
 
   export type ElderUpdateWithoutUserInput = {
-    drugAllergy?: ElderUpdatedrugAllergyInput | string[];
-    disease?: ElderUpdatediseaseInput | string[];
+    bloodType?: NullableStringFieldUpdateOperationsInput | string | null;
+    medicalConditions?: ElderUpdatemedicalConditionsInput | string[];
+    allergies?: ElderUpdateallergiesInput | string[];
+    medications?: ElderUpdatemedicationsInput | string[];
+    disability?: NullableStringFieldUpdateOperationsInput | string | null;
+    mobilityStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    cognitiveStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    maritalStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    occupation?: NullableStringFieldUpdateOperationsInput | string | null;
+    languages?: ElderUpdatelanguagesInput | string[];
+    religion?: NullableStringFieldUpdateOperationsInput | string | null;
+    dietaryNeeds?: NullableStringFieldUpdateOperationsInput | string | null;
+    emergencyContactName?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    emergencyContactPhone?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    emergencyContactRelation?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    relative?: RelativeUpdateManyWithoutElderNestedInput;
   };
 
   export type ElderUncheckedUpdateWithoutUserInput = {
-    drugAllergy?: ElderUpdatedrugAllergyInput | string[];
-    disease?: ElderUpdatediseaseInput | string[];
+    bloodType?: NullableStringFieldUpdateOperationsInput | string | null;
+    medicalConditions?: ElderUpdatemedicalConditionsInput | string[];
+    allergies?: ElderUpdateallergiesInput | string[];
+    medications?: ElderUpdatemedicationsInput | string[];
+    disability?: NullableStringFieldUpdateOperationsInput | string | null;
+    mobilityStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    cognitiveStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    maritalStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    occupation?: NullableStringFieldUpdateOperationsInput | string | null;
+    languages?: ElderUpdatelanguagesInput | string[];
+    religion?: NullableStringFieldUpdateOperationsInput | string | null;
+    dietaryNeeds?: NullableStringFieldUpdateOperationsInput | string | null;
+    emergencyContactName?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    emergencyContactPhone?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    emergencyContactRelation?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    relative?: RelativeUncheckedUpdateManyWithoutElderNestedInput;
+  };
+
+  export type RelativeUpsertWithoutUserInput = {
+    update: XOR<
+      RelativeUpdateWithoutUserInput,
+      RelativeUncheckedUpdateWithoutUserInput
+    >;
+    create: XOR<
+      RelativeCreateWithoutUserInput,
+      RelativeUncheckedCreateWithoutUserInput
+    >;
+    where?: RelativeWhereInput;
+  };
+
+  export type RelativeUpdateToOneWithWhereWithoutUserInput = {
+    where?: RelativeWhereInput;
+    data: XOR<
+      RelativeUpdateWithoutUserInput,
+      RelativeUncheckedUpdateWithoutUserInput
+    >;
+  };
+
+  export type RelativeUpdateWithoutUserInput = {
+    relationshipToElder?: StringFieldUpdateOperationsInput | string;
+    elder?: ElderUpdateOneRequiredWithoutRelativeNestedInput;
+  };
+
+  export type RelativeUncheckedUpdateWithoutUserInput = {
+    relationshipToElder?: StringFieldUpdateOperationsInput | string;
+    elderId?: StringFieldUpdateOperationsInput | string;
   };
 
   export type UserCreateWithoutElderInput = {
@@ -6537,6 +9395,7 @@ export namespace Prisma {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     caregiver?: CaregiverCreateNestedOneWithoutUserInput;
+    relative?: RelativeCreateNestedOneWithoutUserInput;
   };
 
   export type UserUncheckedCreateWithoutElderInput = {
@@ -6555,6 +9414,7 @@ export namespace Prisma {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     caregiver?: CaregiverUncheckedCreateNestedOneWithoutUserInput;
+    relative?: RelativeUncheckedCreateNestedOneWithoutUserInput;
   };
 
   export type UserCreateOrConnectWithoutElderInput = {
@@ -6563,6 +9423,29 @@ export namespace Prisma {
       UserCreateWithoutElderInput,
       UserUncheckedCreateWithoutElderInput
     >;
+  };
+
+  export type RelativeCreateWithoutElderInput = {
+    relationshipToElder: string;
+    user: UserCreateNestedOneWithoutRelativeInput;
+  };
+
+  export type RelativeUncheckedCreateWithoutElderInput = {
+    userId: string;
+    relationshipToElder: string;
+  };
+
+  export type RelativeCreateOrConnectWithoutElderInput = {
+    where: RelativeWhereUniqueInput;
+    create: XOR<
+      RelativeCreateWithoutElderInput,
+      RelativeUncheckedCreateWithoutElderInput
+    >;
+  };
+
+  export type RelativeCreateManyElderInputEnvelope = {
+    data: RelativeCreateManyElderInput | RelativeCreateManyElderInput[];
+    skipDuplicates?: boolean;
   };
 
   export type UserUpsertWithoutElderInput = {
@@ -6605,6 +9488,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     caregiver?: CaregiverUpdateOneWithoutUserNestedInput;
+    relative?: RelativeUpdateOneWithoutUserNestedInput;
   };
 
   export type UserUncheckedUpdateWithoutElderInput = {
@@ -6627,6 +9511,44 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     caregiver?: CaregiverUncheckedUpdateOneWithoutUserNestedInput;
+    relative?: RelativeUncheckedUpdateOneWithoutUserNestedInput;
+  };
+
+  export type RelativeUpsertWithWhereUniqueWithoutElderInput = {
+    where: RelativeWhereUniqueInput;
+    update: XOR<
+      RelativeUpdateWithoutElderInput,
+      RelativeUncheckedUpdateWithoutElderInput
+    >;
+    create: XOR<
+      RelativeCreateWithoutElderInput,
+      RelativeUncheckedCreateWithoutElderInput
+    >;
+  };
+
+  export type RelativeUpdateWithWhereUniqueWithoutElderInput = {
+    where: RelativeWhereUniqueInput;
+    data: XOR<
+      RelativeUpdateWithoutElderInput,
+      RelativeUncheckedUpdateWithoutElderInput
+    >;
+  };
+
+  export type RelativeUpdateManyWithWhereWithoutElderInput = {
+    where: RelativeScalarWhereInput;
+    data: XOR<
+      RelativeUpdateManyMutationInput,
+      RelativeUncheckedUpdateManyWithoutElderInput
+    >;
+  };
+
+  export type RelativeScalarWhereInput = {
+    AND?: RelativeScalarWhereInput | RelativeScalarWhereInput[];
+    OR?: RelativeScalarWhereInput[];
+    NOT?: RelativeScalarWhereInput | RelativeScalarWhereInput[];
+    userId?: StringFilter<'Relative'> | string;
+    relationshipToElder?: StringFilter<'Relative'> | string;
+    elderId?: StringFilter<'Relative'> | string;
   };
 
   export type UserCreateWithoutCaregiverInput = {
@@ -6645,6 +9567,7 @@ export namespace Prisma {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     elder?: ElderCreateNestedOneWithoutUserInput;
+    relative?: RelativeCreateNestedOneWithoutUserInput;
   };
 
   export type UserUncheckedCreateWithoutCaregiverInput = {
@@ -6663,6 +9586,7 @@ export namespace Prisma {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     elder?: ElderUncheckedCreateNestedOneWithoutUserInput;
+    relative?: RelativeUncheckedCreateNestedOneWithoutUserInput;
   };
 
   export type UserCreateOrConnectWithoutCaregiverInput = {
@@ -6713,6 +9637,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     elder?: ElderUpdateOneWithoutUserNestedInput;
+    relative?: RelativeUpdateOneWithoutUserNestedInput;
   };
 
   export type UserUncheckedUpdateWithoutCaregiverInput = {
@@ -6735,6 +9660,261 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     elder?: ElderUncheckedUpdateOneWithoutUserNestedInput;
+    relative?: RelativeUncheckedUpdateOneWithoutUserNestedInput;
+  };
+
+  export type UserCreateWithoutRelativeInput = {
+    id?: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    avatar?: string | null;
+    nationalityCode?: string | null;
+    mobileNumber?: string | null;
+    email?: string | null;
+    password?: string | null;
+    gender?: $Enums.GenderEnum;
+    role?: $Enums.RoleEnum;
+    dateOfBirth?: Date | string | null;
+    enabled?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    caregiver?: CaregiverCreateNestedOneWithoutUserInput;
+    elder?: ElderCreateNestedOneWithoutUserInput;
+  };
+
+  export type UserUncheckedCreateWithoutRelativeInput = {
+    id?: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    avatar?: string | null;
+    nationalityCode?: string | null;
+    mobileNumber?: string | null;
+    email?: string | null;
+    password?: string | null;
+    gender?: $Enums.GenderEnum;
+    role?: $Enums.RoleEnum;
+    dateOfBirth?: Date | string | null;
+    enabled?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    caregiver?: CaregiverUncheckedCreateNestedOneWithoutUserInput;
+    elder?: ElderUncheckedCreateNestedOneWithoutUserInput;
+  };
+
+  export type UserCreateOrConnectWithoutRelativeInput = {
+    where: UserWhereUniqueInput;
+    create: XOR<
+      UserCreateWithoutRelativeInput,
+      UserUncheckedCreateWithoutRelativeInput
+    >;
+  };
+
+  export type ElderCreateWithoutRelativeInput = {
+    bloodType?: string | null;
+    medicalConditions?: ElderCreatemedicalConditionsInput | string[];
+    allergies?: ElderCreateallergiesInput | string[];
+    medications?: ElderCreatemedicationsInput | string[];
+    disability?: string | null;
+    mobilityStatus?: string | null;
+    cognitiveStatus?: string | null;
+    maritalStatus?: string | null;
+    occupation?: string | null;
+    languages?: ElderCreatelanguagesInput | string[];
+    religion?: string | null;
+    dietaryNeeds?: string | null;
+    emergencyContactName?: string | null;
+    emergencyContactPhone?: string | null;
+    emergencyContactRelation?: string | null;
+    user: UserCreateNestedOneWithoutElderInput;
+  };
+
+  export type ElderUncheckedCreateWithoutRelativeInput = {
+    userId: string;
+    bloodType?: string | null;
+    medicalConditions?: ElderCreatemedicalConditionsInput | string[];
+    allergies?: ElderCreateallergiesInput | string[];
+    medications?: ElderCreatemedicationsInput | string[];
+    disability?: string | null;
+    mobilityStatus?: string | null;
+    cognitiveStatus?: string | null;
+    maritalStatus?: string | null;
+    occupation?: string | null;
+    languages?: ElderCreatelanguagesInput | string[];
+    religion?: string | null;
+    dietaryNeeds?: string | null;
+    emergencyContactName?: string | null;
+    emergencyContactPhone?: string | null;
+    emergencyContactRelation?: string | null;
+  };
+
+  export type ElderCreateOrConnectWithoutRelativeInput = {
+    where: ElderWhereUniqueInput;
+    create: XOR<
+      ElderCreateWithoutRelativeInput,
+      ElderUncheckedCreateWithoutRelativeInput
+    >;
+  };
+
+  export type UserUpsertWithoutRelativeInput = {
+    update: XOR<
+      UserUpdateWithoutRelativeInput,
+      UserUncheckedUpdateWithoutRelativeInput
+    >;
+    create: XOR<
+      UserCreateWithoutRelativeInput,
+      UserUncheckedCreateWithoutRelativeInput
+    >;
+    where?: UserWhereInput;
+  };
+
+  export type UserUpdateToOneWithWhereWithoutRelativeInput = {
+    where?: UserWhereInput;
+    data: XOR<
+      UserUpdateWithoutRelativeInput,
+      UserUncheckedUpdateWithoutRelativeInput
+    >;
+  };
+
+  export type UserUpdateWithoutRelativeInput = {
+    id?: StringFieldUpdateOperationsInput | string;
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null;
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null;
+    nationalityCode?: NullableStringFieldUpdateOperationsInput | string | null;
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null;
+    email?: NullableStringFieldUpdateOperationsInput | string | null;
+    password?: NullableStringFieldUpdateOperationsInput | string | null;
+    gender?: EnumGenderEnumFieldUpdateOperationsInput | $Enums.GenderEnum;
+    role?: EnumRoleEnumFieldUpdateOperationsInput | $Enums.RoleEnum;
+    dateOfBirth?:
+      | NullableDateTimeFieldUpdateOperationsInput
+      | Date
+      | string
+      | null;
+    enabled?: BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+    caregiver?: CaregiverUpdateOneWithoutUserNestedInput;
+    elder?: ElderUpdateOneWithoutUserNestedInput;
+  };
+
+  export type UserUncheckedUpdateWithoutRelativeInput = {
+    id?: StringFieldUpdateOperationsInput | string;
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null;
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null;
+    nationalityCode?: NullableStringFieldUpdateOperationsInput | string | null;
+    mobileNumber?: NullableStringFieldUpdateOperationsInput | string | null;
+    email?: NullableStringFieldUpdateOperationsInput | string | null;
+    password?: NullableStringFieldUpdateOperationsInput | string | null;
+    gender?: EnumGenderEnumFieldUpdateOperationsInput | $Enums.GenderEnum;
+    role?: EnumRoleEnumFieldUpdateOperationsInput | $Enums.RoleEnum;
+    dateOfBirth?:
+      | NullableDateTimeFieldUpdateOperationsInput
+      | Date
+      | string
+      | null;
+    enabled?: BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
+    caregiver?: CaregiverUncheckedUpdateOneWithoutUserNestedInput;
+    elder?: ElderUncheckedUpdateOneWithoutUserNestedInput;
+  };
+
+  export type ElderUpsertWithoutRelativeInput = {
+    update: XOR<
+      ElderUpdateWithoutRelativeInput,
+      ElderUncheckedUpdateWithoutRelativeInput
+    >;
+    create: XOR<
+      ElderCreateWithoutRelativeInput,
+      ElderUncheckedCreateWithoutRelativeInput
+    >;
+    where?: ElderWhereInput;
+  };
+
+  export type ElderUpdateToOneWithWhereWithoutRelativeInput = {
+    where?: ElderWhereInput;
+    data: XOR<
+      ElderUpdateWithoutRelativeInput,
+      ElderUncheckedUpdateWithoutRelativeInput
+    >;
+  };
+
+  export type ElderUpdateWithoutRelativeInput = {
+    bloodType?: NullableStringFieldUpdateOperationsInput | string | null;
+    medicalConditions?: ElderUpdatemedicalConditionsInput | string[];
+    allergies?: ElderUpdateallergiesInput | string[];
+    medications?: ElderUpdatemedicationsInput | string[];
+    disability?: NullableStringFieldUpdateOperationsInput | string | null;
+    mobilityStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    cognitiveStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    maritalStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    occupation?: NullableStringFieldUpdateOperationsInput | string | null;
+    languages?: ElderUpdatelanguagesInput | string[];
+    religion?: NullableStringFieldUpdateOperationsInput | string | null;
+    dietaryNeeds?: NullableStringFieldUpdateOperationsInput | string | null;
+    emergencyContactName?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    emergencyContactPhone?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    emergencyContactRelation?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    user?: UserUpdateOneRequiredWithoutElderNestedInput;
+  };
+
+  export type ElderUncheckedUpdateWithoutRelativeInput = {
+    userId?: StringFieldUpdateOperationsInput | string;
+    bloodType?: NullableStringFieldUpdateOperationsInput | string | null;
+    medicalConditions?: ElderUpdatemedicalConditionsInput | string[];
+    allergies?: ElderUpdateallergiesInput | string[];
+    medications?: ElderUpdatemedicationsInput | string[];
+    disability?: NullableStringFieldUpdateOperationsInput | string | null;
+    mobilityStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    cognitiveStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    maritalStatus?: NullableStringFieldUpdateOperationsInput | string | null;
+    occupation?: NullableStringFieldUpdateOperationsInput | string | null;
+    languages?: ElderUpdatelanguagesInput | string[];
+    religion?: NullableStringFieldUpdateOperationsInput | string | null;
+    dietaryNeeds?: NullableStringFieldUpdateOperationsInput | string | null;
+    emergencyContactName?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    emergencyContactPhone?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+    emergencyContactRelation?:
+      | NullableStringFieldUpdateOperationsInput
+      | string
+      | null;
+  };
+
+  export type RelativeCreateManyElderInput = {
+    userId: string;
+    relationshipToElder: string;
+  };
+
+  export type RelativeUpdateWithoutElderInput = {
+    relationshipToElder?: StringFieldUpdateOperationsInput | string;
+    user?: UserUpdateOneRequiredWithoutRelativeNestedInput;
+  };
+
+  export type RelativeUncheckedUpdateWithoutElderInput = {
+    userId?: StringFieldUpdateOperationsInput | string;
+    relationshipToElder?: StringFieldUpdateOperationsInput | string;
+  };
+
+  export type RelativeUncheckedUpdateManyWithoutElderInput = {
+    userId?: StringFieldUpdateOperationsInput | string;
+    relationshipToElder?: StringFieldUpdateOperationsInput | string;
   };
 
   /**

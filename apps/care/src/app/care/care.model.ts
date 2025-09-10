@@ -38,10 +38,10 @@ export class Care {
   categoryId: string;
 
   @ApiProperty({
-    description: 'ID of the provider offering this care service',
-    example: 'provider12345',
+    description: 'ID of the caregiver offering this care service',
+    example: 'caregiver12345',
   })
-  providerId: string;
+  caregiverId: string;
 
   @ApiProperty({
     description: 'Date when the care service was created',

@@ -132,7 +132,7 @@ exports.Prisma.CareScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   categoryId: 'categoryId',
-  providerId: 'providerId',
+  caregiverId: 'caregiverId',
 };
 
 exports.Prisma.BookingScalarFieldEnum = {
@@ -142,7 +142,8 @@ exports.Prisma.BookingScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   careId: 'careId',
-  clientId: 'clientId',
+  elderId: 'elderId',
+  bookerId: 'bookerId',
 };
 
 exports.Prisma.SortOrder = {
@@ -162,8 +163,8 @@ exports.Prisma.NullsOrder = {
 exports.BookingStatus = exports.$Enums.BookingStatus = {
   PENDING: 'PENDING',
   CONFIRMED: 'CONFIRMED',
-  COMPLETED: 'COMPLETED',
   CANCELLED: 'CANCELLED',
+  COMPLETED: 'COMPLETED',
 };
 
 exports.Prisma.ModelName = {

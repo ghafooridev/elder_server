@@ -8,29 +8,67 @@ import { Prisma, RoleEnum } from '@prisma-clients/auth';
 import { PrismaService } from '../prisma/prisma.service';
 import { hash } from 'bcryptjs';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createUser(data: Prisma.UserCreateInput) {
-    await this.ensureUniqueUser(data);
+  async createUser(createUserDto: CreateUserDto) {
+    const { elder, caregiver, relative, ...userData } = createUserDto;
 
-    const hashedPassword = await hash(data.password, 10);
+    await this.ensureUniqueUser({ email: userData.email });
+
+    const hashedPassword = await hash(userData.password, 10);
+
+    const createData: Prisma.UserCreateInput = {
+      ...userData,
+      password: hashedPassword,
+    };
+
+    if (userData.role === RoleEnum.ELDER && elder) {
+      createData.elder = { create: elder };
+    } else if (userData.role === RoleEnum.CAREGIVER && caregiver) {
+      createData.caregiver = { create: caregiver };
+    } else if (userData.role === RoleEnum.RELATIVE && relative) {
+      createData.relative = { create: relative };
+    }
 
     return this.prisma.user.create({
-      data: { ...data, password: hashedPassword },
+      data: createData,
+      include: {
+        elder: true,
+        caregiver: true,
+        relative: true,
+      },
     });
   }
 
-  async updateUser(id: string, user: UpdateUserDto) {
+  async updateUser(id: string, updateUserDto: UpdateUserDto) {
+    const { elder, caregiver, relative, ...userData } = updateUserDto;
+
     if (!id) {
       throw new BadRequestException('User ID is required');
     }
 
+    const updateData: Prisma.UserUpdateInput = { ...userData };
+
+    if (elder) {
+      updateData.elder = { update: elder };
+    } else if (caregiver) {
+      updateData.caregiver = { update: caregiver };
+    } else if (relative) {
+      updateData.relative = { update: relative };
+    }
+
     const updatedUser = await this.prisma.user.update({
       where: { id },
-      data: user,
+      data: updateData,
+      include: {
+        elder: true,
+        caregiver: true,
+        relative: true,
+      },
     });
 
     if (!updatedUser) {
@@ -38,6 +76,17 @@ export class UsersService {
     }
 
     return updatedUser;
+  }
+
+  async getUserById(id: string) {
+    return this.prisma.user.findUnique({
+      where: { id },
+      include: {
+        elder: true,
+        caregiver: true,
+        relative: true,
+      },
+    });
   }
 
   async deleteUser(id: string) {

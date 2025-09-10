@@ -43,10 +43,10 @@ export class UpdateCareDto {
   categoryId?: string;
 
   @ApiPropertyOptional({
-    description: 'ID of the provider offering this care service',
-    example: 'provider12345',
+    description: 'ID of the caregiver offering this care service',
+    example: 'caregiver12345',
   })
   @IsOptional()
   @IsString()
-  providerId?: string;
+  caregiverId?: string;
 }

@@ -38,11 +38,4 @@ export class CreateCareDto {
   })
   @IsString()
   categoryId: string;
-
-  @ApiProperty({
-    description: 'ID of the provider offering this care service',
-    example: 'provider12345',
-  })
-  @IsString()
-  providerId: string;
 }

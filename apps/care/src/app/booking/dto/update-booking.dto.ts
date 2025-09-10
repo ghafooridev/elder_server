@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsEnum, IsDateString } from 'class-validator';
+import { IsOptional, IsEnum, IsDateString, IsString } from 'class-validator';
 import { BookingStatus } from '@prisma-clients/care';
 
 export class UpdateBookingDto {
@@ -21,4 +21,20 @@ export class UpdateBookingDto {
   @IsOptional()
   @IsDateString()
   scheduledAt?: Date;
+
+  @ApiPropertyOptional({
+    description: 'Updated ID of the elder receiving the care',
+    example: 'u12345',
+  })
+  @IsOptional()
+  @IsString()
+  elderId?: string;
+
+  @ApiPropertyOptional({
+    description: 'Updated ID of the user who made the booking',
+    example: 'u67890',
+  })
+  @IsOptional()
+  @IsString()
+  bookerId?: string;
 }

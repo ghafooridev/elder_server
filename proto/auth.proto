@@ -5,11 +5,26 @@ service AuthService {
   rpc Authenticate (AuthenticateRequest) returns (User);
 }
 
+service UserService {
+  rpc ValidateUser (ValidateUserRequest) returns (ValidateUserResponse);
+}
+
 message AuthenticateRequest {
   string token = 1;
+}
+
+message ValidateUserRequest {
+  string userId = 1;
+  string role = 2; // e.g., ELDER, CAREGIVER
+}
+
+message ValidateUserResponse {
+  bool isValid = 1;
+  User user = 2;
 }
 
 message User {
   string id = 1;
   string email = 2;
+  string role = 3;
 }

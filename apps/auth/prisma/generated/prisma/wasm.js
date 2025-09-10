@@ -135,13 +135,37 @@ exports.Prisma.UserScalarFieldEnum = {
 
 exports.Prisma.ElderScalarFieldEnum = {
   userId: 'userId',
-  drugAllergy: 'drugAllergy',
-  disease: 'disease',
+  bloodType: 'bloodType',
+  medicalConditions: 'medicalConditions',
+  allergies: 'allergies',
+  medications: 'medications',
+  disability: 'disability',
+  mobilityStatus: 'mobilityStatus',
+  cognitiveStatus: 'cognitiveStatus',
+  maritalStatus: 'maritalStatus',
+  occupation: 'occupation',
+  languages: 'languages',
+  religion: 'religion',
+  dietaryNeeds: 'dietaryNeeds',
+  emergencyContactName: 'emergencyContactName',
+  emergencyContactPhone: 'emergencyContactPhone',
+  emergencyContactRelation: 'emergencyContactRelation',
 };
 
 exports.Prisma.CaregiverScalarFieldEnum = {
   userId: 'userId',
-  MSN: 'MSN',
+  caregiverType: 'caregiverType',
+  specialization: 'specialization',
+  licenseNumber: 'licenseNumber',
+  experienceYears: 'experienceYears',
+  languages: 'languages',
+  available: 'available',
+};
+
+exports.Prisma.RelativeScalarFieldEnum = {
+  userId: 'userId',
+  relationshipToElder: 'relationshipToElder',
+  elderId: 'elderId',
 };
 
 exports.Prisma.SortOrder = {
@@ -167,13 +191,23 @@ exports.GenderEnum = exports.$Enums.GenderEnum = {
 exports.RoleEnum = exports.$Enums.RoleEnum = {
   ADMIN: 'ADMIN',
   ELDER: 'ELDER',
+  RELATIVE: 'RELATIVE',
   CAREGIVER: 'CAREGIVER',
+};
+
+exports.CaregiverType = exports.$Enums.CaregiverType = {
+  CAREGIVER: 'CAREGIVER',
+  NURSE: 'NURSE',
+  DOCTOR: 'DOCTOR',
+  PHYSIOTHERAPIST: 'PHYSIOTHERAPIST',
+  OTHER: 'OTHER',
 };
 
 exports.Prisma.ModelName = {
   User: 'User',
   Elder: 'Elder',
   Caregiver: 'Caregiver',
+  Relative: 'Relative',
 };
 
 /**

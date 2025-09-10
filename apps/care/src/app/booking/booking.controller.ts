@@ -11,6 +11,8 @@ import {
   Post,
   Body,
   UseGuards,
+  Req,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@elder/nestjs'; // from auth app
 import {
@@ -42,6 +44,33 @@ export class BookingController {
     return this.bookingService.updateBooking(bookingId, updateBookingDto);
   }
 
+  @Patch(':bookingId/status')
+  @UseGuards(AuthGuard)
+  @ApiUpdateBookingDocs()
+  async updateBookingStatus(
+    @Param('bookingId') bookingId: string,
+    @Body('status') status: any,
+    @Req() req: any
+  ): Promise<Booking> {
+    const caregiverId = req.user.id;
+    return this.bookingService.updateBookingStatus(
+      bookingId,
+      caregiverId,
+      status
+    );
+  }
+
+  @Post(':bookingId/reminders')
+  @UseGuards(AuthGuard)
+  // @ApiAddReminderDocs() // You would create a new swagger doc for this
+  async addReminder(
+    @Param('bookingId') bookingId: string,
+    @Req() req: any
+  ): Promise<any> {
+    const userId = req.user.id;
+    return this.bookingService.addReminder(bookingId, userId);
+  }
+
   @Delete(':bookingId')
   @ApiDeleteBookingDocs()
   async deleteBooking(
@@ -54,8 +83,15 @@ export class BookingController {
   @Get()
   @UseGuards(AuthGuard)
   @ApiGetAllBookingsDocs()
-  async getAllBookings(): Promise<Booking[]> {
-    console.log('first');
-    return this.bookingService.getBookings();
+  async getAllBookings(
+    @Query('caregiverId') caregiverId?: string,
+    @Query('bookerId') bookerId?: string,
+    @Query('elderId') elderId?: string
+  ): Promise<Booking[]> {
+    return this.bookingService.getBookings({
+      caregiverId,
+      bookerId,
+      elderId,
+    });
   }
 }

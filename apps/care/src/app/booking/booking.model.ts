@@ -30,10 +30,16 @@ export class Booking {
   careId: string;
 
   @ApiProperty({
-    description: 'ID of the client who made the booking',
+    description: 'ID of the elder receiving the care',
     example: 'u12345',
   })
-  clientId: string;
+  elderId: string;
+
+  @ApiProperty({
+    description: 'ID of the user who made the booking',
+    example: 'u67890',
+  })
+  bookerId: string;
 
   @ApiProperty({
     description: 'Date when the booking was created',

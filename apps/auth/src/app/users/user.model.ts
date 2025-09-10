@@ -1,5 +1,82 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { GenderEnum, RoleEnum } from '@prisma-clients/auth';
+import { GenderEnum, RoleEnum, CaregiverType } from '@prisma-clients/auth';
+
+export class Elder {
+  @ApiPropertyOptional({ description: 'Blood type of the elder' })
+  bloodType: string | null;
+
+  @ApiPropertyOptional({ description: 'List of medical conditions' })
+  medicalConditions: string[];
+
+  @ApiPropertyOptional({ description: 'List of allergies' })
+  allergies: string[];
+
+  @ApiPropertyOptional({ description: 'List of current medications' })
+  medications: string[];
+
+  @ApiPropertyOptional({ description: 'Any disabilities' })
+  disability: string | null;
+
+  @ApiPropertyOptional({ description: 'Mobility status' })
+  mobilityStatus: string | null;
+
+  @ApiPropertyOptional({ description: 'Cognitive status' })
+  cognitiveStatus: string | null;
+
+  @ApiPropertyOptional({ description: 'Marital status' })
+  maritalStatus: string | null;
+
+  @ApiPropertyOptional({ description: 'Occupation before retirement' })
+  occupation: string | null;
+
+  @ApiPropertyOptional({ description: 'Languages spoken' })
+  languages: string[];
+
+  @ApiPropertyOptional({ description: 'Religion' })
+  religion: string | null;
+
+  @ApiPropertyOptional({ description: 'Dietary needs' })
+  dietaryNeeds: string | null;
+
+  @ApiPropertyOptional({ description: 'Emergency contact name' })
+  emergencyContactName: string | null;
+
+  @ApiPropertyOptional({ description: 'Emergency contact phone' })
+  emergencyContactPhone: string | null;
+
+  @ApiPropertyOptional({ description: 'Emergency contact relation' })
+  emergencyContactRelation: string | null;
+}
+
+export class Caregiver {
+  @ApiProperty({ enum: CaregiverType, description: 'Type of caregiver' })
+  caregiverType: CaregiverType;
+
+  @ApiPropertyOptional({ description: 'Specialization of the caregiver' })
+  specialization: string | null;
+
+  @ApiPropertyOptional({
+    description: 'License number for certified caregivers',
+  })
+  licenseNumber: string | null;
+
+  @ApiPropertyOptional({ description: 'Years of experience' })
+  experienceYears: number | null;
+
+  @ApiPropertyOptional({ description: 'Languages spoken' })
+  languages: string[];
+
+  @ApiProperty({ description: 'Availability of the caregiver' })
+  available: boolean;
+}
+
+export class Relative {
+  @ApiProperty({ description: 'Relationship to the elder' })
+  relationshipToElder: string;
+
+  @ApiProperty({ description: 'ID of the related elder' })
+  elderId: string;
+}
 
 export class User {
   @ApiProperty({
@@ -77,6 +154,15 @@ export class User {
     example: 'https://example.com/avatar.jpg',
   })
   avatar: string | null;
+
+  @ApiPropertyOptional({ type: () => Elder })
+  elder?: Elder | null;
+
+  @ApiPropertyOptional({ type: () => Caregiver })
+  caregiver?: Caregiver | null;
+
+  @ApiPropertyOptional({ type: () => Relative })
+  relative?: Relative | null;
 
   @ApiProperty({
     description: 'Date when the user was created',

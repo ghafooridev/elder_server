@@ -35,8 +35,8 @@ export namespace $Enums {
   export const BookingStatus: {
     PENDING: 'PENDING';
     CONFIRMED: 'CONFIRMED';
-    COMPLETED: 'COMPLETED';
     CANCELLED: 'CANCELLED';
+    COMPLETED: 'COMPLETED';
   };
 
   export type BookingStatus =
@@ -2550,7 +2550,7 @@ export namespace Prisma {
     createdAt: Date | null;
     updatedAt: Date | null;
     categoryId: string | null;
-    providerId: string | null;
+    caregiverId: string | null;
   };
 
   export type CareMaxAggregateOutputType = {
@@ -2562,7 +2562,7 @@ export namespace Prisma {
     createdAt: Date | null;
     updatedAt: Date | null;
     categoryId: string | null;
-    providerId: string | null;
+    caregiverId: string | null;
   };
 
   export type CareCountAggregateOutputType = {
@@ -2574,7 +2574,7 @@ export namespace Prisma {
     createdAt: number;
     updatedAt: number;
     categoryId: number;
-    providerId: number;
+    caregiverId: number;
     _all: number;
   };
 
@@ -2597,7 +2597,7 @@ export namespace Prisma {
     createdAt?: true;
     updatedAt?: true;
     categoryId?: true;
-    providerId?: true;
+    caregiverId?: true;
   };
 
   export type CareMaxAggregateInputType = {
@@ -2609,7 +2609,7 @@ export namespace Prisma {
     createdAt?: true;
     updatedAt?: true;
     categoryId?: true;
-    providerId?: true;
+    caregiverId?: true;
   };
 
   export type CareCountAggregateInputType = {
@@ -2621,7 +2621,7 @@ export namespace Prisma {
     createdAt?: true;
     updatedAt?: true;
     categoryId?: true;
-    providerId?: true;
+    caregiverId?: true;
     _all?: true;
   };
 
@@ -2723,7 +2723,7 @@ export namespace Prisma {
     createdAt: Date;
     updatedAt: Date;
     categoryId: string;
-    providerId: string;
+    caregiverId: string;
     _count: CareCountAggregateOutputType | null;
     _avg: CareAvgAggregateOutputType | null;
     _sum: CareSumAggregateOutputType | null;
@@ -2755,7 +2755,7 @@ export namespace Prisma {
       createdAt?: boolean;
       updatedAt?: boolean;
       categoryId?: boolean;
-      providerId?: boolean;
+      caregiverId?: boolean;
       category?: boolean | CareCategoryDefaultArgs<ExtArgs>;
       bookings?: boolean | Care$bookingsArgs<ExtArgs>;
       _count?: boolean | CareCountOutputTypeDefaultArgs<ExtArgs>;
@@ -2775,7 +2775,7 @@ export namespace Prisma {
       createdAt?: boolean;
       updatedAt?: boolean;
       categoryId?: boolean;
-      providerId?: boolean;
+      caregiverId?: boolean;
       category?: boolean | CareCategoryDefaultArgs<ExtArgs>;
     },
     ExtArgs['result']['care']
@@ -2793,7 +2793,7 @@ export namespace Prisma {
       createdAt?: boolean;
       updatedAt?: boolean;
       categoryId?: boolean;
-      providerId?: boolean;
+      caregiverId?: boolean;
       category?: boolean | CareCategoryDefaultArgs<ExtArgs>;
     },
     ExtArgs['result']['care']
@@ -2808,7 +2808,7 @@ export namespace Prisma {
     createdAt?: boolean;
     updatedAt?: boolean;
     categoryId?: boolean;
-    providerId?: boolean;
+    caregiverId?: boolean;
   };
 
   export type CareOmit<
@@ -2822,7 +2822,7 @@ export namespace Prisma {
     | 'createdAt'
     | 'updatedAt'
     | 'categoryId'
-    | 'providerId',
+    | 'caregiverId',
     ExtArgs['result']['care']
   >;
   export type CareInclude<
@@ -2861,7 +2861,7 @@ export namespace Prisma {
         createdAt: Date;
         updatedAt: Date;
         categoryId: string;
-        providerId: string;
+        caregiverId: string;
       },
       ExtArgs['result']['care']
     >;
@@ -3480,7 +3480,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<'Care', 'DateTime'>;
     readonly updatedAt: FieldRef<'Care', 'DateTime'>;
     readonly categoryId: FieldRef<'Care', 'String'>;
-    readonly providerId: FieldRef<'Care', 'String'>;
+    readonly caregiverId: FieldRef<'Care', 'String'>;
   }
 
   // Custom InputTypes
@@ -3968,7 +3968,8 @@ export namespace Prisma {
     createdAt: Date | null;
     updatedAt: Date | null;
     careId: string | null;
-    clientId: string | null;
+    elderId: string | null;
+    bookerId: string | null;
   };
 
   export type BookingMaxAggregateOutputType = {
@@ -3978,7 +3979,8 @@ export namespace Prisma {
     createdAt: Date | null;
     updatedAt: Date | null;
     careId: string | null;
-    clientId: string | null;
+    elderId: string | null;
+    bookerId: string | null;
   };
 
   export type BookingCountAggregateOutputType = {
@@ -3988,7 +3990,8 @@ export namespace Prisma {
     createdAt: number;
     updatedAt: number;
     careId: number;
-    clientId: number;
+    elderId: number;
+    bookerId: number;
     _all: number;
   };
 
@@ -3999,7 +4002,8 @@ export namespace Prisma {
     createdAt?: true;
     updatedAt?: true;
     careId?: true;
-    clientId?: true;
+    elderId?: true;
+    bookerId?: true;
   };
 
   export type BookingMaxAggregateInputType = {
@@ -4009,7 +4013,8 @@ export namespace Prisma {
     createdAt?: true;
     updatedAt?: true;
     careId?: true;
-    clientId?: true;
+    elderId?: true;
+    bookerId?: true;
   };
 
   export type BookingCountAggregateInputType = {
@@ -4019,7 +4024,8 @@ export namespace Prisma {
     createdAt?: true;
     updatedAt?: true;
     careId?: true;
-    clientId?: true;
+    elderId?: true;
+    bookerId?: true;
     _all?: true;
   };
 
@@ -4107,7 +4113,8 @@ export namespace Prisma {
     createdAt: Date;
     updatedAt: Date;
     careId: string;
-    clientId: string;
+    elderId: string;
+    bookerId: string;
     _count: BookingCountAggregateOutputType | null;
     _min: BookingMinAggregateOutputType | null;
     _max: BookingMaxAggregateOutputType | null;
@@ -4136,7 +4143,8 @@ export namespace Prisma {
       createdAt?: boolean;
       updatedAt?: boolean;
       careId?: boolean;
-      clientId?: boolean;
+      elderId?: boolean;
+      bookerId?: boolean;
       care?: boolean | CareDefaultArgs<ExtArgs>;
     },
     ExtArgs['result']['booking']
@@ -4152,7 +4160,8 @@ export namespace Prisma {
       createdAt?: boolean;
       updatedAt?: boolean;
       careId?: boolean;
-      clientId?: boolean;
+      elderId?: boolean;
+      bookerId?: boolean;
       care?: boolean | CareDefaultArgs<ExtArgs>;
     },
     ExtArgs['result']['booking']
@@ -4168,7 +4177,8 @@ export namespace Prisma {
       createdAt?: boolean;
       updatedAt?: boolean;
       careId?: boolean;
-      clientId?: boolean;
+      elderId?: boolean;
+      bookerId?: boolean;
       care?: boolean | CareDefaultArgs<ExtArgs>;
     },
     ExtArgs['result']['booking']
@@ -4181,7 +4191,8 @@ export namespace Prisma {
     createdAt?: boolean;
     updatedAt?: boolean;
     careId?: boolean;
-    clientId?: boolean;
+    elderId?: boolean;
+    bookerId?: boolean;
   };
 
   export type BookingOmit<
@@ -4193,7 +4204,8 @@ export namespace Prisma {
     | 'createdAt'
     | 'updatedAt'
     | 'careId'
-    | 'clientId',
+    | 'elderId'
+    | 'bookerId',
     ExtArgs['result']['booking']
   >;
   export type BookingInclude<
@@ -4227,7 +4239,8 @@ export namespace Prisma {
         createdAt: Date;
         updatedAt: Date;
         careId: string;
-        clientId: string;
+        elderId: string;
+        bookerId: string;
       },
       ExtArgs['result']['booking']
     >;
@@ -4834,7 +4847,8 @@ export namespace Prisma {
     readonly createdAt: FieldRef<'Booking', 'DateTime'>;
     readonly updatedAt: FieldRef<'Booking', 'DateTime'>;
     readonly careId: FieldRef<'Booking', 'String'>;
-    readonly clientId: FieldRef<'Booking', 'String'>;
+    readonly elderId: FieldRef<'Booking', 'String'>;
+    readonly bookerId: FieldRef<'Booking', 'String'>;
   }
 
   // Custom InputTypes
@@ -5316,7 +5330,7 @@ export namespace Prisma {
     createdAt: 'createdAt';
     updatedAt: 'updatedAt';
     categoryId: 'categoryId';
-    providerId: 'providerId';
+    caregiverId: 'caregiverId';
   };
 
   export type CareScalarFieldEnum =
@@ -5329,7 +5343,8 @@ export namespace Prisma {
     createdAt: 'createdAt';
     updatedAt: 'updatedAt';
     careId: 'careId';
-    clientId: 'clientId';
+    elderId: 'elderId';
+    bookerId: 'bookerId';
   };
 
   export type BookingScalarFieldEnum =
@@ -5514,7 +5529,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<'Care'> | Date | string;
     updatedAt?: DateTimeFilter<'Care'> | Date | string;
     categoryId?: StringFilter<'Care'> | string;
-    providerId?: StringFilter<'Care'> | string;
+    caregiverId?: StringFilter<'Care'> | string;
     category?: XOR<CareCategoryScalarRelationFilter, CareCategoryWhereInput>;
     bookings?: BookingListRelationFilter;
   };
@@ -5528,7 +5543,7 @@ export namespace Prisma {
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
     categoryId?: SortOrder;
-    providerId?: SortOrder;
+    caregiverId?: SortOrder;
     category?: CareCategoryOrderByWithRelationInput;
     bookings?: BookingOrderByRelationAggregateInput;
   };
@@ -5546,7 +5561,7 @@ export namespace Prisma {
       createdAt?: DateTimeFilter<'Care'> | Date | string;
       updatedAt?: DateTimeFilter<'Care'> | Date | string;
       categoryId?: StringFilter<'Care'> | string;
-      providerId?: StringFilter<'Care'> | string;
+      caregiverId?: StringFilter<'Care'> | string;
       category?: XOR<CareCategoryScalarRelationFilter, CareCategoryWhereInput>;
       bookings?: BookingListRelationFilter;
     },
@@ -5562,7 +5577,7 @@ export namespace Prisma {
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
     categoryId?: SortOrder;
-    providerId?: SortOrder;
+    caregiverId?: SortOrder;
     _count?: CareCountOrderByAggregateInput;
     _avg?: CareAvgOrderByAggregateInput;
     _max?: CareMaxOrderByAggregateInput;
@@ -5586,7 +5601,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<'Care'> | Date | string;
     updatedAt?: DateTimeWithAggregatesFilter<'Care'> | Date | string;
     categoryId?: StringWithAggregatesFilter<'Care'> | string;
-    providerId?: StringWithAggregatesFilter<'Care'> | string;
+    caregiverId?: StringWithAggregatesFilter<'Care'> | string;
   };
 
   export type BookingWhereInput = {
@@ -5599,7 +5614,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<'Booking'> | Date | string;
     updatedAt?: DateTimeFilter<'Booking'> | Date | string;
     careId?: StringFilter<'Booking'> | string;
-    clientId?: StringFilter<'Booking'> | string;
+    elderId?: StringFilter<'Booking'> | string;
+    bookerId?: StringFilter<'Booking'> | string;
     care?: XOR<CareScalarRelationFilter, CareWhereInput>;
   };
 
@@ -5610,7 +5626,8 @@ export namespace Prisma {
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
     careId?: SortOrder;
-    clientId?: SortOrder;
+    elderId?: SortOrder;
+    bookerId?: SortOrder;
     care?: CareOrderByWithRelationInput;
   };
 
@@ -5625,7 +5642,8 @@ export namespace Prisma {
       createdAt?: DateTimeFilter<'Booking'> | Date | string;
       updatedAt?: DateTimeFilter<'Booking'> | Date | string;
       careId?: StringFilter<'Booking'> | string;
-      clientId?: StringFilter<'Booking'> | string;
+      elderId?: StringFilter<'Booking'> | string;
+      bookerId?: StringFilter<'Booking'> | string;
       care?: XOR<CareScalarRelationFilter, CareWhereInput>;
     },
     'id'
@@ -5638,7 +5656,8 @@ export namespace Prisma {
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
     careId?: SortOrder;
-    clientId?: SortOrder;
+    elderId?: SortOrder;
+    bookerId?: SortOrder;
     _count?: BookingCountOrderByAggregateInput;
     _max?: BookingMaxOrderByAggregateInput;
     _min?: BookingMinOrderByAggregateInput;
@@ -5660,7 +5679,8 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<'Booking'> | Date | string;
     updatedAt?: DateTimeWithAggregatesFilter<'Booking'> | Date | string;
     careId?: StringWithAggregatesFilter<'Booking'> | string;
-    clientId?: StringWithAggregatesFilter<'Booking'> | string;
+    elderId?: StringWithAggregatesFilter<'Booking'> | string;
+    bookerId?: StringWithAggregatesFilter<'Booking'> | string;
   };
 
   export type CareCategoryCreateInput = {
@@ -5724,7 +5744,7 @@ export namespace Prisma {
     durationMin?: number | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
-    providerId: string;
+    caregiverId: string;
     category: CareCategoryCreateNestedOneWithoutCaresInput;
     bookings?: BookingCreateNestedManyWithoutCareInput;
   };
@@ -5738,7 +5758,7 @@ export namespace Prisma {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     categoryId: string;
-    providerId: string;
+    caregiverId: string;
     bookings?: BookingUncheckedCreateNestedManyWithoutCareInput;
   };
 
@@ -5750,7 +5770,7 @@ export namespace Prisma {
     durationMin?: NullableIntFieldUpdateOperationsInput | number | null;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-    providerId?: StringFieldUpdateOperationsInput | string;
+    caregiverId?: StringFieldUpdateOperationsInput | string;
     category?: CareCategoryUpdateOneRequiredWithoutCaresNestedInput;
     bookings?: BookingUpdateManyWithoutCareNestedInput;
   };
@@ -5764,7 +5784,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     categoryId?: StringFieldUpdateOperationsInput | string;
-    providerId?: StringFieldUpdateOperationsInput | string;
+    caregiverId?: StringFieldUpdateOperationsInput | string;
     bookings?: BookingUncheckedUpdateManyWithoutCareNestedInput;
   };
 
@@ -5777,7 +5797,7 @@ export namespace Prisma {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     categoryId: string;
-    providerId: string;
+    caregiverId: string;
   };
 
   export type CareUpdateManyMutationInput = {
@@ -5788,7 +5808,7 @@ export namespace Prisma {
     durationMin?: NullableIntFieldUpdateOperationsInput | number | null;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-    providerId?: StringFieldUpdateOperationsInput | string;
+    caregiverId?: StringFieldUpdateOperationsInput | string;
   };
 
   export type CareUncheckedUpdateManyInput = {
@@ -5800,7 +5820,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     categoryId?: StringFieldUpdateOperationsInput | string;
-    providerId?: StringFieldUpdateOperationsInput | string;
+    caregiverId?: StringFieldUpdateOperationsInput | string;
   };
 
   export type BookingCreateInput = {
@@ -5809,7 +5829,8 @@ export namespace Prisma {
     scheduledAt: Date | string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
-    clientId: string;
+    elderId: string;
+    bookerId: string;
     care: CareCreateNestedOneWithoutBookingsInput;
   };
 
@@ -5820,7 +5841,8 @@ export namespace Prisma {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     careId: string;
-    clientId: string;
+    elderId: string;
+    bookerId: string;
   };
 
   export type BookingUpdateInput = {
@@ -5829,7 +5851,8 @@ export namespace Prisma {
     scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-    clientId?: StringFieldUpdateOperationsInput | string;
+    elderId?: StringFieldUpdateOperationsInput | string;
+    bookerId?: StringFieldUpdateOperationsInput | string;
     care?: CareUpdateOneRequiredWithoutBookingsNestedInput;
   };
 
@@ -5840,7 +5863,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     careId?: StringFieldUpdateOperationsInput | string;
-    clientId?: StringFieldUpdateOperationsInput | string;
+    elderId?: StringFieldUpdateOperationsInput | string;
+    bookerId?: StringFieldUpdateOperationsInput | string;
   };
 
   export type BookingCreateManyInput = {
@@ -5850,7 +5874,8 @@ export namespace Prisma {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     careId: string;
-    clientId: string;
+    elderId: string;
+    bookerId: string;
   };
 
   export type BookingUpdateManyMutationInput = {
@@ -5859,7 +5884,8 @@ export namespace Prisma {
     scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-    clientId?: StringFieldUpdateOperationsInput | string;
+    elderId?: StringFieldUpdateOperationsInput | string;
+    bookerId?: StringFieldUpdateOperationsInput | string;
   };
 
   export type BookingUncheckedUpdateManyInput = {
@@ -5869,7 +5895,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     careId?: StringFieldUpdateOperationsInput | string;
-    clientId?: StringFieldUpdateOperationsInput | string;
+    elderId?: StringFieldUpdateOperationsInput | string;
+    bookerId?: StringFieldUpdateOperationsInput | string;
   };
 
   export type StringFilter<$PrismaModel = never> = {
@@ -6048,7 +6075,7 @@ export namespace Prisma {
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
     categoryId?: SortOrder;
-    providerId?: SortOrder;
+    caregiverId?: SortOrder;
   };
 
   export type CareAvgOrderByAggregateInput = {
@@ -6065,7 +6092,7 @@ export namespace Prisma {
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
     categoryId?: SortOrder;
-    providerId?: SortOrder;
+    caregiverId?: SortOrder;
   };
 
   export type CareMinOrderByAggregateInput = {
@@ -6077,7 +6104,7 @@ export namespace Prisma {
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
     categoryId?: SortOrder;
-    providerId?: SortOrder;
+    caregiverId?: SortOrder;
   };
 
   export type CareSumOrderByAggregateInput = {
@@ -6142,7 +6169,8 @@ export namespace Prisma {
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
     careId?: SortOrder;
-    clientId?: SortOrder;
+    elderId?: SortOrder;
+    bookerId?: SortOrder;
   };
 
   export type BookingMaxOrderByAggregateInput = {
@@ -6152,7 +6180,8 @@ export namespace Prisma {
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
     careId?: SortOrder;
-    clientId?: SortOrder;
+    elderId?: SortOrder;
+    bookerId?: SortOrder;
   };
 
   export type BookingMinOrderByAggregateInput = {
@@ -6162,7 +6191,8 @@ export namespace Prisma {
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
     careId?: SortOrder;
-    clientId?: SortOrder;
+    elderId?: SortOrder;
+    bookerId?: SortOrder;
   };
 
   export type EnumBookingStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -6646,7 +6676,7 @@ export namespace Prisma {
     durationMin?: number | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
-    providerId: string;
+    caregiverId: string;
     bookings?: BookingCreateNestedManyWithoutCareInput;
   };
 
@@ -6658,7 +6688,7 @@ export namespace Prisma {
     durationMin?: number | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
-    providerId: string;
+    caregiverId: string;
     bookings?: BookingUncheckedCreateNestedManyWithoutCareInput;
   };
 
@@ -6715,7 +6745,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<'Care'> | Date | string;
     updatedAt?: DateTimeFilter<'Care'> | Date | string;
     categoryId?: StringFilter<'Care'> | string;
-    providerId?: StringFilter<'Care'> | string;
+    caregiverId?: StringFilter<'Care'> | string;
   };
 
   export type CareCategoryCreateWithoutCaresInput = {
@@ -6746,7 +6776,8 @@ export namespace Prisma {
     scheduledAt: Date | string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
-    clientId: string;
+    elderId: string;
+    bookerId: string;
   };
 
   export type BookingUncheckedCreateWithoutCareInput = {
@@ -6755,7 +6786,8 @@ export namespace Prisma {
     scheduledAt: Date | string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
-    clientId: string;
+    elderId: string;
+    bookerId: string;
   };
 
   export type BookingCreateOrConnectWithoutCareInput = {
@@ -6843,7 +6875,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<'Booking'> | Date | string;
     updatedAt?: DateTimeFilter<'Booking'> | Date | string;
     careId?: StringFilter<'Booking'> | string;
-    clientId?: StringFilter<'Booking'> | string;
+    elderId?: StringFilter<'Booking'> | string;
+    bookerId?: StringFilter<'Booking'> | string;
   };
 
   export type CareCreateWithoutBookingsInput = {
@@ -6854,7 +6887,7 @@ export namespace Prisma {
     durationMin?: number | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
-    providerId: string;
+    caregiverId: string;
     category: CareCategoryCreateNestedOneWithoutCaresInput;
   };
 
@@ -6867,7 +6900,7 @@ export namespace Prisma {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     categoryId: string;
-    providerId: string;
+    caregiverId: string;
   };
 
   export type CareCreateOrConnectWithoutBookingsInput = {
@@ -6906,7 +6939,7 @@ export namespace Prisma {
     durationMin?: NullableIntFieldUpdateOperationsInput | number | null;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-    providerId?: StringFieldUpdateOperationsInput | string;
+    caregiverId?: StringFieldUpdateOperationsInput | string;
     category?: CareCategoryUpdateOneRequiredWithoutCaresNestedInput;
   };
 
@@ -6919,7 +6952,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     categoryId?: StringFieldUpdateOperationsInput | string;
-    providerId?: StringFieldUpdateOperationsInput | string;
+    caregiverId?: StringFieldUpdateOperationsInput | string;
   };
 
   export type CareCreateManyCategoryInput = {
@@ -6930,7 +6963,7 @@ export namespace Prisma {
     durationMin?: number | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
-    providerId: string;
+    caregiverId: string;
   };
 
   export type CareUpdateWithoutCategoryInput = {
@@ -6941,7 +6974,7 @@ export namespace Prisma {
     durationMin?: NullableIntFieldUpdateOperationsInput | number | null;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-    providerId?: StringFieldUpdateOperationsInput | string;
+    caregiverId?: StringFieldUpdateOperationsInput | string;
     bookings?: BookingUpdateManyWithoutCareNestedInput;
   };
 
@@ -6953,7 +6986,7 @@ export namespace Prisma {
     durationMin?: NullableIntFieldUpdateOperationsInput | number | null;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-    providerId?: StringFieldUpdateOperationsInput | string;
+    caregiverId?: StringFieldUpdateOperationsInput | string;
     bookings?: BookingUncheckedUpdateManyWithoutCareNestedInput;
   };
 
@@ -6965,7 +6998,7 @@ export namespace Prisma {
     durationMin?: NullableIntFieldUpdateOperationsInput | number | null;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-    providerId?: StringFieldUpdateOperationsInput | string;
+    caregiverId?: StringFieldUpdateOperationsInput | string;
   };
 
   export type BookingCreateManyCareInput = {
@@ -6974,7 +7007,8 @@ export namespace Prisma {
     scheduledAt: Date | string;
     createdAt?: Date | string;
     updatedAt?: Date | string;
-    clientId: string;
+    elderId: string;
+    bookerId: string;
   };
 
   export type BookingUpdateWithoutCareInput = {
@@ -6983,7 +7017,8 @@ export namespace Prisma {
     scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-    clientId?: StringFieldUpdateOperationsInput | string;
+    elderId?: StringFieldUpdateOperationsInput | string;
+    bookerId?: StringFieldUpdateOperationsInput | string;
   };
 
   export type BookingUncheckedUpdateWithoutCareInput = {
@@ -6992,7 +7027,8 @@ export namespace Prisma {
     scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-    clientId?: StringFieldUpdateOperationsInput | string;
+    elderId?: StringFieldUpdateOperationsInput | string;
+    bookerId?: StringFieldUpdateOperationsInput | string;
   };
 
   export type BookingUncheckedUpdateManyWithoutCareInput = {
@@ -7001,7 +7037,8 @@ export namespace Prisma {
     scheduledAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
-    clientId?: StringFieldUpdateOperationsInput | string;
+    elderId?: StringFieldUpdateOperationsInput | string;
+    bookerId?: StringFieldUpdateOperationsInput | string;
   };
 
   /**

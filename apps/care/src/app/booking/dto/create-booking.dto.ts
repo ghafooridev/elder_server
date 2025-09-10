@@ -11,11 +11,18 @@ export class CreateBookingDto {
   careId: string;
 
   @ApiProperty({
-    description: 'ID of the client making the booking',
+    description: 'ID of the elder receiving the care',
     example: 'u12345',
   })
   @IsString()
-  clientId: string;
+  elderId: string;
+
+  @ApiProperty({
+    description: 'ID of the user making the booking',
+    example: 'u67890',
+  })
+  @IsString()
+  bookerId: string;
 
   @ApiProperty({
     description: 'Date and time when the booking is scheduled',

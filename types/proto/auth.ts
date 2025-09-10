@@ -14,9 +14,21 @@ export interface AuthenticateRequest {
   token: string;
 }
 
+export interface ValidateUserRequest {
+  userId: string;
+  /** e.g., ELDER, CAREGIVER */
+  role: string;
+}
+
+export interface ValidateUserResponse {
+  isValid: boolean;
+  user: User | undefined;
+}
+
 export interface User {
   id: string;
   email: string;
+  role: string;
 }
 
 export const AUTH_PACKAGE_NAME = 'auth';
@@ -61,3 +73,47 @@ export function AuthServiceControllerMethods() {
 }
 
 export const AUTH_SERVICE_NAME = 'AuthService';
+
+export interface UserServiceClient {
+  validateUser(request: ValidateUserRequest): Observable<ValidateUserResponse>;
+}
+
+export interface UserServiceController {
+  validateUser(
+    request: ValidateUserRequest
+  ):
+    | Promise<ValidateUserResponse>
+    | Observable<ValidateUserResponse>
+    | ValidateUserResponse;
+}
+
+export function UserServiceControllerMethods() {
+  return function (constructor: Function) {
+    const grpcMethods: string[] = ['validateUser'];
+    for (const method of grpcMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method
+      );
+      GrpcMethod('UserService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor
+      );
+    }
+    const grpcStreamMethods: string[] = [];
+    for (const method of grpcStreamMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method
+      );
+      GrpcStreamMethod('UserService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor
+      );
+    }
+  };
+}
+
+export const USER_SERVICE_NAME = 'UserService';

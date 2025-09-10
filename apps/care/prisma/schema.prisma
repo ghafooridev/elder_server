@@ -31,7 +31,7 @@ model Care {
   categoryId String
   category   CareCategory @relation(fields: [categoryId], references: [id])
 
-  providerId String
+  caregiverId String
 
   bookings Booking[]
 }
@@ -47,12 +47,13 @@ model Booking {
   careId String
   care   Care   @relation(fields: [careId], references: [id])
 
-  clientId String
+  elderId  String
+  bookerId String
 }
 
 enum BookingStatus {
   PENDING
   CONFIRMED
-  COMPLETED
   CANCELLED
+  COMPLETED
 }

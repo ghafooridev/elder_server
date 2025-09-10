@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { AuthGrpcController } from './auth.grpc.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from '../users/users.module';
@@ -23,7 +24,7 @@ import { LocalAuthGuard } from './guard/auth.guard';
     }),
     UsersModule,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, AuthGrpcController],
   providers: [AuthService, JwtStrategy, LocalAuthStrategy, LocalAuthGuard],
 })
 export class AuthModule {}

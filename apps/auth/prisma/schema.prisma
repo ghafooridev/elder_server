@@ -17,7 +17,16 @@ enum GenderEnum {
 enum RoleEnum {
   ADMIN
   ELDER
+  RELATIVE
   CAREGIVER
+}
+
+enum CaregiverType {
+  CAREGIVER
+  NURSE
+  DOCTOR
+  PHYSIOTHERAPIST
+  OTHER
 }
 
 model User {
@@ -36,6 +45,7 @@ model User {
 
   caregiver Caregiver?
   elder     Elder?
+  relative  Relative?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -45,16 +55,46 @@ model User {
 }
 
 model Elder {
-  userId      String   @id
-  drugAllergy String[]
-  disease     String[]
+  userId                   String   @id
+  bloodType                String?
+  medicalConditions        String[]
+  allergies                String[]
+  medications              String[]
+  disability               String?
+  mobilityStatus           String?
+  cognitiveStatus          String?
+  maritalStatus            String?
+  occupation               String?
+  languages                String[]
+  religion                 String?
+  dietaryNeeds             String?
+  emergencyContactName     String?
+  emergencyContactPhone    String?
+  emergencyContactRelation String?
 
-  user User @relation(fields: [userId], references: [id])
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  relative Relative[]
 }
 
 model Caregiver {
-  userId String @id
-  MSN    String @unique()
+  userId          String        @id
+  caregiverType   CaregiverType
+  specialization  String?
+  licenseNumber   String?
+  experienceYears Int?
+  languages       String[]
+  available       Boolean       @default(true)
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Relative {
+  userId              String @id
+  relationshipToElder String
+
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  elderId String
+  elder   Elder  @relation(fields: [elderId], references: [userId])
+
+  @@index([elderId])
 }
