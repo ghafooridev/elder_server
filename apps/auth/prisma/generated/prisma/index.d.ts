@@ -7214,7 +7214,6 @@ export namespace Prisma {
   export type UserWhereUniqueInput = Prisma.AtLeast<
     {
       id?: string;
-      nationalityCode?: string;
       mobileNumber?: string;
       email?: string;
       AND?: UserWhereInput | UserWhereInput[];
@@ -7223,6 +7222,7 @@ export namespace Prisma {
       firstName?: StringNullableFilter<'User'> | string | null;
       lastName?: StringNullableFilter<'User'> | string | null;
       avatar?: StringNullableFilter<'User'> | string | null;
+      nationalityCode?: StringNullableFilter<'User'> | string | null;
       password?: StringNullableFilter<'User'> | string | null;
       gender?: EnumGenderEnumFilter<'User'> | $Enums.GenderEnum;
       role?: EnumRoleEnumFilter<'User'> | $Enums.RoleEnum;
@@ -7240,7 +7240,7 @@ export namespace Prisma {
         RelativeWhereInput
       > | null;
     },
-    'id' | 'nationalityCode' | 'mobileNumber' | 'email'
+    'id' | 'mobileNumber' | 'email'
   >;
 
   export type UserOrderByWithAggregationInput = {

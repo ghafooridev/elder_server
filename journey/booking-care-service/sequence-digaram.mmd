@@ -1,0 +1,64 @@
+sequenceDiagram
+    participant CG as Caregiver
+    participant CS as Care Service API
+    participant DB as Database
+    participant E as Elder
+    participant BS as Booking Service API
+    participant NS as Notification Service
+
+    %% Scenario 1: Caregiver creates care services
+    Note over CG, DB: 1. Caregiver Creates Care Services
+    CG->>CS: POST /care-services
+    CS->>DB: Create care service
+    DB-->>CS: Service created
+    CS-->>CG: 201 Created
+
+    %% Scenario 2: Caregiver manages care services
+    Note over CG, DB: 2. Caregiver Manages Care Services
+    CG->>CS: GET /care-services?caregiverId={id}
+    CS->>DB: Query caregiver's services
+    DB-->>CS: Return services list
+    CS-->>CG: Services list
+    
+    CG->>CS: PATCH /care-services/{id}/status
+    CS->>DB: Update service status (enable/disable)
+    DB-->>CS: Status updated
+    CS-->>CG: 200 Updated
+
+    %% Scenario 3: Elder views care services
+    Note over E, DB: 3. Elder Views Available Care Services
+    E->>CS: GET /care-services?status=active
+    CS->>DB: Query active services
+    DB-->>CS: Return active services
+    CS-->>E: Available services list
+
+    %% Scenario 4: Elder books care service
+    Note over E, NS: 4. Elder Books Care Service
+    E->>BS: POST /bookings
+    BS->>DB: Create booking
+    DB-->>BS: Booking created
+    BS->>NS: Notify caregiver of new booking
+    NS-->>CG: New booking notification
+    BS-->>E: 201 Booking created
+
+    %% Scenario 5: Elder views own bookings
+    Note over E, DB: 5. Elder Views Own Bookings
+    E->>BS: GET /bookings?elderId={id}
+    BS->>DB: Query elder's bookings
+    DB-->>BS: Return bookings
+    BS-->>E: Elder's bookings list
+
+    %% Scenario 6: Caregiver manages bookings
+    Note over CG, NS: 6. Caregiver Manages Bookings
+    CG->>BS: GET /bookings?caregiverId={id}
+    BS->>DB: Query caregiver's bookings
+    DB-->>BS: Return bookings
+    BS-->>CG: Caregiver's bookings list
+    
+    CG->>BS: PATCH /bookings/{id}/status
+    Note right of CG: Accept or Reject
+    BS->>DB: Update booking status
+    DB-->>BS: Status updated
+    BS->>NS: Notify elder of status change
+    NS-->>E: Booking status notification
+    BS-->>CG: 200 Status updated

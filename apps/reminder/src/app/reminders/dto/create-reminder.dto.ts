@@ -9,13 +9,12 @@ import {
 } from 'class-validator';
 
 export class CreateReminderDto {
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'Title of the reminder',
     example: 'Take morning medicine',
   })
-  @IsOptional()
   @IsString()
-  title?: string;
+  title: string;
 
   @ApiPropertyOptional({
     description: 'Description of the reminder',
@@ -61,10 +60,12 @@ export class CreateReminderDto {
   @IsBoolean()
   enabled?: boolean;
 
-  @ApiProperty({
-    description: 'ID of the user associated with this reminder',
+  @ApiPropertyOptional({
+    description:
+      'ID of the user associated with this reminder. If omitted, it will be derived from the token.',
     example: 'u12345',
   })
+  @IsOptional()
   @IsString()
-  userId: string;
+  userId?: string;
 }

@@ -25,22 +25,34 @@ export interface ValidateUserResponse {
   user: User | undefined;
 }
 
-export interface User {
+/** Lightweight user shape for authentication only */
+export interface AuthUser {
   id: string;
   email: string;
   role: string;
 }
 
+/** Full user shape for profile/validation flows */
+export interface User {
+  id: string;
+  email: string;
+  role: string;
+  firstName: string;
+  lastName: string;
+  mobileNumber: string;
+  avatar: string;
+}
+
 export const AUTH_PACKAGE_NAME = 'auth';
 
 export interface AuthServiceClient {
-  authenticate(request: AuthenticateRequest): Observable<User>;
+  authenticate(request: AuthenticateRequest): Observable<AuthUser>;
 }
 
 export interface AuthServiceController {
   authenticate(
     request: AuthenticateRequest
-  ): Promise<User> | Observable<User> | User;
+  ): Promise<AuthUser> | Observable<AuthUser> | AuthUser;
 }
 
 export function AuthServiceControllerMethods() {

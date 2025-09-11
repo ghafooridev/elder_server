@@ -34,7 +34,7 @@ model User {
   firstName       String?
   lastName        String?
   avatar          String?
-  nationalityCode String?    @unique()
+  nationalityCode String?
   mobileNumber    String?    @unique()
   email           String?    @unique()
   password        String?

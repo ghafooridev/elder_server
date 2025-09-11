@@ -9,21 +9,27 @@ import { PrismaService } from '../prisma/prisma.service';
 import { hash } from 'bcryptjs';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createUser(createUserDto: CreateUserDto) {
-    const { elder, caregiver, relative, ...userData } = createUserDto;
+    const { elder, caregiver, relative, dateOfBirth, ...userData } =
+      createUserDto;
 
-    await this.ensureUniqueUser({ email: userData.email });
+    await this.ensureUniqueUser({
+      email: userData.email,
+      mobileNumber: userData.mobileNumber,
+    });
 
     const hashedPassword = await hash(userData.password, 10);
 
     const createData: Prisma.UserCreateInput = {
       ...userData,
       password: hashedPassword,
+      dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
     };
 
     if (userData.role === RoleEnum.ELDER && elder) {
@@ -34,14 +40,27 @@ export class UsersService {
       createData.relative = { create: relative };
     }
 
-    return this.prisma.user.create({
-      data: createData,
-      include: {
-        elder: true,
-        caregiver: true,
-        relative: true,
-      },
-    });
+    try {
+      return await this.prisma.user.create({
+        data: createData,
+        include: {
+          elder: true,
+          caregiver: true,
+          relative: true,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        const fields = (error.meta as { target: string[] }).target;
+        throw new ConflictException(
+          `Unique constraint failed on the fields: (\`${fields.join('`, `')}\`)`
+        );
+      }
+      throw error;
+    }
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto) {

@@ -13,8 +13,9 @@ import {
   UseGuards,
   Req,
   Query,
+  BadRequestException,
 } from '@nestjs/common';
-import { AuthGuard } from '@elder/nestjs'; // from auth app
+import { AuthGuard } from '@elder/nestjs';
 import {
   ApiCreateBookingDocs,
   ApiUpdateBookingDocs,
@@ -30,9 +31,31 @@ export class BookingController {
   @UseGuards(AuthGuard)
   @ApiCreateBookingDocs()
   async createBooking(
-    @Body() createBookingDto: CreateBookingDto
+    @Body() createBookingDto: CreateBookingDto,
+    @Req() req: any
   ): Promise<Booking> {
-    return this.bookingService.createBooking(createBookingDto);
+    const user = req.user as { id: string; role: string };
+
+    const bookerId = user.id; // always the authenticated user
+
+    // If the authenticated user is an ELDER and elderId is not provided, default to self
+    let elderId = createBookingDto.elderId;
+    if (!elderId && user.role === 'ELDER') {
+      elderId = user.id;
+    }
+
+    // If the booker is a RELATIVE, elderId must be provided explicitly
+    if (user.role === 'RELATIVE' && !elderId) {
+      throw new BadRequestException(
+        'elderId is required when the booker is a RELATIVE.'
+      );
+    }
+
+    return this.bookingService.createBooking({
+      ...createBookingDto,
+      bookerId,
+      elderId: elderId as string,
+    });
   }
 
   @Patch(':bookingId')

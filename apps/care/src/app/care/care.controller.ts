@@ -20,6 +20,7 @@ import {
   ApiUpdateCareDocs,
   ApiDeleteCareDocs,
   ApiGetAllCareDocs,
+  ApiGetCareDocsById,
 } from './doc/care.swagger';
 
 @Controller('cares')
@@ -54,9 +55,15 @@ export class CareController {
   }
 
   @Get()
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @ApiGetAllCareDocs()
   async getAll(@Query('caregiverId') caregiverId?: string): Promise<Care[]> {
     return this.careService.getCares(caregiverId);
+  }
+
+  @Get(':careId')
+  @ApiGetCareDocsById()
+  async get(@Param('careId') careId: string): Promise<Care> {
+    return this.careService.getCare(careId);
   }
 }

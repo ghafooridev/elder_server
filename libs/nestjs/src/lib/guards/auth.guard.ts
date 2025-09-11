@@ -42,7 +42,6 @@ export class AuthGuard implements CanActivate, OnModuleInit {
         this.authService.authenticate({ token })
       );
       this.logger.debug(`AuthService response: ${JSON.stringify(res)}`);
-      console.log('>>>>', res);
 
       if (!res?.id) {
         throw new UnauthorizedException('Invalid or expired token');

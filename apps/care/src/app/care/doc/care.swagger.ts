@@ -41,3 +41,14 @@ export function ApiGetAllCareDocs() {
     })
   );
 }
+
+export function ApiGetCareDocsById() {
+  return applyDecorators(
+    ApiOperation({ summary: 'Get a care by ID' }),
+    ApiResponse({
+      status: 200,
+      description: 'Care found successfully',
+      type: Care,
+    })
+  );
+}

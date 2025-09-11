@@ -25,7 +25,7 @@ import { RoleEnum } from '@prisma-clients/auth';
 export class UserController {
   constructor(private readonly userService: UsersService) {}
 
-  @Post()
+  @Post('register')
   @ApiCreateUserDocs()
   async createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);

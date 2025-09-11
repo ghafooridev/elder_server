@@ -2,7 +2,7 @@ syntax="proto3";
 package auth;
 
 service AuthService {
-  rpc Authenticate (AuthenticateRequest) returns (User);
+  rpc Authenticate (AuthenticateRequest) returns (AuthUser);
 }
 
 service UserService {
@@ -23,8 +23,20 @@ message ValidateUserResponse {
   User user = 2;
 }
 
+// Lightweight user shape for authentication only
+message AuthUser {
+  string id = 1;
+  string email = 2;
+  string role = 3;
+}
+
+// Full user shape for profile/validation flows
 message User {
   string id = 1;
   string email = 2;
   string role = 3;
+  string firstName = 4;
+  string lastName = 5;
+  string mobileNumber = 6;
+  string avatar = 7;
 }

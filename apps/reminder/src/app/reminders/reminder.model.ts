@@ -12,7 +12,7 @@ export class Reminder {
     description: 'Title of the reminder',
     example: 'Take morning medicine',
   })
-  title: string | null;
+  title: string;
 
   @ApiPropertyOptional({
     description: 'Description of the reminder',

@@ -11,7 +11,7 @@ import {
   Post,
   Body,
   UseGuards,
-  // UseGuards,
+  Req,
 } from '@nestjs/common';
 import { AuthGuard } from '@elder/nestjs'; //here from auth app
 import {
@@ -29,13 +29,18 @@ export class ReminderController {
   @UseGuards(AuthGuard)
   @ApiCreateReminderDocs()
   async createReminder(
-    @Body() createReminderDto: CreateReminderDto
+    @Body() createReminderDto: CreateReminderDto,
+    @Req() req: any
   ): Promise<Reminder> {
-    return this.reminderService.createReminder(createReminderDto);
+    const userId = req.user?.id;
+    return this.reminderService.createReminder({
+      ...createReminderDto,
+      userId,
+    });
   }
 
   @Patch(':reminderId')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard)
   @ApiUpdateReminderDocs()
   async update(
     @Param('reminderId') reminderId: string,
@@ -45,7 +50,7 @@ export class ReminderController {
   }
 
   @Delete(':reminderId')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard)
   @ApiDeleteReminderDocs()
   async delete(
     @Param('reminderId') reminderId: string
@@ -57,7 +62,8 @@ export class ReminderController {
   @Get()
   @UseGuards(AuthGuard)
   @ApiGetAllRemindersDocs()
-  async getAll(): Promise<Reminder[]> {
-    return this.reminderService.getReminders();
+  async getAll(@Req() req: any): Promise<Reminder[]> {
+    const userId = req.user?.id;
+    return this.reminderService.getReminders(userId);
   }
 }

@@ -1,5 +1,28 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
+export class Caregiver {
+  @ApiProperty({ description: 'User ID', example: 'user_123' })
+  id: string;
+
+  @ApiProperty({ description: 'Email', example: 'caregiver@example.com' })
+  email: string;
+
+  @ApiPropertyOptional({ description: 'Name', example: 'Caregiver Name' })
+  firstName?: string;
+
+  @ApiPropertyOptional({ description: 'Last Name', example: 'Caregiver Name' })
+  lastName?: string;
+
+  @ApiPropertyOptional({ description: 'Phone Number', example: '123456789' })
+  mobileNumber?: string;
+
+  @ApiPropertyOptional({ description: 'Avatar', example: 'avatar_url' })
+  avatar?: string;
+
+  @ApiProperty({ description: 'Role', example: 'CAREGIVER' })
+  role: string;
+}
+
 export class Care {
   @ApiProperty({
     description: 'Unique identifier of the care',
@@ -42,6 +65,12 @@ export class Care {
     example: 'caregiver12345',
   })
   caregiverId: string;
+
+  @ApiPropertyOptional({
+    description: 'Full caregiver information',
+    type: () => Caregiver,
+  })
+  caregiver?: Caregiver;
 
   @ApiProperty({
     description: 'Date when the care service was created',

@@ -8,7 +8,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCareDto } from './dto/create-care.dto';
 import { UpdateCareDto } from './dto/update-care.dto';
-import { Care } from './care.model';
+import { Care, Caregiver } from './care.model';
 import { AUTH_PACKAGE_NAME, UserServiceClient } from 'types/proto/auth';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
@@ -86,9 +86,45 @@ export class CareService implements OnModuleInit {
   }
 
   async getCares(caregiverId?: string): Promise<Care[]> {
-    return this.prisma.care.findMany({
+    const cares = await this.prisma.care.findMany({
       where: caregiverId ? { caregiverId } : {},
     });
+
+    const caresWithCaregiver = await Promise.all(
+      cares.map(async (care) => {
+        try {
+          const caregiverValidation = await firstValueFrom(
+            this.userService.validateUser({
+              userId: care.caregiverId,
+              role: 'CAREGIVER',
+            })
+          );
+          const caregiver: Caregiver | undefined = caregiverValidation?.user
+            ? {
+                id: caregiverValidation.user.id,
+                email: caregiverValidation.user.email,
+                role: caregiverValidation.user.role,
+                firstName: caregiverValidation.user.firstName,
+                lastName: caregiverValidation.user.lastName,
+                mobileNumber: caregiverValidation.user.mobileNumber,
+                avatar: caregiverValidation.user.avatar,
+              }
+            : undefined;
+
+          return {
+            ...care,
+            caregiver,
+          } as Care;
+        } catch {
+          return {
+            ...care,
+            caregiver: undefined,
+          } as Care;
+        }
+      })
+    );
+
+    return caresWithCaregiver;
   }
 
   async getCare(id: string): Promise<Care> {
@@ -98,6 +134,28 @@ export class CareService implements OnModuleInit {
       throw new NotFoundException('Care not found');
     }
 
-    return care;
+    try {
+      const caregiverValidation = await firstValueFrom(
+        this.userService.validateUser({
+          userId: care.caregiverId,
+          role: 'CAREGIVER',
+        })
+      );
+      const caregiver: Caregiver | undefined = caregiverValidation?.user
+        ? {
+            id: caregiverValidation.user.id,
+            email: caregiverValidation.user.email,
+            role: caregiverValidation.user.role,
+            firstName: caregiverValidation.user.firstName,
+            lastName: caregiverValidation.user.lastName,
+            mobileNumber: caregiverValidation.user.mobileNumber,
+            avatar: caregiverValidation.user.avatar,
+          }
+        : undefined;
+
+      return { ...care, caregiver } as Care;
+    } catch {
+      return { ...care, caregiver: undefined } as Care;
+    }
   }
 }

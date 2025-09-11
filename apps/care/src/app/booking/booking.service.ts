@@ -36,7 +36,18 @@ export class BookingService implements OnModuleInit {
   }
 
   async createBooking(data: CreateBookingDto): Promise<Booking> {
-    const { elderId, bookerId } = data;
+    const { elderId, bookerId, scheduledAt } = data;
+
+    // Validate scheduledAt presence and correctness (schema requires non-null)
+    if (!scheduledAt) {
+      throw new BadRequestException('scheduledAt is required');
+    }
+    const scheduledAtDate = new Date(scheduledAt as any);
+    if (isNaN(scheduledAtDate.getTime())) {
+      throw new BadRequestException(
+        'scheduledAt must be a valid ISO date-time'
+      );
+    }
 
     const [elderValidation, bookerValidation] = await Promise.all([
       firstValueFrom(
@@ -65,7 +76,13 @@ export class BookingService implements OnModuleInit {
     }
 
     const booking = await this.prisma.booking.create({
-      data,
+      data: {
+        careId: data.careId,
+        elderId: elderId as string,
+        bookerId: bookerId as string,
+        scheduledAt: scheduledAtDate,
+        status: (data.status ?? BookingStatus.PENDING) as BookingStatus,
+      },
     });
 
     return booking;
