@@ -61,12 +61,12 @@
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
-    "ts-proto": "^2.7.7"
+    "ts-proto": "^2.7.7",
+    "@nestjs/swagger": "^11.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
     "@nestjs/schematics": "^11.0.0",
-    "@nestjs/swagger": "^11.2.0",
     "@nestjs/testing": "^11.0.0",
     "@nx/eslint": "21.4.0",
     "@nx/eslint-plugin": "21.4.0",

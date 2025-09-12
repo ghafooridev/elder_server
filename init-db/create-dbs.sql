@@ -1,0 +1,3 @@
+CREATE DATABASE ec_auth;
+CREATE DATABASE ec_reminder;
+CREATE DATABASE ec_care;
