@@ -33,8 +33,12 @@ services:
     container_name: ec_auth
     restart: unless-stopped
     environment:
-      DATABASE_URL: ${AUTH_DATABASE_URL}
+      AUTH_DATABASE_URL: ${AUTH_DATABASE_URL}
       PORT: ${AUTH_PORT}
+      AUTH_PORT: ${AUTH_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS}
+      AUTH_ALLOWED_ORIGIN: ${AUTH_ALLOWED_ORIGIN}
     ports:
       - '${AUTH_PORT}:${AUTH_PORT}'
     depends_on:
@@ -49,8 +53,9 @@ services:
     container_name: ec_reminder
     restart: unless-stopped
     environment:
-      DATABASE_URL: ${REMINDER_DATABASE_URL}
+      REMINDER_DATABASE_URL: ${REMINDER_DATABASE_URL}
       PORT: ${REMINDER_PORT}
+      REMINDER_PORT: ${REMINDER_PORT}
     ports:
       - '${REMINDER_PORT}:${REMINDER_PORT}'
     depends_on:
@@ -65,8 +70,9 @@ services:
     container_name: ec_care
     restart: unless-stopped
     environment:
-      DATABASE_URL: ${CARE_DATABASE_URL}
+      CARE_DATABASE_URL: ${CARE_DATABASE_URL}
       PORT: ${CARE_PORT}
+      CARE_PORT: ${CARE_PORT}
     ports:
       - '${CARE_PORT}:${CARE_PORT}'
     depends_on:

@@ -22,14 +22,14 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api-docs', app, document);
 
-  // cors
-  app.enableCors({
-    credentials: true,
-    exposedHeaders: ['Set-Cookie'],
-    origin: config.getOrThrow<string>('AUTH_ALLOWED_ORIGIN').split(', '),
-    allowedHeaders: ['Content-Type', 'Origin', 'Accept', 'Authorization'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  });
+  // // cors
+  // app.enableCors({
+  //   credentials: true,
+  //   exposedHeaders: ['Set-Cookie'],
+  //   origin: config.getOrThrow<string>('AUTH_ALLOWED_ORIGIN').split(', '),
+  //   allowedHeaders: ['Content-Type', 'Origin', 'Accept', 'Authorization'],
+  //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  // });
 
   app.use(cookieParser());
 

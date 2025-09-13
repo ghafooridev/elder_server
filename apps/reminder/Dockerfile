@@ -14,22 +14,42 @@ COPY tsconfig.base.json ./
 COPY eslint.config.mjs ./
 COPY .prettierrc ./
 
-RUN npm install
+RUN npm ci --only=production=false
 
 COPY apps ./apps
 COPY libs ./libs
 COPY proto ./proto
 
 RUN mkdir -p ./types
-RUN npx nx generate:proto
-RUN npx nx build reminder
+RUN npm run generate:proto
+
+# Generate Prisma client with correct binary targets
+RUN npx prisma generate --schema=./apps/reminder/prisma/schema.prisma
+
+RUN npx nx build reminder --prod
+
+# Create production node_modules
+RUN rm -rf node_modules && npm ci --omit=dev --ignore-scripts
 
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-COPY --from=builder /app/dist/apps/reminder ./dist
-COPY package*.json ./
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nestjs -u 1001
 
-RUN npm install --omit=dev --ignore-scripts
+# Copy built application
+COPY --from=builder --chown=nestjs:nodejs /app/dist/apps/reminder ./
 
-CMD ["node", "dist/main.js"]
+# Copy production dependencies and package files
+COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nestjs:nodejs /app/package*.json ./
+
+# Copy Prisma generated files and engines
+COPY --from=builder --chown=nestjs:nodejs /app/apps/reminder/prisma/generated ./apps/reminder/prisma/generated
+
+USER nestjs
+
+EXPOSE 3002
+
+CMD ["node", "main.js"]

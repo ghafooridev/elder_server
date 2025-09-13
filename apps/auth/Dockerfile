@@ -19,7 +19,7 @@ COPY eslint.config.mjs ./
 COPY .prettierrc ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci --only=production=false
 
 # Copy apps, libs, and proto files
 COPY apps ./apps
@@ -30,18 +30,37 @@ COPY proto ./proto
 RUN mkdir -p ./types
 
 # Generate proto TS files
-RUN npx nx generate:proto
+RUN npm run generate:proto
+
+# Generate Prisma client with correct binary targets
+RUN npx prisma generate --schema=./apps/auth/prisma/schema.prisma
 
 # Build auth service
-RUN npx nx build auth
+RUN npx nx build auth --prod
+
+# Create production node_modules
+RUN rm -rf node_modules && npm ci --omit=dev --ignore-scripts
 
 # ---------- Runtime ----------
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-COPY --from=builder /app/dist/apps/auth ./dist
-COPY package*.json ./
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nestjs -u 1001
 
-RUN npm install --omit=dev --ignore-scripts
+# Copy built application
+COPY --from=builder --chown=nestjs:nodejs /app/dist/apps/auth ./
 
-CMD ["node", "dist/main.js"]
+# Copy production dependencies and package files
+COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nestjs:nodejs /app/package*.json ./
+
+# Copy Prisma generated files and engines
+COPY --from=builder --chown=nestjs:nodejs /app/apps/auth/prisma/generated ./apps/auth/prisma/generated
+
+USER nestjs
+
+EXPOSE 3001
+
+CMD ["node", "main.js"]
