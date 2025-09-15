@@ -25,6 +25,14 @@ export interface ValidateUserResponse {
   user: User | undefined;
 }
 
+export interface GetUsersByIdsRequest {
+  userIds: string[];
+}
+
+export interface GetUsersByIdsResponse {
+  users: User[];
+}
+
 /** Lightweight user shape for authentication only */
 export interface AuthUser {
   id: string;
@@ -88,6 +96,10 @@ export const AUTH_SERVICE_NAME = 'AuthService';
 
 export interface UserServiceClient {
   validateUser(request: ValidateUserRequest): Observable<ValidateUserResponse>;
+
+  getUsersByIds(
+    request: GetUsersByIdsRequest
+  ): Observable<GetUsersByIdsResponse>;
 }
 
 export interface UserServiceController {
@@ -97,11 +109,18 @@ export interface UserServiceController {
     | Promise<ValidateUserResponse>
     | Observable<ValidateUserResponse>
     | ValidateUserResponse;
+
+  getUsersByIds(
+    request: GetUsersByIdsRequest
+  ):
+    | Promise<GetUsersByIdsResponse>
+    | Observable<GetUsersByIdsResponse>
+    | GetUsersByIdsResponse;
 }
 
 export function UserServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['validateUser'];
+    const grpcMethods: string[] = ['validateUser', 'getUsersByIds'];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(
         constructor.prototype,

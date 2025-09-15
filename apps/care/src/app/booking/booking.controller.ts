@@ -1,6 +1,5 @@
 import { BookingService } from './booking.service';
-import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingDto } from './dto/update-booking.dto';
+import { CreateBookingDto, UpdateBookingDto } from './dto';
 import { Booking } from './booking.model';
 import {
   Controller,
@@ -22,13 +21,16 @@ import {
   ApiDeleteBookingDocs,
   ApiGetAllBookingsDocs,
 } from './doc/booking.swagger';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('bookings')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @Controller('bookings')
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 
   @Post()
-  @UseGuards(AuthGuard)
   @ApiCreateBookingDocs()
   async createBooking(
     @Body() createBookingDto: CreateBookingDto,
@@ -68,7 +70,6 @@ export class BookingController {
   }
 
   @Patch(':bookingId/status')
-  @UseGuards(AuthGuard)
   @ApiUpdateBookingDocs()
   async updateBookingStatus(
     @Param('bookingId') bookingId: string,
@@ -104,7 +105,6 @@ export class BookingController {
   }
 
   @Get()
-  @UseGuards(AuthGuard)
   @ApiGetAllBookingsDocs()
   async getAllBookings(
     @Query('caregiverId') caregiverId?: string,

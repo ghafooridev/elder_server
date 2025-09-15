@@ -1,7 +1,12 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { UsersService } from './users.service';
-import { ValidateUserRequest, ValidateUserResponse } from 'types/proto/auth';
+import {
+  GetUsersByIdsRequest,
+  GetUsersByIdsResponse,
+  ValidateUserRequest,
+  ValidateUserResponse,
+} from 'types/proto/auth';
 import { RoleEnum } from '@prisma-clients/auth';
 
 @Controller()
@@ -32,5 +37,22 @@ export class UsersGrpcController {
         avatar: user.avatar,
       },
     };
+  }
+
+  @GrpcMethod('UserService', 'GetUsersByIds')
+  async getUsersByIds(
+    request: GetUsersByIdsRequest
+  ): Promise<GetUsersByIdsResponse> {
+    const users = await this.usersService.getUsersByIds(request.userIds);
+    const userProtos = users.map((user) => ({
+      id: user.id,
+      email: user.email,
+      role: user.role as string,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      mobileNumber: user.mobileNumber,
+      avatar: user.avatar,
+    }));
+    return { users: userProtos };
   }
 }

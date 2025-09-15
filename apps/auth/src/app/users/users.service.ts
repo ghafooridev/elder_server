@@ -7,8 +7,7 @@ import {
 import { Prisma, RoleEnum } from '@prisma-clients/auth';
 import { PrismaService } from '../prisma/prisma.service';
 import { hash } from 'bcryptjs';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto, CreateUserDto } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
@@ -127,6 +126,16 @@ export class UsersService {
   async getUsers(role?: RoleEnum) {
     return this.prisma.user.findMany({
       where: role ? { role } : {},
+    });
+  }
+
+  async getUsersByIds(ids: string[]) {
+    return this.prisma.user.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
     });
   }
 

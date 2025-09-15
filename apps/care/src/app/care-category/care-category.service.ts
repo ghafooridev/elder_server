@@ -4,8 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateCareCategoryDto } from './dto/create-care-category.dto';
-import { UpdateCareCategoryDto } from './dto/update-care-category.dto';
+import { CreateCareCategoryDto, UpdateCareCategoryDto } from './dto';
 import { CareCategory } from './care-category.model';
 
 @Injectable()

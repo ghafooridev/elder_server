@@ -6,8 +6,7 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingDto } from './dto/update-booking.dto';
+import { CreateBookingDto, UpdateBookingDto } from './dto';
 import { Booking } from './booking.model';
 import { AUTH_PACKAGE_NAME, UserServiceClient } from 'types/proto/auth';
 import {

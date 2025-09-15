@@ -1,6 +1,5 @@
 import { RemindersService } from './reminder.service';
-import { CreateReminderDto } from './dto/create-reminder.dto';
-import { UpdateReminderDto } from './dto/update-reminder.dto';
+import { CreateReminderDto, UpdateReminderDto } from './dto';
 import { Reminder } from './reminder.model';
 import {
   Controller,

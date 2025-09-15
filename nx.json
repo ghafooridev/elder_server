@@ -40,7 +40,8 @@
       "exclude": [
         "apps/auth-e2e/**/*",
         "apps/reminder-e2e/**/*",
-        "apps/care-e2e/**/*"
+        "apps/care-e2e/**/*",
+        "apps/talk-e2e/**/*"
       ]
     }
   ],

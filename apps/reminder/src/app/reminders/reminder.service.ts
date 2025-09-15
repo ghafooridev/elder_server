@@ -4,9 +4,9 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { UpdateReminderDto } from './dto/update-reminder.dto';
-import { CreateReminderDto } from './dto/create-reminder.dto';
+import { CreateReminderDto, UpdateReminderDto } from './dto';
 import { Reminder } from './reminder.model';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class RemindersService {
@@ -17,21 +17,20 @@ export class RemindersService {
       throw new BadRequestException('userId is required');
     }
 
-    const createData: any = {
-      title: data.title,
-      description: data.description,
-      status: data.status,
-      type: data.type,
-      enabled: data.enabled ?? true,
+    const { date, ...restData } = data;
+
+    const createData = {
+      ...restData,
       userId: data.userId,
+      enabled: data.enabled ?? true,
     };
 
-    if (data.date) {
-      const dateValue = new Date(data.date as any);
+    if (date) {
+      const dateValue = new Date(date);
       if (isNaN(dateValue.getTime())) {
         throw new BadRequestException('date must be a valid ISO date-time');
       }
-      createData.date = dateValue;
+      createData['date'] = dateValue;
     }
 
     const reminder = await this.prisma.reminder.create({
@@ -52,20 +51,15 @@ export class RemindersService {
       throw new NotFoundException('Reminder not found');
     }
 
-    const updateData: any = {
-      title: data.title,
-      description: data.description,
-      status: data.status,
-      type: data.type,
-      enabled: data.enabled,
-    };
+    const { date, ...restData } = data;
+    const updateData = { ...restData };
 
-    if (data.date) {
-      const dateValue = new Date(data.date as any);
+    if (date) {
+      const dateValue = new Date(date);
       if (isNaN(dateValue.getTime())) {
         throw new BadRequestException('date must be a valid ISO date-time');
       }
-      updateData.date = dateValue;
+      updateData['date'] = dateValue;
     }
 
     const updatedReminder = await this.prisma.reminder.update({

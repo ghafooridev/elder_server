@@ -1,6 +1,5 @@
 import { CareCategoryService } from './care-category.service';
-import { CreateCareCategoryDto } from './dto/create-care-category.dto';
-import { UpdateCareCategoryDto } from './dto/update-care-category.dto';
+import { CreateCareCategoryDto, UpdateCareCategoryDto } from './dto';
 import { CareCategory } from './care-category.model';
 import {
   Controller,
@@ -19,13 +18,16 @@ import {
   ApiDeleteCareCategoryDocs,
   ApiGetAllCareCategoriesDocs,
 } from './doc/care-category.swagger';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiTags('care-categories')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @Controller('care-categories')
 export class CareCategoryController {
   constructor(private readonly careCategoryService: CareCategoryService) {}
 
   @Post()
-  @UseGuards(AuthGuard)
   @ApiCreateCareCategoryDocs()
   async create(
     @Body() createCareCategoryDto: CreateCareCategoryDto
@@ -53,7 +55,6 @@ export class CareCategoryController {
   }
 
   @Get()
-  // @UseGuards(AuthGuard)
   @ApiGetAllCareCategoriesDocs()
   async getAll(): Promise<CareCategory[]> {
     return this.careCategoryService.getCareCategories();

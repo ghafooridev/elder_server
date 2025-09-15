@@ -1,6 +1,5 @@
 import { CareService } from './care.service';
-import { CreateCareDto } from './dto/create-care.dto';
-import { UpdateCareDto } from './dto/update-care.dto';
+import { CreateCareDto, UpdateCareDto } from './dto';
 import { Care } from './care.model';
 import {
   Controller,
@@ -14,7 +13,7 @@ import {
   Req,
   Query,
 } from '@nestjs/common';
-import { AuthGuard } from '@elder/nestjs'; // from auth app
+import { AuthGuard } from '@elder/nestjs';
 import {
   ApiCreateCareDocs,
   ApiUpdateCareDocs,
@@ -22,13 +21,17 @@ import {
   ApiGetAllCareDocs,
   ApiGetCareDocsById,
 } from './doc/care.swagger';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('cares')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @Controller('cares')
 export class CareController {
   constructor(private readonly careService: CareService) {}
 
   @Post()
-  @UseGuards(AuthGuard)
   @ApiCreateCareDocs()
   async createCare(
     @Body() createCareDto: CreateCareDto,
@@ -55,7 +58,6 @@ export class CareController {
   }
 
   @Get()
-  @UseGuards(AuthGuard)
   @ApiGetAllCareDocs()
   async getAll(@Query('caregiverId') caregiverId?: string): Promise<Care[]> {
     return this.careService.getCares(caregiverId);

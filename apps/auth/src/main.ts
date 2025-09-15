@@ -1,8 +1,4 @@
 import { AUTH_PACKAGE_NAME } from './../../../types/proto/auth';
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
 
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';

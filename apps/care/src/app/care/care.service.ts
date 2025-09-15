@@ -6,8 +6,7 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateCareDto } from './dto/create-care.dto';
-import { UpdateCareDto } from './dto/update-care.dto';
+import { CreateCareDto, UpdateCareDto } from './dto';
 import { Care, Caregiver } from './care.model';
 import { AUTH_PACKAGE_NAME, UserServiceClient } from 'types/proto/auth';
 import { ClientGrpc } from '@nestjs/microservices';

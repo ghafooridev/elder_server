@@ -166,6 +166,10 @@ const config = {
         value: 'darwin-arm64',
         native: true,
       },
+      {
+        fromEnvVar: null,
+        value: 'linux-musl-arm64-openssl-3.0.x',
+      },
     ],
     previewFeatures: [],
     sourceFilePath:
@@ -190,9 +194,9 @@ const config = {
     },
   },
   inlineSchema:
-    'generator client {\n  provider = "prisma-client-js"\n  output   = "./generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n  url      = env("CARE_DATABASE_URL")\n}\n\nmodel CareCategory {\n  id          String   @id @default(cuid())\n  name        String   @unique // e.g. Caregiver, Nurse, Doctor\n  description String?\n  createdAt   DateTime @default(now())\n\n  // Relations\n  cares Care[]\n}\n\nmodel Care {\n  id          String   @id @default(cuid())\n  title       String\n  description String?\n  price       Float\n  durationMin Int? // e.g. 60 min\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  // Relations\n  categoryId String\n  category   CareCategory @relation(fields: [categoryId], references: [id])\n\n  caregiverId String\n\n  bookings Booking[]\n}\n\nmodel Booking {\n  id          String        @id @default(cuid())\n  status      BookingStatus @default(PENDING)\n  scheduledAt DateTime\n  createdAt   DateTime      @default(now())\n  updatedAt   DateTime      @updatedAt\n\n  // Relations\n  careId String\n  care   Care   @relation(fields: [careId], references: [id])\n\n  elderId  String\n  bookerId String\n}\n\nenum BookingStatus {\n  PENDING\n  CONFIRMED\n  CANCELLED\n  COMPLETED\n}\n',
+    'generator client {\n  provider      = "prisma-client-js"\n  output        = "./generated/prisma"\n  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]\n}\n\ndatasource db {\n  provider = "postgresql"\n  url      = env("CARE_DATABASE_URL")\n}\n\nmodel CareCategory {\n  id          String   @id @default(cuid())\n  name        String   @unique // e.g. Caregiver, Nurse, Doctor\n  description String?\n  createdAt   DateTime @default(now())\n\n  // Relations\n  cares Care[]\n}\n\nmodel Care {\n  id          String   @id @default(cuid())\n  title       String\n  description String?\n  price       Float\n  durationMin Int? // e.g. 60 min\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  // Relations\n  categoryId String\n  category   CareCategory @relation(fields: [categoryId], references: [id])\n\n  caregiverId String\n\n  bookings Booking[]\n}\n\nmodel Booking {\n  id          String        @id @default(cuid())\n  status      BookingStatus @default(PENDING)\n  scheduledAt DateTime\n  createdAt   DateTime      @default(now())\n  updatedAt   DateTime      @updatedAt\n\n  // Relations\n  careId String\n  care   Care   @relation(fields: [careId], references: [id])\n\n  elderId  String\n  bookerId String\n}\n\nenum BookingStatus {\n  PENDING\n  CONFIRMED\n  CANCELLED\n  COMPLETED\n}\n',
   inlineSchemaHash:
-    '7c0687a932f932f16037d26ac3abeefaa6222524ca844c5dfc086d281be38f8d',
+    'dad3e4e95b05bf72b5a03a2f9d3908d00e775540e01a608cb341f956ccddda44',
   copyEngine: true,
 };
 config.dirname = '/';
