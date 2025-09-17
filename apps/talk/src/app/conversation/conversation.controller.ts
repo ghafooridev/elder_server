@@ -18,7 +18,7 @@ import {
 import { ConversationService } from './conversation.service';
 import { CreateConversationDto } from './dto';
 import { AuthGuard } from '@elder/nestjs';
-import { TokenPayload } from 'apps/auth/src/app/auth/types/auth.type';
+import { User } from 'types/proto/auth';
 
 @ApiTags('conversations')
 @ApiBearerAuth()
@@ -35,9 +35,9 @@ export class ConversationController {
   @UseGuards(AuthGuard)
   async createConversation(
     @Body() dto: CreateConversationDto,
-    @Req() { user }: { user: TokenPayload }
+    @Req() req: { user: User }
   ) {
-    return this.conversationService.createConversation(user.userId, dto);
+    return this.conversationService.createConversation(req.user.id, dto);
   }
 
   @Get()
@@ -49,11 +49,12 @@ export class ConversationController {
     status: 200,
     description: 'Conversations retrieved successfully',
   })
+  @UseGuards(AuthGuard)
   async getUserConversations(
-    @Req() { user }: { user: TokenPayload },
+    @Req() { user }: { user: User },
     @Query('search') search?: string
   ) {
-    return this.conversationService.getUserConversations(user.userId, search);
+    return this.conversationService.getUserConversations(user.id, search);
   }
 
   @Get(':conversationId')
@@ -62,26 +63,28 @@ export class ConversationController {
     status: 200,
     description: 'Conversation retrieved successfully',
   })
+  @UseGuards(AuthGuard)
   async getConversationById(
     @Param('conversationId') conversationId: string,
-    @Req() { user }: { user: TokenPayload }
+    @Req() { user }: { user: User }
   ) {
     return this.conversationService.getConversationById(
       conversationId,
-      user.userId
+      user.id
     );
   }
 
   @Get(':conversationId/messages')
   @ApiOperation({ summary: 'Get all messages inside a conversation' })
   @ApiResponse({ status: 200, description: 'Messages retrieved successfully' })
+  @UseGuards(AuthGuard)
   async getConversationMessages(
     @Param('conversationId') conversationId: string,
-    @Req() { user }: { user: TokenPayload }
+    @Req() { user }: { user: User }
   ) {
     return this.conversationService.getConversationMessages(
       conversationId,
-      user.userId
+      user.id
     );
   }
 
@@ -94,13 +97,11 @@ export class ConversationController {
     status: 200,
     description: 'Conversation deleted successfully',
   })
+  @UseGuards(AuthGuard)
   async deleteConversation(
-    @Req() { user }: { user: TokenPayload },
+    @Req() { user }: { user: any },
     @Param('otherUserId') otherUserId: string
   ) {
-    return this.conversationService.deleteConversation(
-      user.userId,
-      otherUserId
-    );
+    return this.conversationService.deleteConversation(user.id, otherUserId);
   }
 }

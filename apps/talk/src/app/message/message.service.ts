@@ -94,4 +94,40 @@ export class MessageService {
 
     return this.prisma.message.delete({ where: { id: messageId } });
   }
+
+  async deleteMessageById(messageId: string): Promise<Message> {
+    const message = await this.prisma.message.findUnique({
+      where: { id: messageId },
+    });
+    if (!message) throw new NotFoundException('Message not found');
+
+    return this.prisma.message.delete({ where: { id: messageId } });
+  }
+
+  async updateMessage(data: {
+    messageId: string;
+    content?: string;
+    attachmentUrl?: string;
+  }): Promise<Message> {
+    const message = await this.prisma.message.findUnique({
+      where: { id: data.messageId },
+    });
+    if (!message) throw new NotFoundException('Message not found');
+
+    return this.prisma.message.update({
+      where: { id: data.messageId },
+      data: {
+        content: data.content ?? message.content,
+        attachmentUrl: data.attachmentUrl ?? message.attachmentUrl,
+      },
+    });
+  }
+
+  async findMessageById(messageId: string): Promise<Message> {
+    const message = await this.prisma.message.findUnique({
+      where: { id: messageId },
+    });
+    if (!message) throw new NotFoundException('Message not found');
+    return message;
+  }
 }

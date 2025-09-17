@@ -1,18 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsOptional, IsString, IsUUID, IsUrl } from 'class-validator';
+import { IsEnum, IsOptional, IsString, IsUrl } from 'class-validator';
 import { MessageType } from '@prisma-clients/talk';
 
 export class CreateMessageDto {
   @ApiProperty({ description: 'Conversation ID' })
-  @IsUUID()
+  @IsString()
   conversationId: string;
 
   @ApiProperty({ description: 'Sender user ID' })
-  @IsUUID()
+  @IsString()
   senderId: string;
 
   @ApiProperty({ description: 'Receiver user ID' })
-  @IsUUID()
+  @IsString()
   receiverId: string;
 
   @ApiProperty({ description: 'Message text content', required: false })

@@ -52,6 +52,9 @@
     "@nestjs/microservices": "^11.1.6",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/platform-socket.io": "^11.1.6",
+    "@nestjs/swagger": "^11.2.0",
+    "@nestjs/websockets": "^11.1.6",
     "@prisma/client": "^6.14.0",
     "axios": "^1.6.0",
     "bcryptjs": "^3.0.2",
@@ -63,8 +66,9 @@
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
-    "ts-proto": "^2.7.7",
-    "@nestjs/swagger": "^11.2.0"
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "ts-proto": "^2.7.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

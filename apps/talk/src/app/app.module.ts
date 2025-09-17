@@ -4,6 +4,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConversationModule } from './conversation/conversation.module';
 import { MessageModule } from './message/message.module';
 import { GrpcClientModule } from './grpc-client/grpc-client.module';
+import { WebSocketModule } from './websocket/websocket.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { GrpcClientModule } from './grpc-client/grpc-client.module';
     ConversationModule,
     MessageModule,
     GrpcClientModule,
+    WebSocketModule,
   ],
   providers: [],
 })
