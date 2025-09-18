@@ -19,6 +19,7 @@ import {
   ApiDeleteReminderDocs,
   ApiGetAllRemindersDocs,
 } from './doc/reminder.swagger';
+import { User } from 'types/proto/auth';
 
 @Controller('reminders')
 export class ReminderController {
@@ -29,7 +30,7 @@ export class ReminderController {
   @ApiCreateReminderDocs()
   async createReminder(
     @Body() createReminderDto: CreateReminderDto,
-    @Req() req: any
+    @Req() req: { user: User }
   ): Promise<Reminder> {
     const userId = req.user?.id;
     return this.reminderService.createReminder({
@@ -61,7 +62,7 @@ export class ReminderController {
   @Get()
   @UseGuards(AuthGuard)
   @ApiGetAllRemindersDocs()
-  async getAll(@Req() req: any): Promise<Reminder[]> {
+  async getAll(@Req() req: { user: User }): Promise<Reminder[]> {
     const userId = req.user?.id;
     return this.reminderService.getReminders(userId);
   }

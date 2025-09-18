@@ -18,6 +18,10 @@
     "care:build": "npx nx build care",
     "care:test": "npx nx test care",
     "care:lint": "npx nx lint care",
+    "product:serve": "npx nx serve product",
+    "product:build": "npx nx build product",
+    "product:test": "npx nx test product",
+    "product:lint": "npx nx lint product",
     "talk:serve": "npx nx serve talk",
     "talk:build": "npx nx build talk",
     "talk:test": "npx nx test talk",
@@ -26,10 +30,11 @@
     "reminder:api": "npx nx serve reminder --api",
     "care:api": "npx nx serve care --api",
     "talk:api": "npx nx serve talk --api",
-    "run-many:serve": "npx nx run-many --target=serve --projects=auth,reminder,care,talk --output-style=stream",
-    "run-many:build": "npx nx run-many --target=build --projects=auth,reminder,care,talk",
-    "run-many:test": "npx nx run-many --target=test --projects=auth,reminder,care,talk",
-    "run-many:lint": "npx nx run-many --target=lint --projects=auth,reminder,care,talk"
+    "product:api": "npx nx serve product --api",
+    "run-many:serve": "npx nx run-many --target=serve --projects=auth,reminder,care,talk,product --output-style=stream",
+    "run-many:build": "npx nx run-many --target=build --projects=auth,reminder,care,talk,product",
+    "run-many:test": "npx nx run-many --target=test --projects=auth,reminder,care,talk,product",
+    "run-many:lint": "npx nx run-many --target=lint --projects=auth,reminder,care,talk,product"
   },
   "nx": {
     "targets": {

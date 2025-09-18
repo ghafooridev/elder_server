@@ -25,19 +25,15 @@ cd my-workspace
 npm install -D @nx/nest
 
 # Generate a Nest.js application
-npx nx g @nx/nest:app api
+npx nx g @nx/nest:app ./apps/somethings
 
-# Generate another app (e.g., auth service)
-npx nx g @nx/nest:app auth
 
 # Generate a library (shared logic, DTOs, utils, etc.)
 npx nx g @nx/nest:lib shared
 
-# Generate a feature module inside libs
-npx nx g @nx/nest:lib users
 
 # Generate a module
-npx nx g @nx/nest:module users --project=api
+npx nx g @nx/nest:module ./apps/product/src/app/products/products.module.ts
 
 # Generate a service
 npx nx g @nx/nest:service users --project=api
