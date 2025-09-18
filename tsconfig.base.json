@@ -18,6 +18,7 @@
       "@elder/nestjs": ["libs/nestjs/src/index.ts"],
       "@prisma-clients/auth": ["apps/auth/prisma/generated/prisma"],
       "@prisma-clients/care": ["apps/care/prisma/generated/prisma"],
+      "@prisma-clients/file": ["apps/file/prisma/generated/prisma"],
       "@prisma-clients/product": ["apps/product/prisma/generated/prisma"],
       "@prisma-clients/reminder": ["apps/reminder/prisma/generated/prisma"],
       "@prisma-clients/talk": ["apps/talk/prisma/generated/prisma"]

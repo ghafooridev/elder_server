@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import {
-  CreateProductDto,
   UpdateProductDto,
   CreateProductReviewDto,
+  CreateProductWithFilesDto,
 } from './dto';
 import {
   Product,
@@ -17,27 +17,64 @@ import {
   AgeGroup,
 } from './products.model';
 import { Prisma } from '@prisma-clients/product';
+import { FILE_SERVICE_NAME } from 'types/proto/file';
+import { ClientGrpc } from '@nestjs/microservices';
+import { Inject } from '@nestjs/common';
+import { lastValueFrom } from 'rxjs';
+import { FileServiceClient } from 'types/proto/file';
+import * as multer from 'multer';
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly fileService: FileServiceClient;
 
-  async createProduct(createProductDto: CreateProductDto): Promise<Product> {
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(FILE_SERVICE_NAME) private readonly client: ClientGrpc
+  ) {
+    this.fileService =
+      this.client.getService<FileServiceClient>(FILE_SERVICE_NAME);
+  }
+
+  async createProduct(
+    createProductDto: CreateProductWithFilesDto,
+    files: { images?: multer.File[] }
+  ): Promise<Product> {
     try {
       // Check if SKU already exists
       const existingSku = await this.prisma.product.findUnique({
         where: { sku: createProductDto.sku },
       });
-
       if (existingSku) {
         throw new ConflictException(
           `Product with SKU '${createProductDto.sku}' already exists`
         );
       }
 
+      // Upload files if any
+      let imagesUrls: string[] = [];
+      if (files?.images?.length) {
+        console.log(files.images);
+        const uploadPromises = files.images.map((file) =>
+          lastValueFrom(
+            this.fileService.uploadFile({
+              fileName: file.originalname,
+              fileData: file.buffer,
+            })
+          ).catch((err) => {
+            console.error('File service error:', err);
+            throw new BadRequestException('Failed to upload file.');
+          })
+        );
+        const results = await Promise.all(uploadPromises);
+        console.log(results);
+        imagesUrls = results.map((r) => r.fileUrl);
+      }
+
       const product = await this.prisma.product.create({
         data: {
           ...createProductDto,
+          images: imagesUrls,
           price: new Prisma.Decimal(createProductDto.price),
           weight: createProductDto.weight
             ? new Prisma.Decimal(createProductDto.weight)
@@ -46,17 +83,12 @@ export class ProductsService {
             ? new Prisma.Decimal(createProductDto.shippingWeight)
             : null,
         },
-        include: {
-          reviews: true,
-          orders: true,
-        },
+        include: { reviews: true, orders: true },
       });
 
       return this.mapToProduct(product);
     } catch (error) {
-      if (error instanceof ConflictException) {
-        throw error;
-      }
+      if (error instanceof ConflictException) throw error;
       throw new BadRequestException('Failed to create product');
     }
   }

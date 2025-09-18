@@ -42,7 +42,8 @@
         "apps/reminder-e2e/**/*",
         "apps/care-e2e/**/*",
         "apps/talk-e2e/**/*",
-        "apps/product-e2e/**/*"
+        "apps/product-e2e/**/*",
+        "apps/file-e2e/**/*"
       ]
     }
   ],

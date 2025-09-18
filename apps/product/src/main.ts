@@ -35,7 +35,7 @@ async function bootstrap() {
   const port = config.getOrThrow('PRODUCT_PORT');
   await app.listen(port);
   Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
+    `🚀 Product application is running on: http://localhost:${port}/${globalPrefix}`
   );
 }
 

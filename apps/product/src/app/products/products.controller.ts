@@ -11,15 +11,18 @@ import {
   HttpStatus,
   ParseIntPipe,
   UseGuards,
+  UseInterceptors,
+  UploadedFiles,
   Req,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { ApiTags, ApiConsumes } from '@nestjs/swagger';
 import { AuthGuard } from '@elder/nestjs';
 import { ProductsService } from './products.service';
 import {
-  CreateProductDto,
   UpdateProductDto,
   CreateProductReviewDto,
+  CreateProductWithFilesDto,
 } from './dto';
 import {
   Product,
@@ -43,6 +46,7 @@ import {
   ApiCreateProductReviewDocs,
   ApiGetProductReviewsDocs,
 } from './doc/product.swagger';
+import * as multer from 'multer';
 
 @ApiTags('Products')
 @Controller('products')
@@ -51,12 +55,15 @@ export class ProductsController {
 
   @Post()
   @UseGuards(AuthGuard)
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'images', maxCount: 10 }]))
+  @ApiConsumes('multipart/form-data')
   @HttpCode(HttpStatus.CREATED)
   @ApiCreateProductDocs()
   async createProduct(
-    @Body() createProductDto: CreateProductDto
+    @Body() createProductDto: CreateProductWithFilesDto,
+    @UploadedFiles() files: { images: multer.File[] }
   ): Promise<Product> {
-    return this.productsService.createProduct(createProductDto);
+    return this.productsService.createProduct(createProductDto, files);
   }
 
   @Get()
@@ -140,10 +147,7 @@ export class ProductsController {
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiDeleteProductDocs()
-  async deleteProduct(
-    @Param('id') id: string,
-    @Req() req: { user: User }
-  ): Promise<{ message: string }> {
+  async deleteProduct(@Param('id') id: string): Promise<{ message: string }> {
     await this.productsService.deleteProduct(id);
     return { message: 'Product deleted successfully' };
   }
