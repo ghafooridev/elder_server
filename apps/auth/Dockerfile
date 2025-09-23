@@ -63,4 +63,5 @@ USER nestjs
 
 EXPOSE 3001
 
-CMD ["node", "main.js"]
+# Run migrations before starting app
+CMD ["sh", "-c", "npx prisma migrate deploy --schema=./apps/auth/prisma/schema.prisma && node main.js"]

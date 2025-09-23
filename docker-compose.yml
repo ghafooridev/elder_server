@@ -80,6 +80,60 @@ services:
     networks:
       - backend-net
 
+  ec_product:
+    build:
+      context: .
+      dockerfile: apps/product/Dockerfile
+    container_name: ec_product
+    restart: unless-stopped
+    environment:
+      PRODUCT_DATABASE_URL: ${PRODUCT_DATABASE_URL}
+      PORT: ${PRODUCT_PORT}
+      PRODUCT_PORT: ${PRODUCT_PORT}
+    ports:
+      - '${PRODUCT_PORT}:${PRODUCT_PORT}'
+    depends_on:
+      - postgres
+    networks:
+      - backend-net
+
+  ec_file:
+    build:
+      context: .
+      dockerfile: apps/file/Dockerfile
+    container_name: ec_file
+    restart: unless-stopped
+    environment:
+      FILE_SERVER_URL: ${FILE_SERVER_URL}
+      FILE_SERVER_KEY: ${FILE_SERVER_KEY}
+      FILE_SERVER_SERVICE_ROLE_KEY: ${FILE_SERVER_SERVICE_ROLE_KEY}
+      FILE_SERVER_BUCKET: ${FILE_SERVER_BUCKET}
+      FILE_SERVER_ENDPOINT: ${FILE_SERVER_ENDPOINT}
+      ACCESS_KEY_ID: ${ACCESS_KEY_ID}
+      SECRET_ACCESS_KEY: ${SECRET_ACCESS_KEY}
+      PORT: ${FILE_PORT}
+    ports:
+      - '${FILE_PORT}:${FILE_PORT}'
+    networks:
+      - backend-net
+
+  ec_talk:
+    build:
+      context: .
+      dockerfile: apps/talk/Dockerfile
+    container_name: ec_talk
+    restart: unless-stopped
+    environment:
+      TALK_DATABASE_URL: ${TALK_DATABASE_URL}
+      PORT: ${TALK_PORT}
+      TALK_PORT: ${TALK_PORT}
+    ports:
+      - '${TALK_PORT}:${TALK_PORT}'
+    depends_on:
+      - postgres
+    networks:
+      - backend-net
+
 volumes:
   pgdata:
 

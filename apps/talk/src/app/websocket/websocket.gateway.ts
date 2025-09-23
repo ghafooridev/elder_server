@@ -24,7 +24,6 @@ import {
   SendMessageDto,
   UpdateMessageDto,
   DeleteMessageDto,
-  TypingIndicatorDto,
   MessageStatusDto,
 } from './dto';
 import { WsAuthGuard } from '@elder/nestjs';

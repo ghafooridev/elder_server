@@ -52,4 +52,5 @@ USER nestjs
 
 EXPOSE 3002
 
-CMD ["node", "main.js"]
+# Run migrations before starting app
+CMD ["sh", "-c", "npx prisma migrate deploy --schema=./apps/reminder/prisma/schema.prisma && node main.js"]
