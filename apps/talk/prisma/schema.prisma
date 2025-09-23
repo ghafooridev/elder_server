@@ -6,7 +6,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("TALK_DATABASE_URL")
+  url      = env("PRISMA_TALK_DATABASE_URL")
 }
 
 /// Enum for message status
