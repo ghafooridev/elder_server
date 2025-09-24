@@ -135,6 +135,23 @@ services:
     networks:
       - backend-net
 
+  ec_assistant:
+    build:
+      context: .
+      dockerfile: apps/assistant/Dockerfile
+    container_name: ec_assistant
+    restart: unless-stopped
+    environment:
+      ASSISTANT_DATABASE_URL: ${ASSISTANT_DATABASE_URL}
+      PORT: ${ASSISTANT_PORT}
+      ASSISTANT_PORT: ${ASSISTANT_PORT}
+    ports:
+      - '${ASSISTANT_PORT}:${ASSISTANT_PORT}'
+    depends_on:
+      - postgres
+    networks:
+      - backend-net
+
 volumes:
   pgdata:
 

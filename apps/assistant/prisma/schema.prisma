@@ -1,0 +1,145 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "./generated/prisma"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("PRISMA_ASSISTANT_DATABASE_URL")
+}
+
+/**
+ * Enums
+ */
+enum DocumentType {
+  BLOOD_REPORT
+  LAB_REPORT
+  PRESCRIPTION
+  INVOICE
+  OTHER
+}
+
+enum JobStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+  CANCELED
+}
+
+enum AnalysisStatus {
+  PENDING
+  PROCESSING
+  DONE
+  FAILED
+}
+
+/**
+ * Models
+ */
+model Document {
+  id            String       @id @default(cuid())
+  userId        String // uploader (elder)
+  caregiverId   String? // optional: caregiver to share
+  fileServiceId String? // id in file storage service
+  fileUrl       String // Supabase or other file URL
+  fileName      String?
+  mimeType      String?
+  size          Int?
+  type          DocumentType @default(OTHER)
+  uploadedAt    DateTime     @default(now())
+  processed     Boolean      @default(false)
+  metadata      Json? // any extra info (scanner, source, etc.)
+
+  processingJobs ProcessingJob[]
+  ocrResult      OcrResult?
+  analysis       Analysis[]
+  shares         DocumentShare[]
+
+  @@index([userId])
+  @@index([caregiverId])
+  @@index([fileServiceId])
+}
+
+model ProcessingJob {
+  id         String    @id @default(uuid())
+  document   Document  @relation(fields: [documentId], references: [id])
+  documentId String
+  status     JobStatus @default(PENDING)
+  attempts   Int       @default(0)
+  error      String?
+  processor  String?
+  startedAt  DateTime?
+  finishedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([documentId, status])
+}
+
+model OcrResult {
+  id         String     @id @default(cuid())
+  document   Document   @relation(fields: [documentId], references: [id])
+  documentId String     @unique
+  rawJson    Json
+  plainText  String
+  language   String?
+  pages      Int?
+  confidence Float?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  analysis   Analysis[]
+}
+
+model Analysis {
+  id          String         @id @default(cuid())
+  document    Document       @relation(fields: [documentId], references: [id])
+  documentId  String
+  ocrResult   OcrResult?     @relation(fields: [ocrResultId], references: [id])
+  ocrResultId String?
+  model       String
+  prompt      String
+  response    Json
+  summary     String?
+  insights    Json?
+  vitals      Json?
+  graphs      Json?
+  status      AnalysisStatus @default(PENDING)
+  confidence  Float?
+  requestedBy String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  VitalParam  VitalParam[]
+
+  @@index([documentId])
+  @@index([requestedBy])
+}
+
+model VitalParam {
+  id         String    @id @default(cuid())
+  analysis   Analysis  @relation(fields: [analysisId], references: [id])
+  analysisId String
+  name       String
+  value      Float
+  unit       String?
+  recordedAt DateTime?
+  metadata   Json?
+  createdAt  DateTime  @default(now())
+
+  @@index([analysisId, name])
+}
+
+model DocumentShare {
+  id          String    @id @default(cuid())
+  document    Document  @relation(fields: [documentId], references: [id])
+  documentId  String
+  caregiverId String
+  sent        Boolean   @default(false)
+  sentAt      DateTime?
+  viewedAt    DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@index([documentId])
+  @@index([caregiverId])
+}

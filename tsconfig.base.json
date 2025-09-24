@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@elder/nestjs": ["libs/nestjs/src/index.ts"],
+      "@prisma-clients/assistant": ["apps/assistant/prisma/generated/prisma"],
       "@prisma-clients/auth": ["apps/auth/prisma/generated/prisma"],
       "@prisma-clients/care": ["apps/care/prisma/generated/prisma"],
       "@prisma-clients/file": ["apps/file/prisma/generated/prisma"],

@@ -3,3 +3,4 @@ CREATE DATABASE ec_reminder;
 CREATE DATABASE ec_care;
 CREATE DATABASE ec_product;
 CREATE DATABASE ec_talk;
+CREATE DATABASE ec_assistant;
