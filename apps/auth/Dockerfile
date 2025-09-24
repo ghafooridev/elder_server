@@ -18,7 +18,7 @@ COPY tsconfig.base.json ./
 COPY eslint.config.mjs ./
 COPY .prettierrc ./
 
-# Install dependencies
+# Install dependencies (with dev for building)
 RUN npm ci --only=production=false
 
 # Copy apps, libs, and proto files
@@ -56,8 +56,8 @@ COPY --from=builder --chown=nestjs:nodejs /app/dist/apps/auth ./
 COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nestjs:nodejs /app/package*.json ./
 
-# Copy Prisma generated files and engines
-COPY --from=builder --chown=nestjs:nodejs /app/apps/auth/prisma/generated ./apps/auth/prisma/generated
+# Copy Prisma schema + generated client
+COPY --from=builder --chown=nestjs:nodejs /app/apps/auth/prisma ./apps/auth/prisma
 
 USER nestjs
 

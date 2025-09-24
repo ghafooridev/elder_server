@@ -8,12 +8,12 @@ export class FileService {
   private readonly bucket: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.bucket = this.configService.getOrThrow<string>('SUPABASE_BUCKET');
-    const url = this.configService.getOrThrow<string>('SUPABASE_URL');
+    this.bucket = this.configService.getOrThrow<string>('FILE_SERVER_BUCKET');
+    const url = this.configService.getOrThrow<string>('FILE_SERVER_URL');
     // Prefer service role key on the server to avoid RLS issues for uploads
     const serviceKey =
-      this.configService.get<string>('SUPABASE_SERVICE_ROLE_KEY') ||
-      this.configService.getOrThrow<string>('SUPABASE_KEY');
+      this.configService.get<string>('FILE_SERVER_SERVICE_ROLE_KEY') ||
+      this.configService.getOrThrow<string>('FILE_SERVER_KEY');
     this.supabase = createClient(url, serviceKey);
   }
 

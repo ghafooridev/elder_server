@@ -3,6 +3,6 @@ import { ConfigService } from '@nestjs/config';
 
 export const supabase = (configService: ConfigService) =>
   createClient(
-    configService.getOrThrow<string>('SUPABASE_URL'),
-    configService.getOrThrow<string>('SUPABASE_KEY')
+    configService.getOrThrow<string>('FILE_SERVER_URL'),
+    configService.getOrThrow<string>('FILE_SERVER_KEY')
   );

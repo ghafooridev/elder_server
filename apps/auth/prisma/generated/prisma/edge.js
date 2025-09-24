@@ -225,15 +225,15 @@ const config = {
   inlineDatasources: {
     db: {
       url: {
-        fromEnvVar: 'AUTH_DATABASE_URL',
+        fromEnvVar: 'PRISMA_AUTH_DATABASE_URL',
         value: null,
       },
     },
   },
   inlineSchema:
-    'generator client {\n  provider      = "prisma-client-js"\n  output        = "./generated/prisma"\n  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]\n}\n\ndatasource db {\n  provider = "postgresql"\n  url      = env("AUTH_DATABASE_URL")\n}\n\nenum GenderEnum {\n  MALE\n  FEMALE\n  NONE\n}\n\nenum RoleEnum {\n  ADMIN\n  ELDER\n  RELATIVE\n  CAREGIVER\n}\n\nenum CaregiverType {\n  CAREGIVER\n  NURSE\n  DOCTOR\n  PHYSIOTHERAPIST\n  OTHER\n}\n\nmodel User {\n  id              String     @id @default(cuid())\n  firstName       String?\n  lastName        String?\n  avatar          String?\n  nationalityCode String?\n  mobileNumber    String?    @unique()\n  email           String?    @unique()\n  password        String?\n  gender          GenderEnum @default(NONE)\n  role            RoleEnum   @default(ELDER)\n  dateOfBirth     DateTime?\n  enabled         Boolean    @default(true)\n\n  caregiver Caregiver?\n  elder     Elder?\n  relative  Relative?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([mobileNumber])\n  @@index([email])\n}\n\nmodel Elder {\n  userId                   String   @id\n  bloodType                String?\n  medicalConditions        String[]\n  allergies                String[]\n  medications              String[]\n  disability               String?\n  mobilityStatus           String?\n  cognitiveStatus          String?\n  maritalStatus            String?\n  occupation               String?\n  languages                String[]\n  religion                 String?\n  dietaryNeeds             String?\n  emergencyContactName     String?\n  emergencyContactPhone    String?\n  emergencyContactRelation String?\n\n  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)\n  relative Relative[]\n}\n\nmodel Caregiver {\n  userId          String        @id\n  caregiverType   CaregiverType\n  specialization  String?\n  licenseNumber   String?\n  experienceYears Int?\n  languages       String[]\n  available       Boolean       @default(true)\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n}\n\nmodel Relative {\n  userId              String @id\n  relationshipToElder String\n\n  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n  elderId String\n  elder   Elder  @relation(fields: [elderId], references: [userId])\n\n  @@index([elderId])\n}\n',
+    'generator client {\n  provider      = "prisma-client-js"\n  output        = "./generated/prisma"\n  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]\n}\n\ndatasource db {\n  provider = "postgresql"\n  url      = env("PRISMA_AUTH_DATABASE_URL")\n}\n\nenum GenderEnum {\n  MALE\n  FEMALE\n  NONE\n}\n\nenum RoleEnum {\n  ADMIN\n  ELDER\n  RELATIVE\n  CAREGIVER\n}\n\nenum CaregiverType {\n  CAREGIVER\n  NURSE\n  DOCTOR\n  PHYSIOTHERAPIST\n  OTHER\n}\n\nmodel User {\n  id              String     @id @default(cuid())\n  firstName       String?\n  lastName        String?\n  avatar          String?\n  nationalityCode String?\n  mobileNumber    String?    @unique()\n  email           String?    @unique()\n  password        String?\n  gender          GenderEnum @default(NONE)\n  role            RoleEnum   @default(ELDER)\n  dateOfBirth     DateTime?\n  enabled         Boolean    @default(true)\n\n  caregiver Caregiver?\n  elder     Elder?\n  relative  Relative?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([mobileNumber])\n  @@index([email])\n}\n\nmodel Elder {\n  userId                   String   @id\n  bloodType                String?\n  medicalConditions        String[]\n  allergies                String[]\n  medications              String[]\n  disability               String?\n  mobilityStatus           String?\n  cognitiveStatus          String?\n  maritalStatus            String?\n  occupation               String?\n  languages                String[]\n  religion                 String?\n  dietaryNeeds             String?\n  emergencyContactName     String?\n  emergencyContactPhone    String?\n  emergencyContactRelation String?\n\n  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)\n  relative Relative[]\n}\n\nmodel Caregiver {\n  userId          String        @id\n  caregiverType   CaregiverType\n  specialization  String?\n  licenseNumber   String?\n  experienceYears Int?\n  languages       String[]\n  available       Boolean       @default(true)\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n}\n\nmodel Relative {\n  userId              String @id\n  relationshipToElder String\n\n  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n  elderId String\n  elder   Elder  @relation(fields: [elderId], references: [userId])\n\n  @@index([elderId])\n}\n',
   inlineSchemaHash:
-    '9679904f87c4cb80d158103dbcded40265043391ba6c24343630328bdbf6ed89',
+    '9c7df13253b1d6db980aafa86040ecdd8d94c17892d6f50678175bcc51256527',
   copyEngine: true,
 };
 config.dirname = '/';
@@ -247,11 +247,12 @@ config.compilerWasm = undefined;
 
 config.injectableEdgeEnv = () => ({
   parsed: {
-    AUTH_DATABASE_URL:
-      (typeof globalThis !== 'undefined' && globalThis['AUTH_DATABASE_URL']) ||
+    PRISMA_AUTH_DATABASE_URL:
+      (typeof globalThis !== 'undefined' &&
+        globalThis['PRISMA_AUTH_DATABASE_URL']) ||
       (typeof process !== 'undefined' &&
         process.env &&
-        process.env.AUTH_DATABASE_URL) ||
+        process.env.PRISMA_AUTH_DATABASE_URL) ||
       undefined,
   },
 });

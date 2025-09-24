@@ -160,6 +160,10 @@ const config = {
         value: 'darwin-arm64',
         native: true,
       },
+      {
+        fromEnvVar: null,
+        value: 'linux-musl-arm64-openssl-3.0.x',
+      },
     ],
     previewFeatures: [],
     sourceFilePath:
@@ -177,15 +181,15 @@ const config = {
   inlineDatasources: {
     db: {
       url: {
-        fromEnvVar: 'REMINDER_DATABASE_URL',
+        fromEnvVar: 'PRISMA_REMINDER_DATABASE_URL',
         value: null,
       },
     },
   },
   inlineSchema:
-    'generator client {\n  provider = "prisma-client-js"\n  output   = "./generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n  url      = env("REMINDER_DATABASE_URL")\n}\n\nenum REMINDER_STATUS {\n  PENDING\n  COMPLETED\n  MISSED\n}\n\nenum REMINDER_TYPE {\n  MEDICINE\n  APPOINTMENT\n  VITALS\n  WORKOUT\n  MEAL\n  HYDRATION\n  SLEEP\n  WEIGHT\n  OTHER\n}\n\nmodel Reminder {\n  id          String          @id @default(cuid())\n  title       String?\n  description String?\n  status      REMINDER_STATUS @default(PENDING)\n  type        REMINDER_TYPE   @default(OTHER)\n  date        DateTime?\n  enabled     Boolean         @default(true)\n  userId      String\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([title])\n}\n',
+    'generator client {\n  provider      = "prisma-client-js"\n  output        = "./generated/prisma"\n  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]\n}\n\ndatasource db {\n  provider = "postgresql"\n  url      = env("PRISMA_REMINDER_DATABASE_URL")\n}\n\nenum REMINDER_STATUS {\n  PENDING\n  COMPLETED\n  MISSED\n}\n\nenum REMINDER_TYPE {\n  MEDICINE\n  APPOINTMENT\n  VITALS\n  WORKOUT\n  MEAL\n  HYDRATION\n  SLEEP\n  WEIGHT\n  OTHER\n}\n\nmodel Reminder {\n  id          String          @id @default(cuid())\n  title       String?\n  description String?\n  status      REMINDER_STATUS @default(PENDING)\n  type        REMINDER_TYPE   @default(OTHER)\n  date        DateTime?\n  enabled     Boolean         @default(true)\n  userId      String\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([title])\n}\n',
   inlineSchemaHash:
-    'f46fa9ccbd3f6b779043ef73f1e852a3a57170c6d3ae1cdacafcc5252303f463',
+    'a70ce7c74ef1a37c1cb6ad5f327c3d6fb24868155ebc330d72502a3636f0a072',
   copyEngine: true,
 };
 
@@ -231,6 +235,13 @@ path.join(__dirname, 'libquery_engine-darwin-arm64.dylib.node');
 path.join(
   process.cwd(),
   'prisma/generated/prisma/libquery_engine-darwin-arm64.dylib.node'
+);
+
+// file annotations for bundling tools to include these files
+path.join(__dirname, 'libquery_engine-linux-musl-arm64-openssl-3.0.x.so.node');
+path.join(
+  process.cwd(),
+  'prisma/generated/prisma/libquery_engine-linux-musl-arm64-openssl-3.0.x.so.node'
 );
 // file annotations for bundling tools to include these files
 path.join(__dirname, 'schema.prisma');

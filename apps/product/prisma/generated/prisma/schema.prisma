@@ -6,7 +6,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("PRODUCT_DATABASE_URL")
+  url      = env("PRISMA_PRODUCT_DATABASE_URL")
 }
 
 model Product {

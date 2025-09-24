@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "public"."BookingStatus" AS ENUM ('PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED');
+CREATE TYPE "public"."BookingStatus" AS ENUM ('PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED');
 
 -- CreateTable
 CREATE TABLE "public"."CareCategory" (
@@ -21,7 +21,7 @@ CREATE TABLE "public"."Care" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "categoryId" TEXT NOT NULL,
-    "providerId" TEXT NOT NULL,
+    "caregiverId" TEXT NOT NULL,
 
     CONSTRAINT "Care_pkey" PRIMARY KEY ("id")
 );
@@ -34,7 +34,8 @@ CREATE TABLE "public"."Booking" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "careId" TEXT NOT NULL,
-    "clientId" TEXT NOT NULL,
+    "elderId" TEXT NOT NULL,
+    "bookerId" TEXT NOT NULL,
 
     CONSTRAINT "Booking_pkey" PRIMARY KEY ("id")
 );
