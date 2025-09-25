@@ -14,6 +14,7 @@ import { lastValueFrom } from 'rxjs';
 import * as multer from 'multer';
 import { Prisma } from '@prisma-clients/assistant';
 import { OcrService } from '../ocr/ocr.service';
+import { AnalysisService } from '../analysis/analysis.service';
 
 @Injectable()
 export class DocumentService {
@@ -22,7 +23,8 @@ export class DocumentService {
   constructor(
     private readonly prisma: PrismaService,
     @Inject(FILE_SERVICE_NAME) private readonly client: ClientGrpc,
-    private readonly ocrService: OcrService
+    private readonly ocrService: OcrService,
+    private readonly analysisService: AnalysisService
   ) {
     this.fileService =
       this.client.getService<FileServiceClient>(FILE_SERVICE_NAME);
@@ -62,6 +64,24 @@ export class DocumentService {
 
       // 3️⃣ Delegate OCR processing to OCR service
       await this.ocrService.processDocument(document.id);
+
+      // 4️⃣ Trigger AI analysis using Hugging Face via AnalysisService
+      // Defaults can be adjusted or sourced from env/config
+      const defaultModel =
+        process.env.HF_DEFAULT_MODEL || 'Qwen/Qwen2.5-7B-Instruct';
+      const defaultPrompt =
+        'Analyze the patient report. Summarize key findings, flag out-of-range metrics, and provide actionable recommendations (diet, lifestyle, when to see a doctor).';
+      try {
+        await this.analysisService.analyzeDocument(
+          document.id,
+          defaultModel,
+          defaultPrompt,
+          userId
+        );
+      } catch (analysisErr) {
+        // Do not fail document creation if analysis fails; log for observability
+        console.error('Auto-analysis failed:', analysisErr);
+      }
 
       return document;
     } catch (error) {
