@@ -40,3 +40,6 @@ coverage/
 *.pid
 *.seed
 *.tsbuildinfo
+
+# Prisma generated client across all apps
+**/prisma/generated/
