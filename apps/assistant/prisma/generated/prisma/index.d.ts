@@ -4624,6 +4624,7 @@ export namespace Prisma {
     language: number;
     pages: number;
     confidence: number;
+    structured: number;
     createdAt: number;
     updatedAt: number;
     _all: number;
@@ -4669,6 +4670,7 @@ export namespace Prisma {
     language?: true;
     pages?: true;
     confidence?: true;
+    structured?: true;
     createdAt?: true;
     updatedAt?: true;
     _all?: true;
@@ -4773,6 +4775,7 @@ export namespace Prisma {
     language: string | null;
     pages: number | null;
     confidence: number | null;
+    structured: JsonValue | null;
     createdAt: Date;
     updatedAt: Date;
     _count: OcrResultCountAggregateOutputType | null;
@@ -4806,6 +4809,7 @@ export namespace Prisma {
       language?: boolean;
       pages?: boolean;
       confidence?: boolean;
+      structured?: boolean;
       createdAt?: boolean;
       updatedAt?: boolean;
       document?: boolean | DocumentDefaultArgs<ExtArgs>;
@@ -4826,6 +4830,7 @@ export namespace Prisma {
       language?: boolean;
       pages?: boolean;
       confidence?: boolean;
+      structured?: boolean;
       createdAt?: boolean;
       updatedAt?: boolean;
       document?: boolean | DocumentDefaultArgs<ExtArgs>;
@@ -4844,6 +4849,7 @@ export namespace Prisma {
       language?: boolean;
       pages?: boolean;
       confidence?: boolean;
+      structured?: boolean;
       createdAt?: boolean;
       updatedAt?: boolean;
       document?: boolean | DocumentDefaultArgs<ExtArgs>;
@@ -4859,6 +4865,7 @@ export namespace Prisma {
     language?: boolean;
     pages?: boolean;
     confidence?: boolean;
+    structured?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
   };
@@ -4873,6 +4880,7 @@ export namespace Prisma {
     | 'language'
     | 'pages'
     | 'confidence'
+    | 'structured'
     | 'createdAt'
     | 'updatedAt',
     ExtArgs['result']['ocrResult']
@@ -4912,6 +4920,7 @@ export namespace Prisma {
         language: string | null;
         pages: number | null;
         confidence: number | null;
+        structured: Prisma.JsonValue | null;
         createdAt: Date;
         updatedAt: Date;
       },
@@ -5536,6 +5545,7 @@ export namespace Prisma {
     readonly language: FieldRef<'OcrResult', 'String'>;
     readonly pages: FieldRef<'OcrResult', 'Int'>;
     readonly confidence: FieldRef<'OcrResult', 'Float'>;
+    readonly structured: FieldRef<'OcrResult', 'Json'>;
     readonly createdAt: FieldRef<'OcrResult', 'DateTime'>;
     readonly updatedAt: FieldRef<'OcrResult', 'DateTime'>;
   }
@@ -10360,6 +10370,7 @@ export namespace Prisma {
     language: 'language';
     pages: 'pages';
     confidence: 'confidence';
+    structured: 'structured';
     createdAt: 'createdAt';
     updatedAt: 'updatedAt';
   };
@@ -10843,6 +10854,7 @@ export namespace Prisma {
     language?: StringNullableFilter<'OcrResult'> | string | null;
     pages?: IntNullableFilter<'OcrResult'> | number | null;
     confidence?: FloatNullableFilter<'OcrResult'> | number | null;
+    structured?: JsonNullableFilter<'OcrResult'>;
     createdAt?: DateTimeFilter<'OcrResult'> | Date | string;
     updatedAt?: DateTimeFilter<'OcrResult'> | Date | string;
     document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>;
@@ -10857,6 +10869,7 @@ export namespace Prisma {
     language?: SortOrderInput | SortOrder;
     pages?: SortOrderInput | SortOrder;
     confidence?: SortOrderInput | SortOrder;
+    structured?: SortOrderInput | SortOrder;
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
     document?: DocumentOrderByWithRelationInput;
@@ -10875,6 +10888,7 @@ export namespace Prisma {
       language?: StringNullableFilter<'OcrResult'> | string | null;
       pages?: IntNullableFilter<'OcrResult'> | number | null;
       confidence?: FloatNullableFilter<'OcrResult'> | number | null;
+      structured?: JsonNullableFilter<'OcrResult'>;
       createdAt?: DateTimeFilter<'OcrResult'> | Date | string;
       updatedAt?: DateTimeFilter<'OcrResult'> | Date | string;
       document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>;
@@ -10891,6 +10905,7 @@ export namespace Prisma {
     language?: SortOrderInput | SortOrder;
     pages?: SortOrderInput | SortOrder;
     confidence?: SortOrderInput | SortOrder;
+    structured?: SortOrderInput | SortOrder;
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
     _count?: OcrResultCountOrderByAggregateInput;
@@ -10915,6 +10930,7 @@ export namespace Prisma {
     language?: StringNullableWithAggregatesFilter<'OcrResult'> | string | null;
     pages?: IntNullableWithAggregatesFilter<'OcrResult'> | number | null;
     confidence?: FloatNullableWithAggregatesFilter<'OcrResult'> | number | null;
+    structured?: JsonNullableWithAggregatesFilter<'OcrResult'>;
     createdAt?: DateTimeWithAggregatesFilter<'OcrResult'> | Date | string;
     updatedAt?: DateTimeWithAggregatesFilter<'OcrResult'> | Date | string;
   };
@@ -11466,6 +11482,7 @@ export namespace Prisma {
     language?: string | null;
     pages?: number | null;
     confidence?: number | null;
+    structured?: NullableJsonNullValueInput | InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     document: DocumentCreateNestedOneWithoutOcrResultInput;
@@ -11480,6 +11497,7 @@ export namespace Prisma {
     language?: string | null;
     pages?: number | null;
     confidence?: number | null;
+    structured?: NullableJsonNullValueInput | InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     analysis?: AnalysisUncheckedCreateNestedManyWithoutOcrResultInput;
@@ -11492,6 +11510,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null;
     pages?: NullableIntFieldUpdateOperationsInput | number | null;
     confidence?: NullableFloatFieldUpdateOperationsInput | number | null;
+    structured?: NullableJsonNullValueInput | InputJsonValue;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     document?: DocumentUpdateOneRequiredWithoutOcrResultNestedInput;
@@ -11506,6 +11525,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null;
     pages?: NullableIntFieldUpdateOperationsInput | number | null;
     confidence?: NullableFloatFieldUpdateOperationsInput | number | null;
+    structured?: NullableJsonNullValueInput | InputJsonValue;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     analysis?: AnalysisUncheckedUpdateManyWithoutOcrResultNestedInput;
@@ -11519,6 +11539,7 @@ export namespace Prisma {
     language?: string | null;
     pages?: number | null;
     confidence?: number | null;
+    structured?: NullableJsonNullValueInput | InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
   };
@@ -11530,6 +11551,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null;
     pages?: NullableIntFieldUpdateOperationsInput | number | null;
     confidence?: NullableFloatFieldUpdateOperationsInput | number | null;
+    structured?: NullableJsonNullValueInput | InputJsonValue;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
   };
@@ -11542,6 +11564,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null;
     pages?: NullableIntFieldUpdateOperationsInput | number | null;
     confidence?: NullableFloatFieldUpdateOperationsInput | number | null;
+    structured?: NullableJsonNullValueInput | InputJsonValue;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
   };
@@ -12366,6 +12389,7 @@ export namespace Prisma {
     language?: SortOrder;
     pages?: SortOrder;
     confidence?: SortOrder;
+    structured?: SortOrder;
     createdAt?: SortOrder;
     updatedAt?: SortOrder;
   };
@@ -13820,6 +13844,7 @@ export namespace Prisma {
     language?: string | null;
     pages?: number | null;
     confidence?: number | null;
+    structured?: NullableJsonNullValueInput | InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     analysis?: AnalysisCreateNestedManyWithoutOcrResultInput;
@@ -13832,6 +13857,7 @@ export namespace Prisma {
     language?: string | null;
     pages?: number | null;
     confidence?: number | null;
+    structured?: NullableJsonNullValueInput | InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     analysis?: AnalysisUncheckedCreateNestedManyWithoutOcrResultInput;
@@ -13998,6 +14024,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null;
     pages?: NullableIntFieldUpdateOperationsInput | number | null;
     confidence?: NullableFloatFieldUpdateOperationsInput | number | null;
+    structured?: NullableJsonNullValueInput | InputJsonValue;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     analysis?: AnalysisUpdateManyWithoutOcrResultNestedInput;
@@ -14010,6 +14037,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null;
     pages?: NullableIntFieldUpdateOperationsInput | number | null;
     confidence?: NullableFloatFieldUpdateOperationsInput | number | null;
+    structured?: NullableJsonNullValueInput | InputJsonValue;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     analysis?: AnalysisUncheckedUpdateManyWithoutOcrResultNestedInput;
@@ -14433,6 +14461,7 @@ export namespace Prisma {
     language?: string | null;
     pages?: number | null;
     confidence?: number | null;
+    structured?: NullableJsonNullValueInput | InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     document: DocumentCreateNestedOneWithoutOcrResultInput;
@@ -14446,6 +14475,7 @@ export namespace Prisma {
     language?: string | null;
     pages?: number | null;
     confidence?: number | null;
+    structured?: NullableJsonNullValueInput | InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
   };
@@ -14576,6 +14606,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null;
     pages?: NullableIntFieldUpdateOperationsInput | number | null;
     confidence?: NullableFloatFieldUpdateOperationsInput | number | null;
+    structured?: NullableJsonNullValueInput | InputJsonValue;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     document?: DocumentUpdateOneRequiredWithoutOcrResultNestedInput;
@@ -14589,6 +14620,7 @@ export namespace Prisma {
     language?: NullableStringFieldUpdateOperationsInput | string | null;
     pages?: NullableIntFieldUpdateOperationsInput | number | null;
     confidence?: NullableFloatFieldUpdateOperationsInput | number | null;
+    structured?: NullableJsonNullValueInput | InputJsonValue;
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string;
   };

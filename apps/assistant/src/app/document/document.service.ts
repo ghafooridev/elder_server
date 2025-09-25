@@ -7,15 +7,13 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateDocumentDto, UpdateDocumentDto } from './dto';
 import { Document } from './document.model';
-import * as path from 'path';
 import { FILE_SERVICE_NAME } from 'types/proto/file';
 import { ClientGrpc } from '@nestjs/microservices';
 import { FileServiceClient } from 'types/proto/file';
 import { lastValueFrom } from 'rxjs';
 import * as multer from 'multer';
-import * as fs from 'fs';
-import * as Tesseract from 'tesseract.js';
 import { Prisma } from '@prisma-clients/assistant';
+import { OcrService } from '../ocr/ocr.service';
 
 @Injectable()
 export class DocumentService {
@@ -23,7 +21,8 @@ export class DocumentService {
 
   constructor(
     private readonly prisma: PrismaService,
-    @Inject(FILE_SERVICE_NAME) private readonly client: ClientGrpc
+    @Inject(FILE_SERVICE_NAME) private readonly client: ClientGrpc,
+    private readonly ocrService: OcrService
   ) {
     this.fileService =
       this.client.getService<FileServiceClient>(FILE_SERVICE_NAME);
@@ -61,27 +60,8 @@ export class DocumentService {
         },
       });
 
-      // 3️⃣ Save file temporarily for OCR
-      const tempFilePath = path.join('uploads', file.originalname);
-      fs.writeFileSync(tempFilePath, file.buffer);
-
-      // 4️⃣ Run OCR
-      const { data } = await Tesseract.recognize(tempFilePath, 'eng');
-
-      // 5️⃣ Remove temp file
-      fs.unlinkSync(tempFilePath);
-
-      // 6️⃣ Save OCR result in DB
-      await this.prisma.ocrResult.create({
-        data: {
-          documentId: document.id,
-          rawJson: JSON.parse(JSON.stringify(data)),
-          plainText: data.text,
-          language: 'eng',
-          pages: data.blocks?.length || null,
-          confidence: data.confidence || null,
-        },
-      });
+      // 3️⃣ Delegate OCR processing to OCR service
+      await this.ocrService.processDocument(document.id);
 
       return document;
     } catch (error) {

@@ -87,6 +87,7 @@ model OcrResult {
   language   String?
   pages      Int?
   confidence Float?
+  structured Json?
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   analysis   Analysis[]

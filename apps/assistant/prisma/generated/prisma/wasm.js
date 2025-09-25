@@ -152,6 +152,7 @@ exports.Prisma.OcrResultScalarFieldEnum = {
   language: 'language',
   pages: 'pages',
   confidence: 'confidence',
+  structured: 'structured',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
 };

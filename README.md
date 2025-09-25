@@ -1,4 +1,5 @@
 - [Nx Doc](https://nx.dev/technologies/node/nest/introduction)
+- [Supabase bucket](https://supabase.com/dashboard/project/cjbwkxyheiakuayoufyf/storage/buckets/files)
 
 ---
 

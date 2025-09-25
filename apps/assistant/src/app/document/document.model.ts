@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { DocumentType, Prisma } from '@prisma-clients/assistant';
 
 export class Document {
   @ApiProperty({ example: 'a3f5e2b4-6d0c-4f4b-8a1f-c2b9d7f3e6b7' })
@@ -44,11 +45,11 @@ export class Document {
   size?: number | null;
 
   @ApiProperty({
-    example: 'BLOOD_REPORT',
-    enum: ['BLOOD_REPORT', 'LAB_REPORT', 'PRESCRIPTION', 'INVOICE', 'OTHER'],
+    example: DocumentType.BLOOD_REPORT,
+    enum: DocumentType,
     description: 'Type of the document',
   })
-  type: 'BLOOD_REPORT' | 'LAB_REPORT' | 'PRESCRIPTION' | 'INVOICE' | 'OTHER';
+  type: DocumentType;
 
   @ApiProperty({
     example: '2025-09-24T10:15:00.000Z',
@@ -66,5 +67,5 @@ export class Document {
     example: { scanner: 'scan-app', resolution: '300dpi' },
     description: 'Optional metadata for the document',
   })
-  metadata?: Record<string, any> | null;
+  metadata?: Prisma.JsonValue | null;
 }

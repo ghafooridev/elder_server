@@ -11,6 +11,8 @@ import {
   Param,
   Req,
   UseGuards,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@elder/nestjs';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -21,22 +23,30 @@ import {
   ApiGetAllDocumentDocs,
   ApiGetDocumentDocsById,
 } from './doc/document.swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage, multer } from 'multer';
 
 @ApiTags('/assistant/documents')
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
-@Controller('documents')
+@Controller('assistant/documents')
 export class DocumentController {
   constructor(private readonly documentService: DocumentService) {}
 
   @Post()
+  @UseInterceptors(FileInterceptor('file', { storage: memoryStorage() }))
   @ApiCreateDocumentDocs()
   async createDocument(
     @Body() createDocumentDto: CreateDocumentDto,
+    @UploadedFile() file: multer.File,
     @Req() req: { user: { id: string } }
   ): Promise<Document> {
     const userId = req.user.id; // elder ID
-    return this.documentService.createDocument(createDocumentDto, userId);
+    return this.documentService.createDocument(
+      createDocumentDto,
+      userId,
+      file as any
+    );
   }
 
   @Patch(':documentId')
