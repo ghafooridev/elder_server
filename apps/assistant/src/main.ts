@@ -15,20 +15,24 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
 
+  // Enable CORS
+  app.enableCors({
+    credentials: true,
+    exposedHeaders: ['Set-Cookie'],
+    origin: config
+      .getOrThrow<string>('ALLOWED_ORIGIN')
+      .split(',')
+      .map((o) => o.trim())
+      .filter(Boolean),
+    allowedHeaders: ['Content-Type', 'Origin', 'Accept', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  });
+
+  app.use(cookieParser());
+
   // Setup Swagger
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api-docs', app, document);
-
-  // // Enable CORS
-  // app.enableCors({
-  //   credentials: true,
-  //   exposedHeaders: ['Set-Cookie'],
-  //   origin: config.getOrThrow<string>('AUTH_ALLOWED_ORIGIN').split(', '),
-  //   allowedHeaders: ['Content-Type', 'Origin', 'Accept', 'Authorization'],
-  //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  // });
-
-  app.use(cookieParser());
 
   // Global settings
   const globalPrefix = 'api';
@@ -41,7 +45,6 @@ async function bootstrap() {
   );
   app.setGlobalPrefix(globalPrefix);
 
-  // Use ASSISTANT_PORT instead of REMINDER_PORT
   const port = config.getOrThrow('ASSISTANT_PORT');
   await app.listen(port);
 

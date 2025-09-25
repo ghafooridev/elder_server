@@ -20,13 +20,18 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   // // Enable CORS
-  // app.enableCors({
-  //   credentials: true,
-  //   exposedHeaders: ['Set-Cookie'],
-  //   origin: config.getOrThrow<string>('AUTH_ALLOWED_ORIGIN').split(', '),
-  //   allowedHeaders: ['Content-Type', 'Origin', 'Accept', 'Authorization'],
-  //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  // });
+  // Enable CORS
+  app.enableCors({
+    credentials: true,
+    exposedHeaders: ['Set-Cookie'],
+    origin: config
+      .getOrThrow<string>('ALLOWED_ORIGIN')
+      .split(',')
+      .map((o) => o.trim())
+      .filter(Boolean),
+    allowedHeaders: ['Content-Type', 'Origin', 'Accept', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  });
 
   app.use(cookieParser());
 

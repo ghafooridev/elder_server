@@ -1,4 +1,4 @@
-import { AUTH_PACKAGE_NAME } from './../../../types/proto/auth';
+import { AUTH_PACKAGE_NAME } from 'types/proto/auth';
 
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
@@ -18,14 +18,18 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api-docs', app, document);
 
-  // // cors
-  // app.enableCors({
-  //   credentials: true,
-  //   exposedHeaders: ['Set-Cookie'],
-  //   origin: config.getOrThrow<string>('AUTH_ALLOWED_ORIGIN').split(', '),
-  //   allowedHeaders: ['Content-Type', 'Origin', 'Accept', 'Authorization'],
-  //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  // });
+  // Enable CORS
+  app.enableCors({
+    credentials: true,
+    exposedHeaders: ['Set-Cookie'],
+    origin: config
+      .getOrThrow<string>('ALLOWED_ORIGIN')
+      .split(',')
+      .map((o) => o.trim())
+      .filter(Boolean),
+    allowedHeaders: ['Content-Type', 'Origin', 'Accept', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  });
 
   app.use(cookieParser());
 
