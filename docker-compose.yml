@@ -1,6 +1,12 @@
 version: '3.9'
 
 services:
+  nats:
+    image: nats:latest
+    command: ['-js'] # enable JetStream
+    ports:
+      - '4222:4222' # client
+      - '8222:8222' # monitoring
   postgres:
     image: postgres:16
     container_name: ${POSTGRES_CONTAINER_NAME}
@@ -53,6 +59,7 @@ services:
     restart: unless-stopped
     environment:
       AUTH_DATABASE_URL: ${AUTH_DATABASE_URL}
+      PRISMA_AUTH_DATABASE_URL: ${PRISMA_AUTH_DATABASE_URL}
       PORT: ${AUTH_PORT}
       AUTH_PORT: ${AUTH_PORT}
       JWT_SECRET: ${JWT_SECRET}
@@ -73,8 +80,10 @@ services:
     restart: unless-stopped
     environment:
       REMINDER_DATABASE_URL: ${REMINDER_DATABASE_URL}
+      PRISMA_REMINDER_DATABASE_URL: ${PRISMA_REMINDER_DATABASE_URL}
       PORT: ${REMINDER_PORT}
       REMINDER_PORT: ${REMINDER_PORT}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
     expose:
       - '${REMINDER_PORT}'
     depends_on:
@@ -90,8 +99,10 @@ services:
     restart: unless-stopped
     environment:
       CARE_DATABASE_URL: ${CARE_DATABASE_URL}
+      PRISMA_CARE_DATABASE_URL: ${PRISMA_CARE_DATABASE_URL}
       PORT: ${CARE_PORT}
       CARE_PORT: ${CARE_PORT}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
     expose:
       - '${CARE_PORT}'
     depends_on:
@@ -107,8 +118,10 @@ services:
     restart: unless-stopped
     environment:
       PRODUCT_DATABASE_URL: ${PRODUCT_DATABASE_URL}
+      PRISMA_PRODUCT_DATABASE_URL: ${PRISMA_PRODUCT_DATABASE_URL}
       PORT: ${PRODUCT_PORT}
       PRODUCT_PORT: ${PRODUCT_PORT}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
     expose:
       - '${PRODUCT_PORT}'
     depends_on:
@@ -132,6 +145,7 @@ services:
       FILE_SERVER_SECRET_ACCESS_KEY: ${FILE_SERVER_SECRET_ACCESS_KEY}
       PORT: ${FILE_PORT}
       FILE_PORT: ${FILE_PORT}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
     expose:
       - '${FILE_PORT}'
     networks:
@@ -145,8 +159,10 @@ services:
     restart: unless-stopped
     environment:
       TALK_DATABASE_URL: ${TALK_DATABASE_URL}
+      PRISMA_TALK_DATABASE_URL: ${PRISMA_TALK_DATABASE_URL}
       PORT: ${TALK_PORT}
       TALK_PORT: ${TALK_PORT}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
     expose:
       - '${TALK_PORT}'
     depends_on:
@@ -164,8 +180,10 @@ services:
     restart: unless-stopped
     environment:
       ASSISTANT_DATABASE_URL: ${ASSISTANT_DATABASE_URL}
+      PRISMA_ASSISTANT_DATABASE_URL: ${PRISMA_ASSISTANT_DATABASE_URL}
       PORT: ${ASSISTANT_PORT}
       ASSISTANT_PORT: ${ASSISTANT_PORT}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
     expose:
       - '${ASSISTANT_PORT}'
     depends_on:
