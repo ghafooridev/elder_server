@@ -5,42 +5,52 @@ import {
   Delete,
   Body,
   Param,
-  Query,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { MessageService } from './message.service';
 import { CreateMessageDto, UpdateMessageDto } from './dto';
 import { MessageStatus } from '@prisma-clients/talk';
+import { AuthGuard } from '@elder/nestjs';
+import { User } from 'types/proto/auth';
+import {
+  ApiSendMessageDocs,
+  ApiEditMessageDocs,
+  ApiUpdateMessageStatusDocs,
+  ApiDeleteMessageDocs,
+} from './api-doc/message.swagger';
 
 @ApiTags('messages')
+@ApiBearerAuth()
 @Controller('messages')
+@UseGuards(AuthGuard)
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Send a new message' })
-  @ApiResponse({ status: 201, description: 'Message sent successfully' })
-  async sendMessage(@Body() dto: CreateMessageDto) {
+  @ApiSendMessageDocs()
+  async sendMessage(
+    @Body() dto: CreateMessageDto,
+    @Req() { user }: { user: User }
+  ) {
+    // derive sender from auth
+    dto.senderId = user.id;
     return this.messageService.sendMessage(dto);
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Edit a message (content or attachment)' })
-  @ApiResponse({ status: 200, description: 'Message updated successfully' })
+  @ApiEditMessageDocs()
   async editMessage(
     @Param('id') messageId: string,
-    @Query('userId') userId: string,
+    @Req() { user }: { user: User },
     @Body() dto: UpdateMessageDto
   ) {
-    return this.messageService.editMessage(messageId, dto, userId);
+    return this.messageService.editMessage(messageId, dto, user.id);
   }
 
   @Patch(':id/status')
-  @ApiOperation({ summary: 'Update the status of a message' })
-  @ApiResponse({
-    status: 200,
-    description: 'Message status updated successfully',
-  })
+  @ApiUpdateMessageStatusDocs()
   async updateMessageStatus(
     @Param('id') messageId: string,
     @Body('status') status: MessageStatus
@@ -49,12 +59,11 @@ export class MessageController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete a message' })
-  @ApiResponse({ status: 200, description: 'Message deleted successfully' })
+  @ApiDeleteMessageDocs()
   async deleteMessage(
     @Param('id') messageId: string,
-    @Query('userId') userId: string
+    @Req() { user }: { user: User }
   ) {
-    return this.messageService.deleteMessage(messageId, userId);
+    return this.messageService.deleteMessage(messageId, user.id);
   }
 }

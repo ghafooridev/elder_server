@@ -20,7 +20,7 @@ import {
   ApiUpdateBookingDocs,
   ApiDeleteBookingDocs,
   ApiGetAllBookingsDocs,
-} from './doc/booking.swagger';
+} from './api-doc/booking.swagger';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('bookings')

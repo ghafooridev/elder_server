@@ -4,14 +4,22 @@ import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 
 export type ChatRole = 'system' | 'user' | 'assistant';
+
 export interface ChatMessage {
   role: ChatRole;
   content: string;
 }
 
+interface ChatCompletionResponse {
+  choices: Array<{
+    message: { role: ChatRole; content: string | object };
+  }>;
+}
+
 @Injectable()
 export class AnalysisService {
-  private client: InferenceClient;
+  private readonly client: InferenceClient;
+  private readonly defaultModel: string;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -22,108 +30,129 @@ export class AnalysisService {
       throw new Error('AI_CHAT_TOKEN is required for Hugging Face API');
     }
     this.client = new InferenceClient(hfToken);
+    this.defaultModel =
+      this.config.get<string>('AI_MODEL') ?? 'HuggingFaceH4/zephyr-7b-beta';
   }
 
-  private getDefaultModel(): string {
-    const defaultModel = this.config.get<string>('AI_MODEL');
-    return defaultModel ?? 'Qwen/Qwen2.5-7B-Instruct';
-  }
-
+  /** Master system prompt guiding AI to produce elder-care structured output */
   private getSystemPrompt(): string {
-    return 'You are a medical assistant. Evaluate patient health, flag abnormalities, and give diet & lifestyle recommendations. Be concise and actionable.';
+    return `
+You are ElderCare AI, a trusted assistant for elderly wellness.
+Always respond in clear sections with bullet points.
+
+When analyzing patient data and user questions, include:
+1. Potential Health Risks – possible diseases, illnesses, or deficiencies.
+2. Diet Plan – safe daily diet recommendations.
+3. Exercise – simple workouts suitable for elderly.
+4. Medications – general advice only (no prescriptions), including categories like vitamins or supplements.
+5. Minerals & Vitamins – list essential nutrients.
+6. Foods, Fruits & Drinks – supportive items for health.
+7. Sleep Schedule – healthy sleep patterns.
+8. Medicinal Plants – safe herbal/traditional remedies (minimal side effects, e.g., chamomile, mint, saffron, ginger).
+
+Rules:
+- Always include: “This is not a medical diagnosis. Please consult a healthcare provider.”
+- Be concise, structured, and easy to understand.
+- Never suggest prescription drugs or exact dosages.
+    `.trim();
   }
 
-  private buildMessages(ocrPayload: any, userPrompt: string): ChatMessage[] {
-    const systemMsg = this.getSystemPrompt();
+  /** Build messages for AI including OCR and elder info */
+  private buildMessages(
+    ocrPayload: { structured?: unknown; plainText?: string },
+    elderInfo: { age?: number; sex?: string; weight?: number; height?: number },
+    userPrompt: string
+  ): ChatMessage[] {
+    const context =
+      ocrPayload?.structured || ocrPayload?.plainText || 'No OCR data provided';
+    const contextStr =
+      typeof context === 'string' ? context : JSON.stringify(context, null, 2);
 
-    // Prefer structured OCR if available, otherwise use plainText
-    const contextPayload =
-      ocrPayload?.structured || ocrPayload?.plainText || {};
-    const contextMsg = `Patient data (OCR):\n${
-      typeof contextPayload === 'string'
-        ? contextPayload
-        : JSON.stringify(contextPayload, null, 2)
-    }`;
+    const elderInfoStr = Object.entries(elderInfo || {})
+      .map(([key, val]) => `${key}: ${val}`)
+      .join('\n');
 
     return [
-      { role: 'system', content: systemMsg },
-      { role: 'user', content: contextMsg },
-      { role: 'user', content: userPrompt },
+      { role: 'system', content: this.getSystemPrompt() },
+      { role: 'user', content: `Patient Data (OCR):\n${contextStr}` },
+      { role: 'user', content: `Elder Info:\n${elderInfoStr}` },
+      { role: 'user', content: `Question:\n${userPrompt}` },
     ];
   }
 
+  private handleError(err: any): never {
+    console.error('Hugging Face chat error:', {
+      message: err?.message,
+      name: err?.name,
+      stack: err?.stack,
+      data: err?.response?.data,
+      status: err?.response?.status,
+    });
+    throw new InternalServerErrorException('AI chat failed');
+  }
+
   async chatCompletion(
-    model: string,
+    model: string | undefined,
     messages: ChatMessage[],
     options?: { max_tokens?: number; temperature?: number }
   ): Promise<string> {
-    const resolvedModel = model || this.getDefaultModel();
+    const resolvedModel = model ?? this.defaultModel;
+
     try {
-      const response = await this.client.chatCompletion({
+      const response = (await this.client.chatCompletion({
         model: resolvedModel,
-        messages,
+        messages: messages as any,
         max_tokens: options?.max_tokens,
         temperature: options?.temperature,
-      } as any);
-      // InferenceClient.chatCompletion returns { choices: [{ message: { role, content } }], ... }
-      const choice = (response as any).choices?.[0];
-      const content = choice?.message?.content ?? choice?.message?.[0]?.content;
-      if (!content) {
-        throw new Error('No content in response');
-      }
+      })) as ChatCompletionResponse;
+
+      const choice = response.choices?.[0];
+      const content = choice?.message?.content;
+
+      if (!content) throw new Error('No content in Hugging Face response');
+
       return typeof content === 'string' ? content : JSON.stringify(content);
-    } catch (err: any) {
-      // Log full error for observability and rethrow a safe error
-      console.error('Hugging Face chat error:', {
-        message: err?.message,
-        name: err?.name,
-        stack: err?.stack,
-        data: err?.response?.data,
-        status: err?.response?.status,
-      });
-      throw new InternalServerErrorException('AI chat failed');
+    } catch (err) {
+      this.handleError(err);
     }
   }
 
+  /** Main function to analyze a document + elder info and save structured AI response */
   async analyzeDocument(
     documentId: string,
-    model: string,
+    elderInfo: { age?: number; sex?: string; weight?: number; height?: number },
+    model: string | undefined,
     userPrompt: string,
     requestedBy: string
   ) {
-    // Fetch OCR result
     const ocrResult = await this.prisma.ocrResult.findUnique({
       where: { documentId },
     });
 
-    if (!ocrResult) throw new InternalServerErrorException('OCR not found');
+    if (!ocrResult) {
+      throw new InternalServerErrorException('OCR not found');
+    }
 
     const messages = this.buildMessages(
       { structured: ocrResult.structured, plainText: ocrResult.plainText },
+      elderInfo,
       userPrompt
     );
 
-    const aiResponse = await this.chatCompletion(
-      model || this.getDefaultModel(),
-      messages,
-      {
-        max_tokens: 500,
-      }
-    );
+    const aiResponse = await this.chatCompletion(model, messages, {
+      max_tokens: 700, // a bit higher for full checklist
+    });
 
-    // Save to Analysis table
-    const analysis = await this.prisma.analysis.create({
+    return this.prisma.analysis.create({
       data: {
         documentId,
         ocrResultId: ocrResult.id,
-        model: model || this.getDefaultModel(),
+        model: model ?? this.defaultModel,
         prompt: userPrompt,
         response: { text: aiResponse },
         status: 'DONE',
         requestedBy,
       },
     });
-
-    return analysis;
   }
 }

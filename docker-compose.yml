@@ -26,6 +26,25 @@ services:
     networks:
       - backend-net
 
+  api_gateway:
+    image: nginx:stable-alpine
+    container_name: api_gateway
+    restart: unless-stopped
+    ports:
+      - '5100:80' # Single entrypoint -> localhost:5100
+    volumes:
+      - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - ec_auth
+      - ec_reminder
+      - ec_care
+      - ec_product
+      - ec_file
+      - ec_talk
+      - ec_assistant
+    networks:
+      - backend-net
+
   ec_auth:
     build:
       context: .
@@ -39,8 +58,8 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS}
       ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
-    ports:
-      - '${AUTH_PORT}:${AUTH_PORT}'
+    expose:
+      - '${AUTH_PORT}'
     depends_on:
       - postgres
     networks:
@@ -56,8 +75,8 @@ services:
       REMINDER_DATABASE_URL: ${REMINDER_DATABASE_URL}
       PORT: ${REMINDER_PORT}
       REMINDER_PORT: ${REMINDER_PORT}
-    ports:
-      - '${REMINDER_PORT}:${REMINDER_PORT}'
+    expose:
+      - '${REMINDER_PORT}'
     depends_on:
       - postgres
     networks:
@@ -73,8 +92,8 @@ services:
       CARE_DATABASE_URL: ${CARE_DATABASE_URL}
       PORT: ${CARE_PORT}
       CARE_PORT: ${CARE_PORT}
-    ports:
-      - '${CARE_PORT}:${CARE_PORT}'
+    expose:
+      - '${CARE_PORT}'
     depends_on:
       - postgres
     networks:
@@ -90,8 +109,8 @@ services:
       PRODUCT_DATABASE_URL: ${PRODUCT_DATABASE_URL}
       PORT: ${PRODUCT_PORT}
       PRODUCT_PORT: ${PRODUCT_PORT}
-    ports:
-      - '${PRODUCT_PORT}:${PRODUCT_PORT}'
+    expose:
+      - '${PRODUCT_PORT}'
     depends_on:
       - postgres
     networks:
@@ -113,8 +132,8 @@ services:
       FILE_SERVER_SECRET_ACCESS_KEY: ${FILE_SERVER_SECRET_ACCESS_KEY}
       PORT: ${FILE_PORT}
       FILE_PORT: ${FILE_PORT}
-    ports:
-      - '${FILE_PORT}:${FILE_PORT}'
+    expose:
+      - '${FILE_PORT}'
     networks:
       - backend-net
 
@@ -128,8 +147,8 @@ services:
       TALK_DATABASE_URL: ${TALK_DATABASE_URL}
       PORT: ${TALK_PORT}
       TALK_PORT: ${TALK_PORT}
-    ports:
-      - '${TALK_PORT}:${TALK_PORT}'
+    expose:
+      - '${TALK_PORT}'
     depends_on:
       - postgres
     networks:
@@ -139,14 +158,16 @@ services:
     build:
       context: .
       dockerfile: apps/assistant/Dockerfile
+      args:
+        SERVICE_NAME: assistant
     container_name: ec_assistant
     restart: unless-stopped
     environment:
       ASSISTANT_DATABASE_URL: ${ASSISTANT_DATABASE_URL}
       PORT: ${ASSISTANT_PORT}
       ASSISTANT_PORT: ${ASSISTANT_PORT}
-    ports:
-      - '${ASSISTANT_PORT}:${ASSISTANT_PORT}'
+    expose:
+      - '${ASSISTANT_PORT}'
     depends_on:
       - postgres
     networks:

@@ -41,3 +41,10 @@ export function ApiGetAllUsersDocs() {
     ApiResponse({ status: 200, description: 'List of users' })
   );
 }
+
+export function ApiGetUserByIdDocs() {
+  return applyDecorators(
+    ApiOperation({ summary: 'Get a user by ID' }),
+    ApiResponse({ status: 200, description: 'User retrieved successfully' })
+  );
+}

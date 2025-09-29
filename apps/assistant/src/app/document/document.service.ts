@@ -72,8 +72,16 @@ export class DocumentService {
       const defaultPrompt =
         'Analyze the patient report. Summarize key findings, flag out-of-range metrics, and provide actionable recommendations (diet, lifestyle, when to see a doctor).';
       try {
+        // TODO: If/when a profile service exposes age/sex/weight/height, fetch here using requestedBy
+        const elderInfo: {
+          age?: number;
+          sex?: string;
+          weight?: number;
+          height?: number;
+        } = {};
         await this.analysisService.analyzeDocument(
           document.id,
+          elderInfo,
           defaultModel,
           defaultPrompt,
           userId

@@ -45,7 +45,7 @@ import {
   ApiGetProductStatsDocs,
   ApiCreateProductReviewDocs,
   ApiGetProductReviewsDocs,
-} from './doc/product.swagger';
+} from './api-doc/product.swagger';
 import * as multer from 'multer';
 
 @ApiTags('Products')

@@ -9,30 +9,28 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { ConversationService } from './conversation.service';
 import { CreateConversationDto } from './dto';
 import { AuthGuard } from '@elder/nestjs';
 import { User } from 'types/proto/auth';
+import {
+  ApiCreateConversationDocs,
+  ApiGetUserConversationsDocs,
+  ApiGetConversationByIdDocs,
+  ApiGetConversationMessagesDocs,
+  ApiDeleteConversationDocs,
+} from './api-doc/conversation.swagger';
 
 @ApiTags('conversations')
 @ApiBearerAuth()
+@UseGuards(AuthGuard)
 @Controller('conversations')
 export class ConversationController {
   constructor(private readonly conversationService: ConversationService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new conversation' })
-  @ApiResponse({
-    status: 201,
-    description: 'Conversation created successfully',
-  })
-  @UseGuards(AuthGuard)
+  @ApiCreateConversationDocs()
   async createConversation(
     @Body() dto: CreateConversationDto,
     @Req() req: { user: User }
@@ -41,15 +39,7 @@ export class ConversationController {
   }
 
   @Get()
-  @ApiOperation({
-    summary:
-      'Get all conversations for a user (optionally filter by participant name)',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Conversations retrieved successfully',
-  })
-  @UseGuards(AuthGuard)
+  @ApiGetUserConversationsDocs()
   async getUserConversations(
     @Req() { user }: { user: User },
     @Query('search') search?: string
@@ -58,12 +48,7 @@ export class ConversationController {
   }
 
   @Get(':conversationId')
-  @ApiOperation({ summary: 'Get a specific conversation by ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'Conversation retrieved successfully',
-  })
-  @UseGuards(AuthGuard)
+  @ApiGetConversationByIdDocs()
   async getConversationById(
     @Param('conversationId') conversationId: string,
     @Req() { user }: { user: User }
@@ -75,9 +60,7 @@ export class ConversationController {
   }
 
   @Get(':conversationId/messages')
-  @ApiOperation({ summary: 'Get all messages inside a conversation' })
-  @ApiResponse({ status: 200, description: 'Messages retrieved successfully' })
-  @UseGuards(AuthGuard)
+  @ApiGetConversationMessagesDocs()
   async getConversationMessages(
     @Param('conversationId') conversationId: string,
     @Req() { user }: { user: User }
@@ -89,17 +72,9 @@ export class ConversationController {
   }
 
   @Delete(':otherUserId')
-  @ApiOperation({
-    summary:
-      'Delete a conversation between the logged-in user and another user',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Conversation deleted successfully',
-  })
-  @UseGuards(AuthGuard)
+  @ApiDeleteConversationDocs()
   async deleteConversation(
-    @Req() { user }: { user: any },
+    @Req() { user }: { user: User },
     @Param('otherUserId') otherUserId: string
   ) {
     return this.conversationService.deleteConversation(user.id, otherUserId);

@@ -18,15 +18,15 @@ import {
   ApiUpdateReminderDocs,
   ApiDeleteReminderDocs,
   ApiGetAllRemindersDocs,
-} from './doc/reminder.swagger';
+} from './api-doc/reminder.swagger';
 import { User } from 'types/proto/auth';
 
 @Controller('reminders')
+@UseGuards(AuthGuard)
 export class ReminderController {
   constructor(private readonly reminderService: RemindersService) {}
 
   @Post()
-  @UseGuards(AuthGuard)
   @ApiCreateReminderDocs()
   async createReminder(
     @Body() createReminderDto: CreateReminderDto,
@@ -40,7 +40,6 @@ export class ReminderController {
   }
 
   @Patch(':reminderId')
-  @UseGuards(AuthGuard)
   @ApiUpdateReminderDocs()
   async update(
     @Param('reminderId') reminderId: string,
@@ -50,7 +49,6 @@ export class ReminderController {
   }
 
   @Delete(':reminderId')
-  @UseGuards(AuthGuard)
   @ApiDeleteReminderDocs()
   async delete(
     @Param('reminderId') reminderId: string
@@ -60,7 +58,6 @@ export class ReminderController {
   }
 
   @Get()
-  @UseGuards(AuthGuard)
   @ApiGetAllRemindersDocs()
   async getAll(@Req() req: { user: User }): Promise<Reminder[]> {
     const userId = req.user?.id;

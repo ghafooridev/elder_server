@@ -42,6 +42,14 @@ async function bootstrap() {
     })
   );
   app.setGlobalPrefix(globalPrefix);
+
+  // set trust proxy for express (if using express adapter)
+  const httpAdapter = app.getHttpAdapter?.();
+  if (httpAdapter?.getInstance) {
+    const expressInstance = httpAdapter.getInstance();
+    expressInstance.set('trust proxy', true);
+  }
+
   const port = config.getOrThrow('AUTH_PORT');
   app.connectMicroservice<GrpcOptions>({
     transport: Transport.GRPC,
@@ -53,7 +61,8 @@ async function bootstrap() {
   });
 
   await app.startAllMicroservices();
-  await app.listen(port);
+  // bind to 0.0.0.0 so other containers can connect
+  await app.listen(port, '0.0.0.0');
   Logger.log(
     `🚀 Auth application is running on: http://localhost:${port}/${globalPrefix}`
   );

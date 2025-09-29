@@ -53,8 +53,15 @@ async function bootstrap() {
 
   await app.startAllMicroservices();
 
+  // set trust proxy for express (if using express adapter)
+  const httpAdapter = app.getHttpAdapter?.();
+  if (httpAdapter?.getInstance) {
+    const expressInstance = httpAdapter.getInstance();
+    expressInstance.set('trust proxy', true);
+  }
+
   const port = config.getOrThrow('FILE_PORT');
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
   Logger.log(
     `🚀 File application is running on: http://localhost:${port}/${globalPrefix}`

@@ -14,7 +14,7 @@ import {
   ApiOcrProcessDocs,
   ApiGetOcrByDocumentDocs,
   ApiGetOcrByIdDocs,
-} from './doc/ocr.swagger';
+} from './api-doc/ocr.swagger';
 
 @ApiTags('/assistant/ocr')
 @ApiBearerAuth()

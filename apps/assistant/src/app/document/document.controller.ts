@@ -22,7 +22,7 @@ import {
   ApiDeleteDocumentDocs,
   ApiGetAllDocumentDocs,
   ApiGetDocumentDocsById,
-} from './doc/document.swagger';
+} from './api-doc/document.swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage, multer } from 'multer';
 

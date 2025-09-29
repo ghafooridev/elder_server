@@ -17,7 +17,7 @@ import {
   ApiUpdateCareCategoryDocs,
   ApiDeleteCareCategoryDocs,
   ApiGetAllCareCategoriesDocs,
-} from './doc/care-category.swagger';
+} from './api-doc/care-category.swagger';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('care-categories')

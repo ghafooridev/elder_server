@@ -45,8 +45,15 @@ async function bootstrap() {
   );
   app.setGlobalPrefix(globalPrefix);
 
+  // set trust proxy for express (if using express adapter)
+  const httpAdapter = app.getHttpAdapter?.();
+  if (httpAdapter?.getInstance) {
+    const expressInstance = httpAdapter.getInstance();
+    expressInstance.set('trust proxy', true);
+  }
+
   const port = config.getOrThrow('ASSISTANT_PORT');
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
   Logger.log(
     `🚀 Assistant application is running on: http://localhost:${port}/${globalPrefix}`

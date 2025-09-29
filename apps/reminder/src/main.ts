@@ -54,9 +54,17 @@ async function bootstrap() {
     })
   );
   app.setGlobalPrefix(globalPrefix);
+
+  // set trust proxy for express (if using express adapter)
+  const httpAdapter = app.getHttpAdapter?.();
+  if (httpAdapter?.getInstance) {
+    const expressInstance = httpAdapter.getInstance();
+    expressInstance.set('trust proxy', true);
+  }
+
   await app.startAllMicroservices();
   const port = config.getOrThrow('REMINDER_PORT');
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
   Logger.log(
     `🚀 Reminder application is running on: http://localhost:${port}/${globalPrefix}`
   );

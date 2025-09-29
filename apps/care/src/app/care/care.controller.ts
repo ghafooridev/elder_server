@@ -20,7 +20,7 @@ import {
   ApiDeleteCareDocs,
   ApiGetAllCareDocs,
   ApiGetCareDocsById,
-} from './doc/care.swagger';
+} from './api-doc/care.swagger';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { ApiTags } from '@nestjs/swagger';
 

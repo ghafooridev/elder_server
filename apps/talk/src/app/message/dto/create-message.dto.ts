@@ -7,9 +7,10 @@ export class CreateMessageDto {
   @IsString()
   conversationId: string;
 
-  @ApiProperty({ description: 'Sender user ID' })
+  @ApiProperty({ description: 'Sender user ID', required: false })
+  @IsOptional()
   @IsString()
-  senderId: string;
+  senderId?: string;
 
   @ApiProperty({ description: 'Receiver user ID' })
   @IsString()

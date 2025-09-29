@@ -17,7 +17,8 @@ import {
   ApiUpdateUserDocs,
   ApiDeleteUserDocs,
   ApiGetAllUsersDocs,
-} from './doc/user.swagger';
+  ApiGetUserByIdDocs,
+} from './api-doc/user.swagger';
 import { RoleEnum } from '@prisma-clients/auth';
 
 @Controller('users')
@@ -42,6 +43,13 @@ export class UserController {
   @ApiDeleteUserDocs()
   async delete(@Param('userId') userId: string) {
     return this.userService.deleteUser(userId);
+  }
+
+  @Get(':userId')
+  @UseGuards(JwtAuthGuard)
+  @ApiGetUserByIdDocs()
+  async getByUserId(@Param('userId') userId: string) {
+    return this.userService.getUserById(userId);
   }
 
   @Get()
