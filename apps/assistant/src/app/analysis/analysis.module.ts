@@ -3,9 +3,10 @@ import { AnalysisService } from './analysis.service';
 import { AnalysisController } from './analysis.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
+import { GrpcClientModule } from '../grpc-client/grpc-client.module';
 
 @Module({
-  imports: [PrismaModule, ConfigModule],
+  imports: [PrismaModule, ConfigModule, GrpcClientModule],
   providers: [AnalysisService],
   controllers: [AnalysisController],
   exports: [AnalysisService],

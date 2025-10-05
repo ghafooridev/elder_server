@@ -10,10 +10,7 @@ import * as path from 'path';
 import axios from 'axios';
 import * as Tesseract from 'tesseract.js';
 
-// Spell checker
 import nspell from 'nspell';
-// Hunspell dictionary (install with `npm install dictionary-en nspell`)
-// import dictionary from 'dictionary-en';
 
 @Injectable()
 export class OcrService {

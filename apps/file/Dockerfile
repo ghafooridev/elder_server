@@ -53,7 +53,7 @@ COPY --from=builder --chown=nestjs:nodejs /app/package*.json ./
 
 USER nestjs
 
-EXPOSE 3006
+EXPOSE 5105
 
 # Run service
 CMD ["node", "main.js"]

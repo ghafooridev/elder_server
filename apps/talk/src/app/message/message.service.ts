@@ -12,7 +12,6 @@ export class MessageService {
   constructor(private readonly prisma: PrismaService) {}
 
   async sendMessage(dto: CreateMessageDto): Promise<Message> {
-    // Optional: validate conversation exists
     const conversation = await this.prisma.conversation.findUnique({
       where: { id: dto.conversationId },
     });

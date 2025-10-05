@@ -29,7 +29,7 @@ import { memoryStorage, multer } from 'multer';
 @ApiTags('/assistant/documents')
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
-@Controller('assistant/documents')
+@Controller('/documents')
 export class DocumentController {
   constructor(private readonly documentService: DocumentService) {}
 

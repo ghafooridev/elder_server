@@ -1,8 +1,3 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
@@ -15,11 +10,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
 
-  // Setup Swagger
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api-docs', app, document);
-
-  // // Enable CORS
   // Enable CORS
   app.enableCors({
     credentials: true,
@@ -35,6 +25,10 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
+  // Setup Swagger
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api-docs', app, document);
+
   // Global settings
   const globalPrefix = 'api';
   app.useGlobalPipes(
@@ -46,14 +40,12 @@ async function bootstrap() {
   );
   app.setGlobalPrefix(globalPrefix);
 
-  // set trust proxy for express (if using express adapter)
   const httpAdapter = app.getHttpAdapter?.();
   if (httpAdapter?.getInstance) {
     const expressInstance = httpAdapter.getInstance();
     expressInstance.set('trust proxy', true);
   }
 
-  // Use CARE_PORT instead of REMINDER_PORT
   const port = config.getOrThrow('CARE_PORT');
   await app.listen(port, '0.0.0.0');
 

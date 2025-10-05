@@ -1,61 +1,38 @@
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, UpdateUserDto } from './dto';
-import {
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Body,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
-import {
-  ApiCreateUserDocs,
-  ApiUpdateUserDocs,
-  ApiDeleteUserDocs,
-  ApiGetAllUsersDocs,
-  ApiGetUserByIdDocs,
-} from './api-doc/user.swagger';
-import { RoleEnum } from '@prisma-clients/auth';
+import { CreateUserDto } from './dto/create-user.dto';
+import { ResponseUserDto } from './dto/response-user.dto';
+import { plainToInstance } from 'class-transformer';
+import { ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
-  @Post('register')
-  @ApiCreateUserDocs()
-  async createUser(@Body() createUserDto: CreateUserDto) {
-    return this.userService.createUser(createUserDto);
+  @Post()
+  @ApiOkResponse({ type: ResponseUserDto })
+  async create(@Body() createUserDto: CreateUserDto): Promise<ResponseUserDto> {
+    const user = await this.usersService.createUser(createUserDto);
+    return plainToInstance(ResponseUserDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  @Patch(':userId')
-  @UseGuards(JwtAuthGuard)
-  @ApiUpdateUserDocs()
-  async update(@Param('userId') userId: string, @Body() user: UpdateUserDto) {
-    return this.userService.updateUser(userId, user);
-  }
-
-  @Delete(':userId')
-  @UseGuards(JwtAuthGuard)
-  @ApiDeleteUserDocs()
-  async delete(@Param('userId') userId: string) {
-    return this.userService.deleteUser(userId);
-  }
-
-  @Get(':userId')
-  @UseGuards(JwtAuthGuard)
-  @ApiGetUserByIdDocs()
-  async getByUserId(@Param('userId') userId: string) {
-    return this.userService.getUserById(userId);
+  @Get(':id')
+  @ApiOkResponse({ type: ResponseUserDto })
+  async findOne(@Param('id') id: string): Promise<ResponseUserDto> {
+    const user = await this.usersService.getUserById(id);
+    return plainToInstance(ResponseUserDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
-  @ApiGetAllUsersDocs()
-  async getAll(@Query('role') role?: RoleEnum) {
-    return this.userService.getUsers(role);
+  @ApiOkResponse({ type: [ResponseUserDto] })
+  async findAll(): Promise<ResponseUserDto[]> {
+    const users = await this.usersService.getUsers();
+    return users.map((user) =>
+      plainToInstance(ResponseUserDto, user, { excludeExtraneousValues: true })
+    );
   }
 }

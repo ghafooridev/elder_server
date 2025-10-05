@@ -43,6 +43,7 @@ model User {
   role            RoleEnum   @default(ELDER)
   dateOfBirth     DateTime?
   enabled         Boolean    @default(true)
+ deviceTokens     DeviceToken[]
 
   caregiver Caregiver?
   elder     Elder?
@@ -98,4 +99,25 @@ model Relative {
   elder   Elder  @relation(fields: [elderId], references: [userId])
 
   @@index([elderId])
+}
+
+enum DevicePlatform {
+  ANDROID
+  IOS
+  WEB
+}
+
+model DeviceToken {
+  id        String         @id @default(cuid())
+  userId    String
+  token     String         @unique
+  platform  DevicePlatform
+  isActive  Boolean        @default(true)
+  lastSeen  DateTime       @default(now())
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

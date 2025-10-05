@@ -128,6 +128,6 @@ COPY --from=builder --chown=nestjs:nodejs /app/apps/reminder/prisma ./apps/remin
 
 USER nestjs
 
-EXPOSE 5100
+EXPOSE 5102
 
 CMD ["sh", "-c", "npx prisma migrate deploy --schema=./apps/reminder/prisma/schema.prisma && node main.js"]

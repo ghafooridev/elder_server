@@ -6,11 +6,15 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateReminderDto, UpdateReminderDto } from './dto';
 import { Reminder } from './reminder.model';
-import { Prisma } from '@prisma/client';
+import { ClientProxy } from '@nestjs/microservices';
+import { Inject } from '@nestjs/common';
 
 @Injectable()
 export class RemindersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject('NATS_CLIENT') private client: ClientProxy
+  ) {}
 
   async createReminder(data: CreateReminderDto): Promise<Reminder> {
     if (!data.userId) {
@@ -35,6 +39,14 @@ export class RemindersService {
 
     const reminder = await this.prisma.reminder.create({
       data: createData,
+    });
+
+    // Emit a minimal payload for notification service (avoid ORM-specific fields)
+    this.client.emit('reminder.trigger', {
+      id: reminder.id,
+      userId: reminder.userId,
+      title: reminder.title,
+      date: reminder.date ? new Date(reminder.date).toISOString() : undefined,
     });
 
     return reminder;

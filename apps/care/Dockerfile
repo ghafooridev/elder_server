@@ -129,6 +129,6 @@ COPY --from=builder --chown=nestjs:nodejs /app/apps/care/prisma ./apps/care/pris
 
 USER nestjs
 
-EXPOSE 5100
+EXPOSE 5102
 
 CMD ["sh", "-c", "npx prisma migrate deploy --schema=./apps/care/prisma/schema.prisma && node main.js"]

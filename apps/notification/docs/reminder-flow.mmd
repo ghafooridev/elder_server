@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant Reminder Service
+    participant NATS Server
+    participant Notification Service
+
+    Note over Notification Service: Subscribes to 'reminder.trigger' on startup
+    Notification Service->>NATS Server: SUBSCRIBE('reminder.trigger')
+
+    Note over Reminder Service: User creates a reminder
+    Reminder Service->>NATS Server: PUBLISH('reminder.trigger', payload)
+    NATS Server->>Notification Service: DELIVER(payload)
+
+    Note over Notification Service: onReminder(payload) is executed
+    Notification Service->>Notification Service: handleReminder(payload)

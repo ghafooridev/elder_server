@@ -128,6 +128,6 @@ COPY --from=builder --chown=nestjs:nodejs /app/apps/talk/prisma ./apps/talk/pris
 
 USER nestjs
 
-EXPOSE 5100
+EXPOSE 5105
 
 CMD ["sh", "-c", "npx prisma migrate deploy --schema=./apps/talk/prisma/schema.prisma && node main.js"]

@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "all": "bash start-dev.sh",
+    "reset": "npx nx reset",
+    "kill": "sudo lsof -t -i:5100-5107 | xargs -r sudo kill -9 && sudo pkill nginx",
     "prepare": "husky",
     "generate:proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./types ./proto/*.proto --ts_proto_opt=nestJs=true",
     "create:app": "nx g @nx/nest:app apps/...",
@@ -42,6 +45,10 @@
     "assistant:lint": "npx nx lint assistant",
     "assistant:prisma:generate": "npx nx prisma:generate assistant",
     "assistant:prisma:migrate": "npx nx prisma:migrate assistant",
+    "notification:serve": "npx nx serve notification",
+    "notification:build": "npx nx build notification",
+    "notification:test": "npx nx test notification",
+    "notification:lint": "npx nx lint notification",
     "auth:api": "npx nx serve auth --api",
     "reminder:api": "npx nx serve reminder --api",
     "care:api": "npx nx serve care --api",
@@ -49,10 +56,11 @@
     "product:api": "npx nx serve product --api",
     "file:api": "npx nx serve file --api",
     "assistant:api": "npx nx serve assistant --api",
-    "run-many:serve": "npx nx run-many --target=serve --projects=auth,reminder,care,talk,product,file,assistant --output-style=stream",
-    "run-many:build": "npx nx run-many --target=build --projects=auth,reminder,care,talk,product,file,assistant",
-    "run-many:test": "npx nx run-many --target=test --projects=auth,reminder,care,talk,product,file,assistant",
-    "run-many:lint": "npx nx run-many --target=lint --projects=auth,reminder,care,talk,product,file,assistant"
+    "notification:api": "npx nx serve notification --api",
+    "run-many:serve": "npx nx run-many --target=serve --projects=auth,reminder,care,talk,product,file,assistant,notification --output-style=stream",
+    "run-many:build": "npx nx run-many --target=build --projects=auth,reminder,care,talk,product,file,assistant,notification",
+    "run-many:test": "npx nx run-many --target=test --projects=auth,reminder,care,talk,product,file,assistant,notification",
+    "run-many:lint": "npx nx run-many --target=lint --projects=auth,reminder,care,talk,product,file,assistant,notification"
   },
   "nx": {
     "targets": {
@@ -81,6 +89,7 @@
     "@nestjs/websockets": "^11.1.6",
     "@prisma/client": "^6.14.0",
     "@supabase/supabase-js": "^2.57.4",
+    "apns2": "^12.2.0",
     "axios": "^1.6.0",
     "bcryptjs": "^3.0.2",
     "class-transformer": "^0.5.1",
@@ -88,7 +97,9 @@
     "cookie-parser": "^1.4.7",
     "dictionary-en": "^4.0.0",
     "express": "^5.1.0",
+    "firebase-admin": "^13.5.0",
     "multer": "^2.0.2",
+    "nats": "^2.29.3",
     "nspell": "^2.1.5",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
@@ -98,7 +109,8 @@
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
     "tesseract.js": "^6.0.1",
-    "ts-proto": "^2.7.7"
+    "ts-proto": "^2.7.7",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

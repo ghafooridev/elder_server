@@ -24,7 +24,7 @@ import {
 @ApiTags('/assistant/vitals')
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
-@Controller('assistant/vitals')
+@Controller('vitals')
 export class VitalController {
   constructor(private readonly vitalService: VitalService) {}
 

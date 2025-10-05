@@ -44,7 +44,8 @@
         "apps/talk-e2e/**/*",
         "apps/product-e2e/**/*",
         "apps/file-e2e/**/*",
-        "apps/assistant-e2e/**/*"
+        "apps/assistant-e2e/**/*",
+        "apps/notification-e2e/**/*"
       ]
     }
   ],
