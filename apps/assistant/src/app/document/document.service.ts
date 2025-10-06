@@ -51,45 +51,54 @@ export class DocumentService {
       });
 
       // 2️⃣ Create document record
-      const document = await this.prisma.document.create({
-        data: {
-          ...createDto,
-          userId,
-          fileUrl: uploadedFile.fileUrl,
-          fileName: file.originalname,
-          mimeType: file.mimetype,
-          size: file.size,
-        },
-      });
+      const document = await this.prisma.document
+        .create({
+          data: {
+            ...createDto,
+            userId,
+            fileUrl: uploadedFile.fileUrl,
+            fileName: file.originalname,
+            mimeType: file.mimetype,
+            size: file.size,
+          },
+        })
+        .catch((err) => {
+          console.error('Document service error:', err);
+          throw new BadRequestException('Failed to create document.');
+        });
 
       // 3️⃣ Delegate OCR processing to OCR service
-      await this.ocrService.processDocument(document.id);
+      await this.ocrService.processDocument(document.id).catch((err) => {
+        console.error('OCR service error:', err);
+        throw new BadRequestException('Failed to process document.');
+      });
 
       // 4️⃣ Trigger AI analysis using Hugging Face via AnalysisService
       // Defaults can be adjusted or sourced from env/config
       const defaultModel =
         process.env.HF_DEFAULT_MODEL || 'Qwen/Qwen2.5-7B-Instruct';
       const defaultPrompt =
-        'Analyze the patient report. Summarize key findings, flag out-of-range metrics, and provide actionable recommendations (diet, lifestyle, when to see a doctor).';
-      try {
-        // TODO: If/when a profile service exposes age/sex/weight/height, fetch here using requestedBy
-        const elderInfo: {
-          age?: number;
-          sex?: string;
-          weight?: number;
-          height?: number;
-        } = {};
-        await this.analysisService.analyzeDocument(
+        'Analyze this lab report and highlight abnormal metrics. Provide elderly-specific recommendations for diet, exercise, and supplements.';
+
+      // TODO: If/when a profile service exposes age/sex/weight/height, fetch here using requestedBy
+      const elderInfo: {
+        age?: number;
+        sex?: string;
+        weight?: number;
+        height?: number;
+      } = {};
+      await this.analysisService
+        .analyzeDocument(
           document.id,
           elderInfo,
           defaultModel,
           defaultPrompt,
           userId
-        );
-      } catch (analysisErr) {
-        // Do not fail document creation if analysis fails; log for observability
-        console.error('Auto-analysis failed:', analysisErr);
-      }
+        )
+        .catch((err) => {
+          console.error('Analysis service error:', err);
+          throw new BadRequestException('Failed to analyze document.');
+        });
 
       return document;
     } catch (error) {

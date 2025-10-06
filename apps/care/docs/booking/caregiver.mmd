@@ -1,0 +1,27 @@
+sequenceDiagram
+    actor C as Caregiver
+    participant AG as API Gateway
+    participant CS as Care Service
+    participant NATS as NATS Event Bus
+
+    %% View pending bookings
+    C->>AG: GET {baseUrl}/care/booking
+    AG->>CS: Fetch caregiver bookings
+    CS-->>AG: Pending bookings (or error)
+    AG-->>C: Show list
+
+    %% Decide on booking
+    C->>AG: PUT {baseUrl}/care/booking
+    AG->>CS: Update booking status
+    alt Approve
+        CS-->>AG: Status=approved
+        AG-->>C: Confirm approved
+        AG->>NATS: Publish "BookingApproved"
+    else Reject
+        CS-->>AG: Status=rejected
+        AG-->>C: Confirm rejected
+        AG->>NATS: Publish "BookingRejected"
+    else Failure
+        CS-->>AG: 500 Error
+        AG-->>C: Error message
+    end

@@ -37,34 +37,49 @@ export class AnalysisService {
   /** Master system prompt guiding AI to produce elder-care structured output */
   private getSystemPrompt(): string {
     return `
-You are ElderCare AI, a trusted assistant for elderly wellness.
-Always respond in clear sections with bullet points.
+You are ElderCare AI, a trusted medical assistant for elderly wellness.
 
-When analyzing patient data and user questions, include:
-1. Potential Health Risks – possible diseases, illnesses, or deficiencies.
-2. Diet Plan – safe daily diet recommendations.
-3. Exercise – simple workouts suitable for elderly.
-4. Medications – general advice only (no prescriptions), including categories like vitamins or supplements.
-5. Minerals & Vitamins – list essential nutrients.
-6. Foods, Fruits & Drinks – supportive items for health.
-7. Sleep Schedule – healthy sleep patterns.
-8. Medicinal Plants – safe herbal/traditional remedies (minimal side effects, e.g., chamomile, mint, saffron, ginger).
+Your role:
+- Analyze numeric health data (lab results, metrics) to detect abnormalities.
+- Provide structured, actionable wellness advice.
+
+When analyzing data:
+1. Extract each measurable metric (like glucose, HbA1c, cholesterol).
+2. Compare them to general reference ranges for adults.
+3. Mark each metric as:
+   - "Normal"
+   - "Slightly High/Low"
+   - "Critical"
+4. Explain what that means for elderly health in simple terms.
+5. Then, generate the following sections:
+
+- **Potential Health Risks**
+- **Diet Plan**
+- **Exercise**
+- **Medications (general)**
+- **Minerals & Vitamins**
+- **Foods, Fruits & Drinks**
+- **Sleep Schedule**
+- **Medicinal Plants**
 
 Rules:
 - Always include: “This is not a medical diagnosis. Please consult a healthcare provider.”
-- Be concise, structured, and easy to understand.
+- Be concise, structured, and evidence-based.
 - Never suggest prescription drugs or exact dosages.
-    `.trim();
+  `.trim();
   }
 
   /** Build messages for AI including OCR and elder info */
   private buildMessages(
-    ocrPayload: { structured?: unknown; plainText?: string },
+    ocrPayload: { structured?: any; plainText?: string },
     elderInfo: { age?: number; sex?: string; weight?: number; height?: number },
     userPrompt: string
   ): ChatMessage[] {
     const context =
-      ocrPayload?.structured || ocrPayload?.plainText || 'No OCR data provided';
+      ocrPayload?.structured?.metrics ||
+      ocrPayload?.structured ||
+      ocrPayload?.plainText ||
+      'No OCR data provided';
     const contextStr =
       typeof context === 'string' ? context : JSON.stringify(context, null, 2);
 

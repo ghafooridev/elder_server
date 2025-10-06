@@ -9,7 +9,7 @@ import { ApiOkResponse } from '@nestjs/swagger';
 export class UserController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
+  @Post('register')
   @ApiOkResponse({ type: ResponseUserDto })
   async create(@Body() createUserDto: CreateUserDto): Promise<ResponseUserDto> {
     const user = await this.usersService.createUser(createUserDto);

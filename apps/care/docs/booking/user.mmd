@@ -1,0 +1,34 @@
+sequenceDiagram
+    actor U as User
+    participant AG as API Gateway
+    participant CS as Care Service
+    participant RS as Reminder Service
+    participant NATS as NATS Event Bus
+
+    %% Discover services
+    U->>AG: GET {baseUrl}/care/cares
+    AG->>CS: Fetch Care Services
+    CS-->>AG: Services list
+    AG-->>U: Show services or Error
+
+    %% Book a service
+    U->>AG: POST {baseUrl}/care/booking
+    AG->>CS: Create booking (pending)
+    CS-->>AG: Booking created (or error)
+    AG-->>U: Show booking status
+
+    %% Notification from NATS
+    NATS-->>U: Booking approved/rejected (notification service)
+
+    %% Update booking list
+    U->>AG: PUT {baseUrl}/care/booking
+    AG->>CS: Update booking status
+    CS-->>AG: Status updated
+    AG-->>U: Refreshed list
+
+
+    %% Add reminder (if approved)
+    U->>AG: POST {baseUrl}/reminder/reminders
+    AG->>RS: Create reminder
+    RS-->>AG: Reminder confirmed (or error)
+    AG-->>U: Reminder saved

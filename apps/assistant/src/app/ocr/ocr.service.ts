@@ -130,6 +130,38 @@ export class OcrService {
     return { sections };
   }
 
+  /**
+   * Extract key-value numeric metrics from messy OCR text (for lab reports)
+   */
+  private extractKeyValueMetrics(text: string) {
+    const metrics: Record<string, number> = {};
+    const lines = text
+      .split(/\n/)
+      .map((l) => l.trim())
+      .filter(Boolean);
+
+    for (const line of lines) {
+      // Match patterns like "HbA1c 8.0", "Blood glucose 275.7 (182.3)"
+      const match = line.match(
+        /^([A-Za-z0-9 ,./%()-]+?)\s+([\d.]+)(?:\s*\([^)]+\))?/
+      );
+      if (match) {
+        const [, label, value] = match;
+        const cleanLabel = label
+          .replace(/\s+/g, ' ')
+          .replace(/[:%]/g, '')
+          .trim();
+
+        const numericValue = parseFloat(value);
+        if (!isNaN(numericValue)) {
+          metrics[cleanLabel] = numericValue;
+        }
+      }
+    }
+
+    return metrics;
+  }
+
   async processDocument(documentId: string) {
     const document = await this.prisma.document.findUnique({
       where: { id: documentId },
@@ -178,13 +210,22 @@ export class OcrService {
       // Step 2: Spell-check & auto-correct
       plainText = this.spellCorrect(plainText);
 
+      // Step 3: Extract structured metrics
+      const structuredMetrics = this.extractKeyValueMetrics(plainText);
+
+      // Step 4: Combine with existing parsed sections
+      const structured = {
+        metrics: structuredMetrics,
+        sections: this.parseLabReport(plainText),
+      };
+
       // Upsert OCR result (unique per document)
       const ocrResult = await this.prisma.ocrResult.upsert({
         where: { documentId: document.id },
         update: {
           rawJson: JSON.parse(JSON.stringify(data)),
           plainText,
-          structured: this.parseLabReport(plainText),
+          structured,
           language: 'eng',
           pages: (data as any).blocks?.length ?? null,
           confidence: (data as any).confidence ?? null,

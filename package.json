@@ -60,7 +60,9 @@
     "run-many:serve": "npx nx run-many --target=serve --projects=auth,reminder,care,talk,product,file,assistant,notification --output-style=stream",
     "run-many:build": "npx nx run-many --target=build --projects=auth,reminder,care,talk,product,file,assistant,notification",
     "run-many:test": "npx nx run-many --target=test --projects=auth,reminder,care,talk,product,file,assistant,notification",
-    "run-many:lint": "npx nx run-many --target=lint --projects=auth,reminder,care,talk,product,file,assistant,notification"
+    "run-many:lint": "npx nx run-many --target=lint --projects=auth,reminder,care,talk,product,file,assistant,notification",
+    "prisma:generate:all": "npx nx run-many --target=prisma:generate --projects=auth,reminder,care,talk,product,file,assistant,notification",
+    "prisma:migrate:all": "npx nx run-many --target=prisma:migrate --projects=auth,reminder,care,talk,product,file,assistant,notification "
   },
   "nx": {
     "targets": {

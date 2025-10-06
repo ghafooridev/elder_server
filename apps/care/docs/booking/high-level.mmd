@@ -1,0 +1,27 @@
+flowchart LR
+    subgraph ClientSide[Client Side]
+        U[👤 User]
+        C[👤 Caregiver]
+    end
+
+    subgraph ServerSide[Server Side]
+        AG[API Gateway]
+        CS[Care Service]
+        RS[Reminder Service]
+        NATS[(NATS Event Bus)]
+    end
+
+    %% User flow
+    U -->|Browse & Book| AG
+    AG -->|Manage bookings| CS
+    AG -->|Create reminders| RS
+    NATS -->|Notifications| U
+
+    %% Caregiver flow
+    C -->|View/Approve/Reject bookings| AG
+    AG --> CS
+    NATS -->|Notifications| C
+
+    %% Internal event flow
+    AG -->|Publish events| NATS
+    CS -->|Updates status| AG

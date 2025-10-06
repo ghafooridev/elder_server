@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant AG as API Gateway
+    participant CS as Care Service
+    participant RS as Reminder Service
+    participant NATS as NATS Event Bus
+
+    %% Care Service communication
+    AG->>CS: Handle bookings (create/update/fetch)
+    CS-->>AG: Response (success/failure)
+
+    %% Event bus notifications
+    AG->>NATS: Publish booking events
+    NATS-->>AG: Ack delivery
+    Note right of NATS: Push notifications to subscribed clients
+
+    %% Reminder Service communication
+    AG->>RS: Create reminder
+    RS-->>AG: Response (success/failure)
