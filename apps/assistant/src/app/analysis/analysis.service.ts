@@ -112,7 +112,7 @@ Rules:
     options?: { max_tokens?: number; temperature?: number }
   ): Promise<string> {
     const resolvedModel = model ?? this.defaultModel;
-
+    console.log('>>>>>>>>', model);
     try {
       const response = (await this.client.chatCompletion({
         model: resolvedModel,
@@ -123,6 +123,19 @@ Rules:
 
       const choice = response.choices?.[0];
       const content = choice?.message?.content;
+
+      // const fullPrompt = messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n\n');
+
+      // const response = await this.client.textGeneration({
+      //   model: resolvedModel,
+      //   inputs: fullPrompt,
+      //   parameters: {
+      //     max_new_tokens: options?.max_tokens ?? 700,
+      //     temperature: options?.temperature ?? 0.7,
+      //   },
+      // });
+
+      // const content = response.generated_text;
 
       if (!content) throw new Error('No content in Hugging Face response');
 
@@ -153,6 +166,8 @@ Rules:
       elderInfo,
       userPrompt
     );
+
+    console.log(messages);
 
     const aiResponse = await this.chatCompletion(model, messages, {
       max_tokens: 700, // a bit higher for full checklist

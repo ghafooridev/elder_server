@@ -15,6 +15,7 @@ import * as multer from 'multer';
 import { Prisma } from '@prisma-clients/assistant';
 import { OcrService } from '../ocr/ocr.service';
 import { AnalysisService } from '../analysis/analysis.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class DocumentService {
@@ -24,7 +25,8 @@ export class DocumentService {
     private readonly prisma: PrismaService,
     @Inject(FILE_SERVICE_NAME) private readonly client: ClientGrpc,
     private readonly ocrService: OcrService,
-    private readonly analysisService: AnalysisService
+    private readonly analysisService: AnalysisService,
+    private readonly config: ConfigService
   ) {
     this.fileService =
       this.client.getService<FileServiceClient>(FILE_SERVICE_NAME);
@@ -75,8 +77,7 @@ export class DocumentService {
 
       // 4️⃣ Trigger AI analysis using Hugging Face via AnalysisService
       // Defaults can be adjusted or sourced from env/config
-      const defaultModel =
-        process.env.HF_DEFAULT_MODEL || 'Qwen/Qwen2.5-7B-Instruct';
+      const defaultModel = this.config.get<string>('AI_MODEL');
       const defaultPrompt =
         'Analyze this lab report and highlight abnormal metrics. Provide elderly-specific recommendations for diet, exercise, and supplements.';
 
