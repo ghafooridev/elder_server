@@ -9,8 +9,25 @@ import * as fs from 'fs';
 import * as path from 'path';
 import axios from 'axios';
 import * as Tesseract from 'tesseract.js';
-
 import nspell from 'nspell';
+
+// 🧠 Known test aliases for normalization
+const LAB_TEST_ALIASES: Record<string, string> = {
+  'fasting blood glucose': 'Glucose (Fasting)',
+  fbs: 'Glucose (Fasting)',
+  'blood sugar': 'Glucose (Fasting)',
+  hba1c: 'HbA1c',
+  urea: 'Urea',
+  creatinine: 'Creatinine',
+  'total cholesterol': 'Total Cholesterol',
+  triglycerides: 'Triglycerides',
+  'hdl cholesterol': 'HDL Cholesterol',
+  'ldl cholesterol': 'LDL Cholesterol',
+  sgot: 'AST (SGOT)',
+  sgpt: 'ALT (SGPT)',
+  got: 'AST (SGOT)',
+  gpt: 'ALT (SGPT)',
+};
 
 @Injectable()
 export class OcrService {
@@ -32,9 +49,9 @@ export class OcrService {
       );
 
       this.spell = nspell(dict);
-      console.log('Spell-check dictionary loaded successfully');
+      console.log('✅ Spell-check dictionary loaded');
     } catch (err) {
-      console.error('Spell-check dictionary init failed:', err);
+      console.error('⚠️ Spell-check dictionary init failed:', err);
     }
   }
 
@@ -55,23 +72,18 @@ export class OcrService {
     return ocr;
   }
 
-  /**
-   * Utility to clean noisy OCR text
-   */
+  // 🧹 Clean noisy OCR text
   private cleanText(raw: string): string {
     return raw
-      .replace(/[^a-zA-Z0-9\s.,:;!?()\-%]/g, '') // remove weird symbols
+      .replace(/[^\w\s.,:;!?()/\-+%°]/g, '') // remove weird symbols
       .replace(/\s{2,}/g, ' ') // collapse extra spaces
-      .replace(/\n\s*\n/g, '\n\n') // normalize empty lines
+      .replace(/\n\s*\n/g, '\n') // normalize empty lines
       .trim();
   }
 
-  /**
-   * Spell-correct text using nspell
-   */
+  // ✍️ Spell correct using nspell
   private spellCorrect(text: string): string {
     if (!this.spell) return text;
-
     return text
       .split(/\s+/)
       .map((word) => {
@@ -82,12 +94,67 @@ export class OcrService {
       .join(' ');
   }
 
-  /**
-   * Parse lab report text into structured data
-   */
+  // 🧾 Enhanced metrics extractor
+  private extractKeyValueMetrics(text: string) {
+    const metrics: Record<string, any> = {};
+    const lines = text
+      .split(/\n/)
+      .map((l) => l.trim())
+      .filter(Boolean);
+
+    const regex =
+      /^([A-Za-z0-9 %()\-/,.]+?)\s+([\d.]+)\s*([a-zA-Z%/dL]+)?(?:\s+([<>]?\s*[\d.–-]+))?/;
+
+    for (const line of lines) {
+      const match = line.match(regex);
+      if (!match) continue;
+
+      // eslint-disable-next-line prefer-const
+      let [, label, value, unit, range] = match;
+
+      label = label
+        .toLowerCase()
+        .replace(/[^a-z0-9 ]+/g, '')
+        .trim();
+
+      const canonical = LAB_TEST_ALIASES[label] || this.findAlias(label);
+      const key = canonical || label;
+
+      metrics[key] = {
+        value: parseFloat(value),
+        unit: unit || null,
+        range: range?.replace(/\s+/g, '') || null,
+        raw: line,
+      };
+    }
+
+    return metrics;
+  }
+
+  private findAlias(label: string): string | null {
+    for (const [alias, canonical] of Object.entries(LAB_TEST_ALIASES)) {
+      if (label.includes(alias)) return canonical;
+    }
+    return null;
+  }
+
+  // 📚 Smarter section grouping
   private parseLabReport(text: string) {
     const sections: Record<string, any[]> = {};
-    let currentSection: string | null = null;
+    let currentSection = 'General';
+    sections[currentSection] = [];
+
+    const knownSections = [
+      'Haematology',
+      'Biochemistry',
+      'Hormones',
+      'Lipid Profile',
+      'Liver Function Test',
+      'Kidney Function Test',
+      'Thyroid Profile',
+      'Electrolytes',
+      'Urine Analysis',
+    ];
 
     const lines = text
       .split(/\n/)
@@ -95,29 +162,20 @@ export class OcrService {
       .filter(Boolean);
 
     for (const line of lines) {
-      // Detect section headers
-      if (/Sex Hormones/i.test(line)) {
-        currentSection = 'Sex Hormones';
-        sections[currentSection] = [];
-        continue;
-      }
-      if (/Haematology/i.test(line)) {
-        currentSection = 'Haematology';
-        sections[currentSection] = [];
-        continue;
-      }
-      if (/Cell Differential/i.test(line)) {
-        currentSection = 'White Cell Differential';
-        sections[currentSection] = [];
+      const sectionMatch = knownSections.find((s) =>
+        line.toLowerCase().includes(s.toLowerCase())
+      );
+      if (sectionMatch) {
+        currentSection = sectionMatch;
+        if (!sections[currentSection]) sections[currentSection] = [];
         continue;
       }
 
-      // Try to capture test rows
-      const match = line.match(
-        /^([A-Za-z %]+)\s+([\d.]+)\s*([A-Za-z/%^0-9]*)\s+([\d.\-– ]+)?$/
+      const testMatch = line.match(
+        /^([A-Za-z0-9 ()%/\-.,]+?)\s+([\d.]+)\s*([a-zA-Z/%^0-9]*)\s+([<>]?\s*[\d.\-– ]+)?$/
       );
-      if (match && currentSection) {
-        const [, test, value, unit, range] = match;
+      if (testMatch) {
+        const [, test, value, unit, range] = testMatch;
         sections[currentSection].push({
           test: test.trim(),
           value: parseFloat(value),
@@ -130,45 +188,40 @@ export class OcrService {
     return { sections };
   }
 
-  /**
-   * Extract key-value numeric metrics from messy OCR text (for lab reports)
-   */
-  private extractKeyValueMetrics(text: string) {
-    const metrics: Record<string, number> = {};
-    const lines = text
-      .split(/\n/)
-      .map((l) => l.trim())
-      .filter(Boolean);
+  // 🧠 Optional: AI-assisted structuring via Hugging Face (small free-tier models)
+  private async aiAssistStructure(plainText: string) {
+    if (!process.env.HF_API_TOKEN) return null;
 
-    for (const line of lines) {
-      // Match patterns like "HbA1c 8.0", "Blood glucose 275.7 (182.3)"
-      const match = line.match(
-        /^([A-Za-z0-9 ,./%()-]+?)\s+([\d.]+)(?:\s*\([^)]+\))?/
-      );
-      if (match) {
-        const [, label, value] = match;
-        const cleanLabel = label
-          .replace(/\s+/g, ' ')
-          .replace(/[:%]/g, '')
-          .trim();
-
-        const numericValue = parseFloat(value);
-        if (!isNaN(numericValue)) {
-          metrics[cleanLabel] = numericValue;
+    try {
+      const response = await axios.post(
+        'https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct',
+        {
+          inputs: `Extract medical lab test results as JSON array with fields: test, value, unit, referenceRange.\n\n${plainText}`,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.HF_API_TOKEN}`,
+          },
         }
-      }
-    }
+      );
 
-    return metrics;
+      const text = response.data?.[0]?.generated_text;
+      if (text && text.includes('{')) {
+        return JSON.parse(text.match(/{[\s\S]+}/)?.[0] || '{}');
+      }
+    } catch (err) {
+      console.error('⚠️ AI-assisted structuring failed:', err.message);
+    }
+    return null;
   }
 
+  // 🧩 Main processing pipeline
   async processDocument(documentId: string) {
     const document = await this.prisma.document.findUnique({
       where: { id: documentId },
     });
     if (!document) throw new NotFoundException('Document not found');
 
-    // Create a processing job
     const job = await this.prisma.processingJob.create({
       data: {
         documentId: document.id,
@@ -179,7 +232,6 @@ export class OcrService {
       },
     });
 
-    // Prepare temp folder
     const uploadsDir = path.join(process.cwd(), 'uploads');
     if (!fs.existsSync(uploadsDir))
       fs.mkdirSync(uploadsDir, { recursive: true });
@@ -188,15 +240,14 @@ export class OcrService {
     const tmpPath = path.join(uploadsDir, tmpName);
 
     try {
-      // Download the file referenced by fileUrl
       if (!document.fileUrl)
         throw new BadRequestException('Document has no fileUrl');
+
       const response = await axios.get(document.fileUrl, {
         responseType: 'arraybuffer',
       });
       fs.writeFileSync(tmpPath, Buffer.from(response.data));
 
-      // Run OCR (use English; with improved settings)
       const { data } = await Tesseract.recognize(tmpPath, 'eng', {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -204,28 +255,28 @@ export class OcrService {
         tessedit_ocr_engine_mode: 1, // LSTM only
       });
 
-      // Step 1: Clean text
+      // Step 1: clean
       let plainText = this.cleanText(data.text);
-
-      // Step 2: Spell-check & auto-correct
+      // Step 2: spell correct
       plainText = this.spellCorrect(plainText);
-
-      // Step 3: Extract structured metrics
+      // Step 3: extract metrics & sections
       const structuredMetrics = this.extractKeyValueMetrics(plainText);
+      const structuredSections = this.parseLabReport(plainText);
 
-      // Step 4: Combine with existing parsed sections
-      const structured = {
+      // Step 4 (optional): AI structure
+      const aiStructured = await this.aiAssistStructure(plainText);
+
+      const finalStructured = aiStructured || {
         metrics: structuredMetrics,
-        sections: this.parseLabReport(plainText),
+        sections: structuredSections,
       };
 
-      // Upsert OCR result (unique per document)
       const ocrResult = await this.prisma.ocrResult.upsert({
         where: { documentId: document.id },
         update: {
           rawJson: JSON.parse(JSON.stringify(data)),
           plainText,
-          structured,
+          structured: finalStructured,
           language: 'eng',
           pages: (data as any).blocks?.length ?? null,
           confidence: (data as any).confidence ?? null,
@@ -234,20 +285,18 @@ export class OcrService {
           documentId: document.id,
           rawJson: JSON.parse(JSON.stringify(data)),
           plainText,
-          structured: this.parseLabReport(plainText),
+          structured: finalStructured,
           language: 'eng',
           pages: (data as any).blocks?.length ?? null,
           confidence: (data as any).confidence ?? null,
         },
       });
 
-      // Mark job success
       await this.prisma.processingJob.update({
         where: { id: job.id },
         data: { status: JobStatus.SUCCESS, finishedAt: new Date() },
       });
 
-      // Mark document processed flag
       await this.prisma.document.update({
         where: { id: document.id },
         data: { processed: true },
@@ -265,12 +314,7 @@ export class OcrService {
       });
       throw new BadRequestException('OCR processing failed');
     } finally {
-      // Cleanup temp file
-      try {
-        if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
-      } catch {
-        /* empty */
-      }
+      if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
     }
   }
 }
