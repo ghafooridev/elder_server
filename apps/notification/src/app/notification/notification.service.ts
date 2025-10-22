@@ -2,6 +2,10 @@ import { Injectable, Logger, Inject } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import {
+  MulticastMessage,
+  BatchResponse,
+} from 'firebase-admin/lib/messaging/messaging-api';
 
 @Injectable()
 export class NotificationService {
@@ -13,39 +17,24 @@ export class NotificationService {
         const sa = process.env.FIREBASE_SA_JSON;
         if (!sa) {
           this.logger.warn(
-            'FIREBASE_SA_JSON is not set. FCM will be disabled.'
+            '⚠️ FIREBASE_SA_JSON is not set. FCM will be disabled.'
           );
           return;
         }
+
+        const parsed = JSON.parse(sa);
+        if (!parsed.project_id || !parsed.private_key || !parsed.client_email) {
+          throw new Error('Invalid FIREBASE_SA_JSON content.');
+        }
+
         admin.initializeApp({
-          credential: admin.credential.cert(JSON.parse(sa)),
+          credential: admin.credential.cert(parsed),
         });
-        this.logger.log('Firebase Admin initialized.');
+
+        this.logger.log('✅ Firebase Admin initialized successfully.');
       }
     } catch (err) {
-      this.logger.error('Failed to initialize Firebase Admin', err as any);
-    }
-  }
-
-  async sendFcm(
-    token: string,
-    title: string,
-    body: string,
-    data?: Record<string, string>
-  ) {
-    if (!admin.apps.length) return;
-    try {
-      const message = {
-        token,
-        notification: { title, body },
-        data,
-      };
-      return await admin.messaging().send(message);
-    } catch (error) {
-      this.logger.error(`Failed to send FCM to token ${token}`, error);
-      if (this.isInvalidTokenError(error)) {
-        this.authClient.emit('auth.devices.unregister', { token });
-      }
+      this.logger.error('❌ Failed to initialize Firebase Admin', err);
     }
   }
 
@@ -57,7 +46,6 @@ export class NotificationService {
     );
   }
 
-  // Fetch device tokens from auth service via NATS request-reply
   private async getDeviceTokens(userId: string): Promise<string[]> {
     try {
       const tokens = await firstValueFrom(
@@ -65,42 +53,132 @@ export class NotificationService {
       );
       return Array.isArray(tokens) ? tokens : [];
     } catch (e) {
-      this.logger.error(
-        `Failed to fetch device tokens for user ${userId}`,
-        e as any
-      );
+      this.logger.error(`Failed to fetch device tokens for user ${userId}`, e);
       return [];
     }
   }
 
+  private async sendMulticastFcm(
+    tokens: string[],
+    title: string,
+    body: string,
+    data?: Record<string, string>
+  ): Promise<BatchResponse | null> {
+    if (!admin.apps.length) {
+      this.logger.warn('⚠️ Firebase Admin not initialized.');
+      return null;
+    }
+
+    if (tokens.length === 0) {
+      this.logger.warn('⚠️ No tokens provided for sendMulticastFcm.');
+      return null;
+    }
+
+    try {
+      const message: MulticastMessage = {
+        tokens,
+        notification: { title, body },
+        data,
+      };
+
+      this.logger.debug(
+        `📤 Sending FCM multicast message: ${JSON.stringify(message, null, 2)}`
+      );
+
+      const response = await admin.messaging().sendEachForMulticast(message);
+
+      this.logger.log(
+        `✅ FCM sent: ${response.successCount} success, ${response.failureCount} failure(s)`
+      );
+
+      response.responses.forEach((res, idx) => {
+        if (res.success) {
+          this.logger.debug(`✅ Sent to token[${idx}] ${tokens[idx]}`);
+        } else {
+          this.logger.warn(
+            `❌ Failed token[${idx}] ${tokens[idx]}: ${res.error?.message}`
+          );
+          if (this.isInvalidTokenError(res.error)) {
+            this.authClient.emit('auth.devices.unregister', {
+              token: tokens[idx],
+            });
+          }
+        }
+      });
+
+      return response;
+    } catch (error) {
+      this.logger.error('❌ Error in sendMulticastFcm()', error);
+      return null;
+    }
+  }
+
   async handleReminder(payload: any) {
+    this.logger.log('🕒 handleReminder triggered:', payload);
+
     const { userId, id: reminderId, title } = payload || {};
     if (!userId) return;
 
     const tokens = await this.getDeviceTokens(userId);
-    await Promise.all(
-      tokens.map((t) =>
-        this.sendFcm(t, title ?? 'Reminder', title ?? 'You have a reminder', {
-          reminderId: String(reminderId ?? ''),
-          type: 'reminder',
-        })
-      )
+    this.logger.log(
+      `Sending reminder to user ${userId} tokens: ${tokens.length}`
     );
+
+    const response = await this.sendMulticastFcm(
+      tokens,
+      title ?? 'Reminder',
+      title ?? 'You have a reminder',
+      {
+        reminderId: String(reminderId ?? ''),
+        type: 'reminder',
+      }
+    );
+
+    if (!response) {
+      this.logger.debug(
+        'Reminder results: ⚠️ No response received from Firebase.'
+      );
+    } else {
+      this.logger.debug(
+        `Reminder results:\n${JSON.stringify(response, null, 2)}`
+      );
+    }
+    console.log(response);
+    return response;
   }
 
   async handleMessage(payload: any) {
+    this.logger.log('💬 handleMessage triggered:', payload);
+
     const { toUserId, fromUserId, text, messageId } = payload || {};
     if (!toUserId) return;
 
     const tokens = await this.getDeviceTokens(toUserId);
-    await Promise.all(
-      tokens.map((t) =>
-        this.sendFcm(t, 'New message', text ?? '', {
-          messageId: String(messageId ?? ''),
-          fromUserId: String(fromUserId ?? ''),
-          type: 'message',
-        })
-      )
+    this.logger.log(
+      `Sending message to user ${toUserId} tokens: ${tokens.length}`
     );
+
+    const response = await this.sendMulticastFcm(
+      tokens,
+      'New message',
+      text ?? '',
+      {
+        messageId: String(messageId ?? ''),
+        fromUserId: String(fromUserId ?? ''),
+        type: 'message',
+      }
+    );
+
+    if (!response) {
+      this.logger.debug(
+        'Message results: ⚠️ No response received from Firebase.'
+      );
+    } else {
+      this.logger.debug(
+        `Message results:\n${JSON.stringify(response, null, 2)}`
+      );
+    }
+
+    return response;
   }
 }

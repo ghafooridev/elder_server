@@ -4,15 +4,15 @@ import { NotificationService } from './notification.service';
 
 @Controller()
 export class NotificationController {
-  constructor(private readonly ns: NotificationService) {}
+  constructor(private readonly notificationService: NotificationService) {}
 
   @EventPattern('reminder.trigger')
   async onReminder(@Payload() payload: any) {
-    await this.ns.handleReminder(payload);
+    await this.notificationService.handleReminder(payload);
   }
 
   @EventPattern('messages.new')
   async onMessage(@Payload() payload: any) {
-    await this.ns.handleMessage(payload);
+    await this.notificationService.handleMessage(payload);
   }
 }
