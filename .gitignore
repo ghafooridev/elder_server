@@ -43,3 +43,6 @@ coverage/
 
 # Prisma generated client across all apps
 **/prisma/generated/
+
+**/__pycache__/
+**/.venv/

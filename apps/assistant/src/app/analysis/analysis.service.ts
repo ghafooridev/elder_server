@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { SYSTEM_PROMPT } from './helper/analysis.constant';
+import { AgentService } from '../agent/agent.service';
 
 export type ChatRole = 'system' | 'user' | 'assistant';
 
@@ -20,7 +21,8 @@ export class AnalysisService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly config: ConfigService
+    private readonly config: ConfigService,
+    private readonly agent: AgentService
   ) {
     this.apiKey = this.config.get<string>('AI_CHAT_TOKEN');
     if (!this.apiKey)
@@ -159,18 +161,45 @@ export class AnalysisService {
       userPrompt
     );
 
-    const aiResponse = await this.chatCompletion(model, messages, {
-      max_tokens: 700,
-      temperature: 0.7,
-    });
+    const aiBackend = this.config.getOrThrow<string>('AI_BACKEND') || 'remote';
+    let whichBackend = 'remote';
+    let aiResponse = '';
+
+    // Prefer explicit model param
+    if (model === 'gemma:4b' || aiBackend === 'local') {
+      aiResponse = await this.agent.getSuggestion(
+        messages.map((m) => m.content).join('\n---\n')
+      );
+      whichBackend = 'local';
+    } else if (aiBackend === 'hybrid') {
+      try {
+        aiResponse = await this.agent.getSuggestion(
+          messages.map((m) => m.content).join('\n---\n')
+        );
+        whichBackend = 'local';
+      } catch {
+        aiResponse = await this.chatCompletion(model, messages, {
+          max_tokens: 700,
+          temperature: 0.7,
+        });
+        whichBackend = 'remote-fallback';
+      }
+    } else {
+      aiResponse = await this.chatCompletion(model, messages, {
+        max_tokens: 700,
+        temperature: 0.7,
+      });
+      whichBackend = 'remote';
+    }
 
     return this.prisma.analysis.create({
       data: {
         documentId,
         ocrResultId: ocrResult.id,
-        model: model ?? this.defaultModel,
+        model:
+          model || (whichBackend === 'local' ? 'gemma:4b' : this.defaultModel),
         prompt: userPrompt,
-        response: { text: aiResponse },
+        response: { text: aiResponse, backend: whichBackend },
         status: 'DONE',
         requestedBy,
       },
