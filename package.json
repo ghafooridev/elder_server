@@ -49,6 +49,12 @@
     "notification:build": "npx nx build notification",
     "notification:test": "npx nx test notification",
     "notification:lint": "npx nx lint notification",
+    "game:serve": "npx nx serve game",
+    "game:build": "npx nx build game",
+    "game:test": "npx nx test game",
+    "game:lint": "npx nx lint game",
+    "game:prisma:generate": "npx nx prisma:generate game",
+    "game:prisma:migrate": "npx nx prisma:migrate game",
     "auth:api": "npx nx serve auth --api",
     "reminder:api": "npx nx serve reminder --api",
     "care:api": "npx nx serve care --api",
@@ -57,12 +63,13 @@
     "file:api": "npx nx serve file --api",
     "assistant:api": "npx nx serve assistant --api",
     "notification:api": "npx nx serve notification --api",
-    "run-many:serve": "npx nx run-many --target=serve --projects=auth,reminder,care,talk,product,file,assistant,notification --output-style=stream",
-    "run-many:build": "npx nx run-many --target=build --projects=auth,reminder,care,talk,product,file,assistant,notification",
-    "run-many:test": "npx nx run-many --target=test --projects=auth,reminder,care,talk,product,file,assistant,notification",
-    "run-many:lint": "npx nx run-many --target=lint --projects=auth,reminder,care,talk,product,file,assistant,notification",
-    "prisma:generate:all": "npx nx run-many --target=prisma:generate --projects=auth,reminder,care,talk,product,file,assistant,notification",
-    "prisma:migrate:all": "npx nx run-many --target=prisma:migrate --projects=auth,reminder,care,talk,product,file,assistant,notification "
+    "game:api": "npx nx serve game --api",
+    "run-many:serve": "npx nx run-many --target=serve --projects=auth,reminder,care,talk,product,file,assistant,notification,game --output-style=stream",
+    "run-many:build": "npx nx run-many --target=build --projects=auth,reminder,care,talk,product,file,assistant,notification,game",
+    "run-many:test": "npx nx run-many --target=test --projects=auth,reminder,care,talk,product,file,assistant,notification,game",
+    "run-many:lint": "npx nx run-many --target=lint --projects=auth,reminder,care,talk,product,file,assistant,notification,game",
+    "prisma:generate:all": "npx nx run-many --target=prisma:generate --projects=auth,reminder,care,talk,product,file,assistant,notification,game",
+    "prisma:migrate:all": "npx nx run-many --target=prisma:migrate --projects=auth,reminder,care,talk,product,file,assistant,notification,game "
   },
   "nx": {
     "targets": {
