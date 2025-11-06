@@ -55,6 +55,7 @@
     "game:lint": "npx nx lint game",
     "game:prisma:generate": "npx nx prisma:generate game",
     "game:prisma:migrate": "npx nx prisma:migrate game",
+    "game:prisma:reset": "npx nx prisma:reset game",
     "auth:api": "npx nx serve auth --api",
     "reminder:api": "npx nx serve reminder --api",
     "care:api": "npx nx serve care --api",

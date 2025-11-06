@@ -1,0 +1,76 @@
+/* layout.css */
+
+body {
+  margin: 0;
+  background: #fff;
+  color: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+}
+
+/* Common header for all games */
+.header {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.header h1 {
+  font-size: 32px;
+  color: #9333ea;
+  margin: 0;
+}
+
+.header p {
+  font-size: 18px;
+  color: #000;
+  margin: 5px 0;
+}
+
+/* Reusable scoreboard and control panel layout */
+.scoreboard,
+#score-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 320px;
+  font-size: 18px;
+  margin: 10px 0;
+  color: #9333ea;
+  font-weight: bold;
+}
+
+button,
+.restart {
+  background-color: #9333ea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover,
+.restart:hover {
+  background-color: #a855f7;
+}
+
+/* Consistent game container */
+.game-container {
+  width: 95%;
+  max-width: 450px;
+  aspect-ratio: 3 / 4;
+  position: relative;
+  border: 6px solid #9333ea;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #d8b4fe;
+  box-sizing: border-box;
+}

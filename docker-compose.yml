@@ -48,6 +48,7 @@ services:
       - ec_file
       - ec_talk
       - ec_assistant
+      - ec_game
     networks:
       - backend-net
 
@@ -186,6 +187,25 @@ services:
       ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
     expose:
       - '${ASSISTANT_PORT}'
+    depends_on:
+      - postgres
+    networks:
+      - backend-net
+
+  ec_game:
+    build:
+      context: .
+      dockerfile: apps/game/Dockerfile
+    container_name: ec_game
+    restart: unless-stopped
+    environment:
+      GAME_DATABASE_URL: ${GAME_DATABASE_URL}
+      PRISMA_GAME_DATABASE_URL: ${PRISMA_GAME_DATABASE_URL}
+      PORT: ${GAME_PORT}
+      GAME_PORT: ${GAME_PORT}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
+    expose:
+      - '${GAME_PORT}'
     depends_on:
       - postgres
     networks:

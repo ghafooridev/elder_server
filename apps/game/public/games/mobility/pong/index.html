@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Pong Game</title>
+    <link rel="stylesheet" href="../shared/layout.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body onload="svgpong()">
+    <header class="header">
+      <h1>Pong</h1>
+      <p>Keep the ball in play!</p>
+    </header>
+
+    <div class="scoreboard">
+      <span>Player: <strong id="playerScore">0</strong></span>
+      <span>Computer: <strong id="computerScore">0</strong></span>
+      <button id="resetBtn">Reset</button>
+    </div>
+
+    <div class="game-container">
+      <div id="countdown"></div>
+      <svg id="field" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800">
+        <rect id="background" width="600" height="800"></rect>
+        <rect id="paddleTop" width="100" height="20" x="250" y="10"></rect>
+        <rect id="paddleBottom" width="100" height="20" x="250" y="770"></rect>
+        <circle id="ball" r="8" cx="300" cy="400"></circle>
+      </svg>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -13,7 +13,7 @@ sudo pkill nginx || true
 # Start Nx apps (dev only)
 if [ "$1" != "docker" ]; then
   npx nx reset
-  npx nx run-many --target=serve --projects=auth,reminder,care,talk,product,file,assistant,notification --output-style=stream &
+  npx nx run-many --target=serve --projects=auth,reminder,care,talk,product,file,assistant,notification,game --output-style=stream &
   sleep 10
 fi
 

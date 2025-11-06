@@ -1,29 +1,27 @@
 html,
 body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-}
-body {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   flex-direction: column;
   background: #fff;
-  /* font-family: 'Coda', cursive; */
+  margin: 0;
 }
+
 .deck {
+  max-width: 450px;
+  aspect-ratio: 3 / 4;
   margin: 20px auto;
   background: #d8b4fe;
   padding: 20px;
   border-radius: 10px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-gap: 15px;
+  grid-gap: 10px;
 }
 .deck .card {
-  height: 80px;
-  width: 80px;
+  height: 75px;
+  width: 75px;
   background: #9333ea;
   border-radius: 8px;
   display: flex;
@@ -54,8 +52,8 @@ body {
 }
 
 #score-panel {
-  width: 90%;
-  margin: 10px;
+  width: 100%;
+  margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -94,4 +92,18 @@ body {
 .header p {
   font-size: 20px;
   margin: 0;
+}
+#resetBtn {
+  background-color: #9333ea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#resetBtn:hover {
+  background-color: #a855f7;
 }
