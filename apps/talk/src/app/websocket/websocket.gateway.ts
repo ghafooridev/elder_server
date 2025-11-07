@@ -165,7 +165,7 @@ export class TalkGateway
     @ConnectedSocket() client: Socket
   ) {
     try {
-      // Create message using existing service
+      // Create message using existing service (service will emit events)
       const message = await this.messageService.sendMessage({
         conversationId: data.conversationId,
         senderId: data.senderId,
@@ -174,15 +174,6 @@ export class TalkGateway
         attachmentUrl: data.attachmentUrl,
         messageType: data.messageType,
       });
-      console.log('message>>>>>>', message);
-      // Emit to all users in the conversation room
-      this.server.to(data.conversationId).emit('newMessage', {
-        message,
-        conversationId: data.conversationId,
-      });
-
-      // Send delivery confirmation to sender
-      client.emit('messageDelivered', { messageId: message.id });
 
       this.logger.log(
         `Message sent from ${data.senderId} to ${data.receiverId} in conversation ${data.conversationId}`
@@ -200,17 +191,11 @@ export class TalkGateway
     @ConnectedSocket() client: Socket
   ) {
     try {
-      // Update message using existing service
-      const updatedMessage = await this.messageService.updateMessage({
+      // Update message using existing service (service will emit events)
+      await this.messageService.updateMessage({
         messageId: data.messageId,
         content: data.content,
         attachmentUrl: data.attachmentUrl,
-      });
-
-      // Emit to all users in the conversation room
-      this.server.to(data.conversationId).emit('messageUpdated', {
-        message: updatedMessage,
-        conversationId: data.conversationId,
       });
 
       this.logger.log(
@@ -229,14 +214,8 @@ export class TalkGateway
     @ConnectedSocket() client: Socket
   ) {
     try {
-      // Delete message using existing service
+      // Delete message using existing service (service will emit events)
       await this.messageService.deleteMessageById(data.messageId);
-
-      // Emit to all users in the conversation room
-      this.server.to(data.conversationId).emit('messageDeleted', {
-        messageId: data.messageId,
-        conversationId: data.conversationId,
-      });
 
       this.logger.log(
         `Message ${data.messageId} deleted in conversation ${data.conversationId}`
@@ -279,7 +258,7 @@ export class TalkGateway
     @ConnectedSocket() client: Socket
   ) {
     try {
-      // Update message status using existing service
+      // Update message status using existing service (service will emit events)
       const statusMap = {
         delivered: 'DELIVERED' as const,
         seen: 'SEEN' as const,
@@ -287,20 +266,9 @@ export class TalkGateway
 
       await this.messageService.updateMessageStatus(
         data.messageId,
-        statusMap[data.status]
+        statusMap[data.status],
+        data.userId
       );
-
-      // Notify the message sender about status update
-      const message = await this.messageService.findMessageById(data.messageId);
-      const senderSocketId = this.userSockets.get(message.senderId);
-
-      if (senderSocketId) {
-        this.server.to(senderSocketId).emit('messageStatusUpdated', {
-          messageId: data.messageId,
-          status: data.status,
-          updatedBy: data.userId,
-        });
-      }
 
       this.logger.log(
         `Message ${data.messageId} status updated to ${data.status} by ${data.userId}`

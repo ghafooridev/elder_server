@@ -53,9 +53,10 @@ export class MessageController {
   @ApiUpdateMessageStatusDocs()
   async updateMessageStatus(
     @Param('id') messageId: string,
-    @Body('status') status: MessageStatus
+    @Body('status') status: MessageStatus,
+    @Req() { user }: { user: User }
   ) {
-    return this.messageService.updateMessageStatus(messageId, status);
+    return this.messageService.updateMessageStatus(messageId, status, user.id);
   }
 
   @Delete(':id')
