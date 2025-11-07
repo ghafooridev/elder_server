@@ -92,6 +92,12 @@
       "options": {
         "cwd": "{projectRoot}"
       }
+    },
+    "prisma:seed": {
+      "command": "prisma db seed",
+      "options": {
+        "cwd": "{projectRoot}"
+      }
     }
   }
 }
