@@ -15,6 +15,7 @@ import {
   ValidationPipe,
   Inject,
   OnModuleInit,
+  forwardRef,
 } from '@nestjs/common';
 import { MessageService } from '../message/message.service';
 import { ConversationService } from '../conversation/conversation.service';
@@ -54,7 +55,9 @@ export class TalkGateway
   private authService: AuthServiceClient;
 
   constructor(
+    @Inject(forwardRef(() => MessageService))
     private readonly messageService: MessageService,
+    @Inject(forwardRef(() => ConversationService))
     private readonly conversationService: ConversationService,
     @Inject(AUTH_PACKAGE_NAME) private readonly client: ClientGrpc
   ) {}
