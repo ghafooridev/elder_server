@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { RemindersService } from './reminder.service';
-import { ReminderController } from './reminder.controller';
+import { RingService } from './ring.service';
+import { RingController } from './ring.controller';
+import { RingGateway } from './ring.gateway';
 import { PrismaModule } from '../prisma/prisma.module';
-import { GrpcClientModule } from './grpc-client/grpc-client.module';
+import { GrpcClientModule } from '../grpc-client/grpc-client.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
@@ -22,8 +23,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       },
     ]),
   ],
-  providers: [RemindersService],
-  controllers: [ReminderController],
-  exports: [RemindersService],
+  providers: [RingService, RingGateway],
+  controllers: [RingController],
 })
-export class RemindersModule {}
+export class RingModule {}

@@ -1,0 +1,73 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "./generated/prisma"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("PRISMA_IOT_DATABASE_URL")
+}
+
+model RingDevice {
+  id         String        @id @default(cuid())
+  deviceId   String        @unique
+  userId     String
+  label      String?
+  status     String?
+  lastSeen   DateTime?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  vitals     VitalRecord[]
+
+  @@index([userId, deviceId])
+}
+
+model VitalRecord {
+  id                  String    @id @default(cuid())
+  timestamp           DateTime
+  deviceId            String
+  userId              String?
+  ringDeviceId        String?
+  ringDevice          RingDevice? @relation(fields: [ringDeviceId], references: [id])
+
+  heartRate           Float?
+  bloodOxygen         Float?
+  bodyTemp            Float?
+  respRate            Float?
+  hrv                 Float?
+  stressLevel         Float?
+
+  stepCount           Int?
+  activity            String?
+  activityDuration    Int?
+
+  accelX              Float?
+  accelY              Float?
+  accelZ              Float?
+  gyroX               Float?
+  gyroY               Float?
+  gyroZ               Float?
+  motionIntensity     Float?
+
+  sleepPattern        String?
+  sleepScore          Float?
+  anomalyScore        Float?
+  signalNoiseLevel    Float?
+  dataIntegrityScore  Float?
+
+  batteryLevel        Float?
+  ambientTemp         Float?
+  humidity            Float?
+  isTampered          Boolean? @default(false)
+
+  locationLat         Float?
+  locationLon         Float?
+  altitude            Float?
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([deviceId, timestamp])
+  @@index([userId, timestamp])
+}

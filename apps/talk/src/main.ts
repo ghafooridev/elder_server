@@ -1,4 +1,4 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { Logger, RequestMethod, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { ConfigService } from '@nestjs/config';
@@ -13,7 +13,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api-docs', app, document);
 
-  // Enable CORS
   // Enable CORS
   app.enableCors({
     credentials: true,
@@ -38,7 +37,9 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     })
   );
-  app.setGlobalPrefix(globalPrefix);
+  app.setGlobalPrefix('api', {
+    exclude: [{ path: 'socket.io', method: RequestMethod.ALL }],
+  });
 
   // set trust proxy for express (if using express adapter)
   const httpAdapter = app.getHttpAdapter?.();

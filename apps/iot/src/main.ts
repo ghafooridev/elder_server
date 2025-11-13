@@ -5,7 +5,6 @@ import { ConfigService } from '@nestjs/config';
 import { SwaggerModule } from '@nestjs/swagger';
 import { swaggerConfig } from '@elder/nestjs';
 import * as cookieParser from 'cookie-parser';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -41,29 +40,17 @@ async function bootstrap() {
   );
   app.setGlobalPrefix(globalPrefix);
 
-  // NATS Microservice listener for events (e.g., vitals.analyze)
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.NATS,
-    options: {
-      url:
-        process.env.NATS_URL ||
-        process.env.NATS_CLIENT_URL ||
-        'nats://localhost:4222',
-    },
-  });
-
   const httpAdapter = app.getHttpAdapter?.();
   if (httpAdapter?.getInstance) {
     const expressInstance = httpAdapter.getInstance();
     expressInstance.set('trust proxy', true);
   }
 
-  const port = config.getOrThrow('ASSISTANT_PORT');
-  await app.startAllMicroservices();
+  const port = config.getOrThrow('IOT_PORT');
   await app.listen(port, '0.0.0.0');
 
   Logger.log(
-    `🚀 Assistant application is running on: http://localhost:${port}/${globalPrefix}`
+    `🚀 IOT application is running on: http://localhost:${port}/${globalPrefix}`
   );
 }
 

@@ -71,6 +71,27 @@ export class AnalysisService {
     ];
   }
 
+  buildVitalsMessages(
+    vitals: any,
+    elderInfo: { age?: number; sex?: string; weight?: number; height?: number },
+    userPrompt: string
+  ): ChatMessage[] {
+    const contextStr =
+      typeof vitals === 'string' ? vitals : JSON.stringify(vitals, null, 2);
+    const elderInfoStr = Object.entries(elderInfo || {})
+      .map(([k, v]) => `${k}: ${v}`)
+      .join('\n');
+    return [
+      { role: 'system', content: this.getSystemPrompt() },
+      { role: 'user', content: `Wearable Vitals:\n${contextStr}` },
+      { role: 'user', content: `Elder Info:\n${elderInfoStr}` },
+      {
+        role: 'user',
+        content: `Question:\n${userPrompt}\n\nPlease use the sections: Potential Health Risks, Diet Plan, Exercise, Medications (general, non-prescriptive), Minerals & Vitamins, Foods, Fruits & Drinks, Sleep Schedule, Medicinal Plants. End with “This is not a medical diagnosis. Please consult a healthcare provider.”`,
+      },
+    ];
+  }
+
   private handleError(err: any): never {
     console.error('OpenRouter chat error:', {
       message: err?.message,
@@ -106,18 +127,14 @@ export class AnalysisService {
   }
 
   async chatCompletion(
-    model: string | undefined,
     messages: ChatMessage[],
     options?: { max_tokens?: number; temperature?: number }
   ): Promise<string> {
     const triedModels = [];
     const modelsToTry = [];
+    const model = this.defaultModel;
+    modelsToTry.push(model);
 
-    if (model) {
-      modelsToTry.push(model);
-    } else {
-      modelsToTry.push(this.defaultModel);
-    }
     modelsToTry.push(...this.fallbackModels);
 
     for (const m of modelsToTry) {
@@ -142,10 +159,11 @@ export class AnalysisService {
   async analyzeDocument(
     documentId: string,
     elderInfo: { age?: number; sex?: string; weight?: number; height?: number },
-    model: string | undefined,
+
     userPrompt: string,
     requestedBy: string
   ) {
+    const model = this.defaultModel;
     const ocrResult = await this.prisma.ocrResult.findUnique({
       where: { documentId },
     });
@@ -159,7 +177,7 @@ export class AnalysisService {
       userPrompt
     );
 
-    const aiResponse = await this.chatCompletion(model, messages, {
+    const aiResponse = await this.chatCompletion(messages, {
       max_tokens: 700,
       temperature: 0.7,
     });
@@ -168,9 +186,37 @@ export class AnalysisService {
       data: {
         documentId,
         ocrResultId: ocrResult.id,
-        model: model ?? this.defaultModel,
+        model: model,
         prompt: userPrompt,
         response: { text: aiResponse },
+        status: 'DONE',
+        requestedBy,
+      },
+    });
+  }
+
+  async analyzeVitalsData(
+    vitals: any,
+    elderInfo: { age?: number; sex?: string; weight?: number; height?: number },
+    userPrompt: string,
+    requestedBy: string | undefined
+  ) {
+    const model = this.defaultModel;
+
+    const messages = this.buildVitalsMessages(vitals, elderInfo, userPrompt);
+    const aiResponse = await this.chatCompletion(messages, {
+      max_tokens: 500,
+      temperature: 0.7,
+    });
+
+    // Store as analysis without document linkage
+    return this.prisma.analysis.create({
+      data: {
+        documentId: null,
+        ocrResultId: null,
+        model,
+        prompt: userPrompt,
+        response: { text: aiResponse, vitals },
         status: 'DONE',
         requestedBy,
       },

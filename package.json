@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "docker": "docker compose --env-file .env.prod up",
     "all": "bash start-dev.sh",
     "reset": "npx nx reset",
     "kill": "sudo lsof -t -i:5100-5107 | xargs -r sudo kill -9 && sudo pkill nginx",
@@ -57,6 +58,13 @@
     "game:prisma:migrate": "npx nx prisma:migrate game",
     "game:prisma:reset": "npx nx prisma:reset game",
     "game:prisma:seed": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\" apps/game/prisma/seed.ts",
+    "iot:serve": "npx nx serve iot",
+    "iot:build": "npx nx build iot",
+    "iot:test": "npx nx test iot",
+    "iot:lint": "npx nx lint iot",
+    "iot:prisma:generate": "npx nx prisma:generate iot",
+    "iot:prisma:migrate": "npx nx prisma:migrate iot",
+    "iot:prisma:reset": "npx nx prisma:reset iot",
     "auth:api": "npx nx serve auth --api",
     "reminder:api": "npx nx serve reminder --api",
     "care:api": "npx nx serve care --api",
@@ -66,12 +74,13 @@
     "assistant:api": "npx nx serve assistant --api",
     "notification:api": "npx nx serve notification --api",
     "game:api": "npx nx serve game --api",
-    "run-many:serve": "npx nx run-many --target=serve --projects=auth,reminder,care,talk,product,file,assistant,notification,game --output-style=stream",
-    "run-many:build": "npx nx run-many --target=build --projects=auth,reminder,care,talk,product,file,assistant,notification,game",
-    "run-many:test": "npx nx run-many --target=test --projects=auth,reminder,care,talk,product,file,assistant,notification,game",
-    "run-many:lint": "npx nx run-many --target=lint --projects=auth,reminder,care,talk,product,file,assistant,notification,game",
-    "prisma:generate:all": "npx nx run-many --target=prisma:generate --projects=auth,reminder,care,talk,product,file,assistant,notification,game",
-    "prisma:migrate:all": "npx nx run-many --target=prisma:migrate --projects=auth,reminder,care,talk,product,file,assistant,notification,game "
+    "iot:api": "npx nx serve iot --api",
+    "run-many:serve": "npx nx run-many --target=serve --projects=auth,reminder,care,talk,product,file,assistant,notification,game,iot --output-style=stream",
+    "run-many:build": "npx nx run-many --target=build --projects=auth,reminder,care,talk,product,file,assistant,notification,game,iot",
+    "run-many:test": "npx nx run-many --target=test --projects=auth,reminder,care,talk,product,file,assistant,notification,game,iot",
+    "run-many:lint": "npx nx run-many --target=lint --projects=auth,reminder,care,talk,product,file,assistant,notification,game,iot",
+    "prisma:generate:all": "npx nx run-many --target=prisma:generate --projects=auth,reminder,care,talk,product,file,assistant,notification,game,iot",
+    "prisma:migrate:all": "npx nx run-many --target=prisma:migrate --projects=auth,reminder,care,talk,product,file,assistant,notification,game,iot "
   },
   "nx": {
     "targets": {

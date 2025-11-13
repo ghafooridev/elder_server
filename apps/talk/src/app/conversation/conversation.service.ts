@@ -45,6 +45,26 @@ export class ConversationService implements OnModuleInit {
       return [];
     }
 
+    // Calculate unread counts for each conversation
+    const unreadCounts = await Promise.all(
+      conversations.map(async (conv) => {
+        const count = await this.prisma.message.count({
+          where: {
+            conversationId: conv.id,
+            receiverId: userId,
+            status: {
+              not: 'SEEN',
+            },
+          },
+        });
+        return { conversationId: conv.id, unreadCount: count };
+      })
+    );
+
+    const unreadCountMap = new Map(
+      unreadCounts.map((item) => [item.conversationId, item.unreadCount])
+    );
+
     // Get all unique participant IDs
     const userIds = conversations.reduce((ids, conv) => {
       ids.add(conv.initiatorId);
@@ -61,11 +81,13 @@ export class ConversationService implements OnModuleInit {
       users.map((user) => [user.id, user])
     );
 
-    // Map user data to conversations
+    // Map user data to conversations and add unreadCount
     let conversationsWithUsers = conversations.map((conv) => ({
       ...conv,
       initiator: usersMap.get(conv.initiatorId),
       recipient: usersMap.get(conv.recipientId),
+      unreadCount: unreadCountMap.get(conv.id) || 0,
+      latestMessage: conv.messages[0] || null,
     }));
 
     // Filter by participant name (if provided)

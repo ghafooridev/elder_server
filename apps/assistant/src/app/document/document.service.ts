@@ -41,7 +41,7 @@ export class DocumentService {
     file: multer.File
   ): Promise<Document> {
     try {
-      // 1️⃣ Upload file to Supabase via File Microservice
+      // 1. Upload file to Supabase via File Microservice
       const uploadedFile = await lastValueFrom(
         this.fileService.uploadFile({
           fileName: file.originalname,
@@ -52,7 +52,7 @@ export class DocumentService {
         throw new BadRequestException('Failed to upload file.');
       });
 
-      // 2️⃣ Create document record
+      // 2. Create document record
       const document = await this.prisma.document
         .create({
           data: {
@@ -69,15 +69,13 @@ export class DocumentService {
           throw new BadRequestException('Failed to create document.');
         });
 
-      // 3️⃣ Delegate OCR processing to OCR service
+      // 3. Delegate OCR processing to OCR service
       await this.ocrService.processDocument(document.id).catch((err) => {
         console.error('OCR service error:', err);
         throw new BadRequestException('Failed to process document.');
       });
 
-      // 4️⃣ Trigger AI analysis using Hugging Face via AnalysisService
-      // Defaults can be adjusted or sourced from env/config
-      const defaultModel = this.config.get<string>('AI_MODEL');
+      // 4. create default prompt
       const defaultPrompt =
         'Analyze this lab report and highlight abnormal metrics. Provide elderly-specific recommendations for diet, exercise, and supplements.';
 
@@ -92,7 +90,7 @@ export class DocumentService {
         .analyzeDocument(
           document.id,
           elderInfo,
-          defaultModel,
+
           defaultPrompt,
           userId
         )
@@ -115,7 +113,7 @@ export class DocumentService {
     documentId: string,
     updateDto: UpdateDocumentDto
   ): Promise<Document> {
-    // 1️⃣ Ensure the document exists
+    // 1. Ensure the document exists
     const existingDoc = await this.prisma.document.findUnique({
       where: { id: documentId },
     });
@@ -123,7 +121,7 @@ export class DocumentService {
       throw new NotFoundException('Document not found');
     }
 
-    // 2️⃣ Prepare update data
+    // 2. Prepare update data
     // Only include fields that are defined (all are optional in DTO)
     const updateData: Prisma.DocumentUpdateInput = {};
     if (updateDto.fileName !== undefined)
@@ -140,7 +138,7 @@ export class DocumentService {
       updateData.metadata = JSON.parse(JSON.stringify(updateDto.metadata));
     }
 
-    // 3️⃣ Perform the update
+    // 3. Perform the update
     const updatedDoc = await this.prisma.document.update({
       where: { id: documentId },
       data: updateData,

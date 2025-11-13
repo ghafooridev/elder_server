@@ -11,7 +11,12 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       {
         name: 'AUTH_CLIENT',
         transport: Transport.NATS,
-        options: { url: process.env.NATS_URL || 'nats://localhost:4222' },
+        options: {
+          url:
+            process.env.NATS_URL ||
+            process.env.NATS_CLIENT_URL ||
+            'nats://localhost:4222',
+        },
       },
     ]),
   ],

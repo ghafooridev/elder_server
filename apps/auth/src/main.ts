@@ -55,7 +55,10 @@ async function bootstrap() {
 
   // Get ports and NATS URL
   const port = config.getOrThrow('AUTH_PORT');
-  const natsUrl = config.get<string>('NATS_URL') || 'nats://localhost:4222';
+  const natsUrl =
+    config.get<string>('NATS_URL') ||
+    config.get<string>('NATS_CLIENT_URL') ||
+    'nats://localhost:4222';
 
   // --- ✅ Connect both microservices ---
   app.connectMicroservice<GrpcOptions>({

@@ -64,7 +64,7 @@ async function bootstrap() {
     {
       transport: Transport.NATS,
       options: {
-        url: process.env.NATS_URL || 'nats://localhost:4222',
+        url: process.env.NATS_CLIENT_URL,
         queue: 'notification-workers', // for competing consumers if you scale
       },
     }

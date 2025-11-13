@@ -46,7 +46,8 @@
         "apps/file-e2e/**/*",
         "apps/assistant-e2e/**/*",
         "apps/notification-e2e/**/*",
-        "apps/game-e2e/**/*"
+        "apps/game-e2e/**/*",
+        "apps/iot-e2e/**/*"
       ]
     }
   ],

@@ -3,10 +3,15 @@ version: '3.9'
 services:
   nats:
     image: nats:latest
+    container_name: nats
+    restart: unless-stopped
     command: ['-js'] # enable JetStream
     ports:
-      - '4222:4222' # client
-      - '8222:8222' # monitoring
+      - '${NATS_CLIENT_PORT:-4222}:4222'
+      - '${NATS_MONITORING_PORT:-8222}:8222'
+    networks:
+      - backend-net
+
   postgres:
     image: postgres:16
     container_name: ${POSTGRES_CONTAINER_NAME}
@@ -49,6 +54,7 @@ services:
       - ec_talk
       - ec_assistant
       - ec_game
+      - ec_iot
     networks:
       - backend-net
 
@@ -66,10 +72,36 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS}
       ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
+      NATS_URL: nats://nats:4222
+      NATS_CLIENT_URL: nats://nats:4222
     expose:
       - '${AUTH_PORT}'
     depends_on:
       - postgres
+      - nats
+    networks:
+      - backend-net
+
+  ec_iot:
+    build:
+      context: .
+      dockerfile: apps/iot/Dockerfile
+    container_name: ec_iot
+    restart: unless-stopped
+    environment:
+      IOT_DATABASE_URL: ${IOT_DATABASE_URL}
+      PRISMA_IOT_DATABASE_URL: ${PRISMA_IOT_DATABASE_URL}
+      PORT: ${IOT_PORT}
+      IOT_PORT: ${IOT_PORT}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
+      NATS_URL: nats://nats:4222
+      NATS_CLIENT_URL: nats://nats:4222
+      AUTH_URL: ec_auth:50051
+    expose:
+      - '${IOT_PORT}'
+    depends_on:
+      - postgres
+      - nats
     networks:
       - backend-net
 
@@ -85,10 +117,13 @@ services:
       PORT: ${REMINDER_PORT}
       REMINDER_PORT: ${REMINDER_PORT}
       ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
+      NATS_URL: nats://nats:4222
+      NATS_CLIENT_URL: nats://nats:4222
     expose:
       - '${REMINDER_PORT}'
     depends_on:
       - postgres
+      - nats
     networks:
       - backend-net
 
@@ -185,10 +220,16 @@ services:
       PORT: ${ASSISTANT_PORT}
       ASSISTANT_PORT: ${ASSISTANT_PORT}
       ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
+      NATS_URL: nats://nats:4222
+      NATS_CLIENT_URL: nats://nats:4222
+      AI_CHAT_TOKEN: ${AI_CHAT_TOKEN}
+      AI_MODEL: ${AI_MODEL}
+      VITALS_ANALYZE_PROMPT: ${VITALS_ANALYZE_PROMPT}
     expose:
       - '${ASSISTANT_PORT}'
     depends_on:
       - postgres
+      - nats
     networks:
       - backend-net
 

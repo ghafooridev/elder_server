@@ -24,7 +24,8 @@ export class MessageService {
     });
     if (!conversation) throw new NotFoundException('Conversation not found');
 
-    const message = await this.prisma.message.create({
+    // Create message with initial status SENT
+    let message = await this.prisma.message.create({
       data: {
         conversationId: dto.conversationId,
         senderId: dto.senderId,
@@ -36,10 +37,46 @@ export class MessageService {
       },
     });
 
+    // If recipient is online, update status to DELIVERED
+    if (this.talkGateway.isUserOnline(dto.receiverId)) {
+      message = await this.prisma.message.update({
+        where: { id: message.id },
+        data: { status: MessageStatus.DELIVERED },
+      });
+    }
+
     // Emit WebSocket event to all users in the conversation room
     this.talkGateway.sendToConversation(dto.conversationId, 'newMessage', {
       message,
       conversationId: dto.conversationId,
+    });
+
+    // Also emit directly to sender and receiver as fallback (in case they're not in room)
+    this.talkGateway.sendToUser(dto.senderId, 'newMessage', {
+      message,
+      conversationId: dto.conversationId,
+    });
+
+    this.talkGateway.sendToUser(dto.receiverId, 'newMessage', {
+      message,
+      conversationId: dto.conversationId,
+    });
+
+    // Emit conversationUpdated to update unread count
+    const unreadCount = await this.prisma.message.count({
+      where: {
+        conversationId: dto.conversationId,
+        receiverId: dto.receiverId,
+        status: {
+          not: 'SEEN',
+        },
+      },
+    });
+
+    this.talkGateway.sendToUser(dto.receiverId, 'conversationUpdated', {
+      conversationId: dto.conversationId,
+      unreadCount,
+      latestMessage: message,
     });
 
     // Send delivery confirmation to sender
@@ -113,17 +150,53 @@ export class MessageService {
       data: { status },
     });
 
-    // Emit WebSocket event to notify the message sender about status update
-    if (userId) {
-      const statusMap = {
-        DELIVERED: 'delivered',
-        SEEN: 'seen',
-      } as const;
+    const statusMap = {
+      DELIVERED: 'delivered',
+      SEEN: 'seen',
+      SENT: 'sent',
+    } as const;
 
-      this.talkGateway.sendToUser(message.senderId, 'messageStatusUpdated', {
+    // Emit to conversation room for all participants
+    this.talkGateway.sendToConversation(
+      message.conversationId,
+      'messageStatusUpdated',
+      {
         messageId: messageId,
+        conversationId: message.conversationId,
         status: statusMap[status],
-        updatedBy: userId,
+        userId: userId || message.receiverId,
+      }
+    );
+
+    // Also emit directly to sender
+    this.talkGateway.sendToUser(message.senderId, 'messageStatusUpdated', {
+      messageId: messageId,
+      conversationId: message.conversationId,
+      status: statusMap[status],
+      userId: userId || message.receiverId,
+    });
+
+    // If status is SEEN, update unread count and emit conversationUpdated
+    if (status === MessageStatus.SEEN && userId) {
+      const unreadCount = await this.prisma.message.count({
+        where: {
+          conversationId: message.conversationId,
+          receiverId: userId,
+          status: {
+            not: 'SEEN',
+          },
+        },
+      });
+
+      // Emit to both participants to update their conversation list
+      this.talkGateway.sendToUser(message.senderId, 'conversationUpdated', {
+        conversationId: message.conversationId,
+        unreadCount: 0, // Sender has no unread messages
+      });
+
+      this.talkGateway.sendToUser(userId, 'conversationUpdated', {
+        conversationId: message.conversationId,
+        unreadCount,
       });
     }
 

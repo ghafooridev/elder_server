@@ -21,6 +21,7 @@
       "@prisma-clients/care": ["apps/care/prisma/generated/prisma"],
       "@prisma-clients/file": ["apps/file/prisma/generated/prisma"],
       "@prisma-clients/game": ["apps/game/prisma/generated/prisma"],
+      "@prisma-clients/iot": ["apps/iot/prisma/generated/prisma"],
       "@prisma-clients/product": ["apps/product/prisma/generated/prisma"],
       "@prisma-clients/reminder": ["apps/reminder/prisma/generated/prisma"],
       "@prisma-clients/talk": ["apps/talk/prisma/generated/prisma"]

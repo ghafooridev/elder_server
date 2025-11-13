@@ -43,6 +43,7 @@ import { firstValueFrom } from 'rxjs';
   namespace: '/talk',
 })
 @UsePipes(new ValidationPipe())
+@UseGuards(WsAuthGuard)
 export class TalkGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit
 {
@@ -123,32 +124,41 @@ export class TalkGateway
   }
 
   @SubscribeMessage('joinRoom')
-  @UseGuards(WsAuthGuard)
   async handleJoinRoom(
     @MessageBody() data: JoinRoomDto,
     @ConnectedSocket() client: Socket
   ) {
     try {
+      // Use authenticated user ID from socket, not from client data
+      const userId = client.data.user?.id;
+      if (!userId) {
+        client.emit('error', { message: 'User not authenticated' });
+        this.logger.error(
+          `Client ${client.id} tried to join room without authentication`
+        );
+        return;
+      }
+
       // Verify user has access to this conversation
       await this.conversationService.getConversationById(
         data.conversationId,
-        data.userId
+        userId
       );
 
       await client.join(data.conversationId);
       client.emit('joinedRoom', { conversationId: data.conversationId });
 
       this.logger.log(
-        `User ${data.userId} joined conversation ${data.conversationId}`
+        `User ${userId} joined conversation ${data.conversationId}`
       );
     } catch (error) {
-      client.emit('error', { message: 'Failed to join room' });
-      this.logger.error(`Failed to join room: ${error.message}`);
+      const errorMessage = error?.message || 'Failed to join room';
+      client.emit('error', { message: errorMessage });
+      this.logger.error(`Failed to join room: ${errorMessage}`, error?.stack);
     }
   }
 
   @SubscribeMessage('leaveRoom')
-  @UseGuards(WsAuthGuard)
   async handleLeaveRoom(
     @MessageBody() data: LeaveRoomDto,
     @ConnectedSocket() client: Socket
@@ -161,34 +171,55 @@ export class TalkGateway
     );
   }
 
-  @SubscribeMessage('sendMessage')
-  @UseGuards(WsAuthGuard)
+  // @SubscribeMessage('sendMessage')
+  // @UseGuards(WsAuthGuard)
+  // async handleSendMessage(
+  //   @MessageBody() data: SendMessageDto,
+  //   @ConnectedSocket() client: Socket
+  // ) {
+  //   try {
+  //     // Create message using existing service (service will emit events)
+  //     const message = await this.messageService.sendMessage({
+  //       conversationId: data.conversationId,
+  //       senderId: data.senderId,
+  //       receiverId: data.receiverId,
+  //       content: data.content,
+  //       attachmentUrl: data.attachmentUrl,
+  //       messageType: data.messageType,
+  //     });
+
+  //     this.logger.log(
+  //       `Message sent from ${data.senderId} to ${data.receiverId} in conversation ${data.conversationId}`
+  //     );
+  //   } catch (error) {
+  //     client.emit('error', { message: 'Failed to send message' });
+  //     this.logger.error(`Failed to send message: ${error.message}`);
+  //   }
+  // }
+
+  @SubscribeMessage('send_message')
   async handleSendMessage(
     @MessageBody() data: SendMessageDto,
     @ConnectedSocket() client: Socket
   ) {
-    try {
-      // Create message using existing service (service will emit events)
-      const message = await this.messageService.sendMessage({
-        conversationId: data.conversationId,
-        senderId: data.senderId,
-        receiverId: data.receiverId,
-        content: data.content,
-        attachmentUrl: data.attachmentUrl,
-        messageType: data.messageType,
-      });
-
-      this.logger.log(
-        `Message sent from ${data.senderId} to ${data.receiverId} in conversation ${data.conversationId}`
-      );
-    } catch (error) {
-      client.emit('error', { message: 'Failed to send message' });
-      this.logger.error(`Failed to send message: ${error.message}`);
+    const senderId = client.data.user?.id;
+    if (!senderId) {
+      client.emit('error', { message: 'User not authenticated' });
+      return;
     }
+
+    // Emit to conversation room (all users in the room will receive it)
+    this.server.to(data.conversationId).emit('new_message', {
+      ...data,
+      senderId, // Ensure senderId is from authenticated user
+    });
+
+    this.logger.log(
+      `Message sent in conversation ${data.conversationId} by user ${senderId}`
+    );
   }
 
   @SubscribeMessage('updateMessage')
-  @UseGuards(WsAuthGuard)
   async handleUpdateMessage(
     @MessageBody() data: UpdateMessageDto,
     @ConnectedSocket() client: Socket
@@ -211,7 +242,6 @@ export class TalkGateway
   }
 
   @SubscribeMessage('deleteMessage')
-  @UseGuards(WsAuthGuard)
   async handleDeleteMessage(
     @MessageBody() data: DeleteMessageDto,
     @ConnectedSocket() client: Socket
@@ -230,7 +260,6 @@ export class TalkGateway
   }
 
   @SubscribeMessage('typing')
-  @UseGuards(WsAuthGuard)
   async handleTyping(
     @MessageBody() data: any,
     @ConnectedSocket() client: Socket
@@ -255,12 +284,21 @@ export class TalkGateway
   }
 
   @SubscribeMessage('messageStatus')
-  @UseGuards(WsAuthGuard)
   async handleMessageStatus(
     @MessageBody() data: MessageStatusDto,
     @ConnectedSocket() client: Socket
   ) {
     try {
+      // Use authenticated user ID from socket, not from client data
+      const userId = client.data.user?.id;
+      if (!userId) {
+        client.emit('error', { message: 'User not authenticated' });
+        this.logger.error(
+          `Client ${client.id} tried to update message status without authentication`
+        );
+        return;
+      }
+
       // Update message status using existing service (service will emit events)
       const statusMap = {
         delivered: 'DELIVERED' as const,
@@ -270,11 +308,11 @@ export class TalkGateway
       await this.messageService.updateMessageStatus(
         data.messageId,
         statusMap[data.status],
-        data.userId
+        userId // Use authenticated user ID
       );
 
       this.logger.log(
-        `Message ${data.messageId} status updated to ${data.status} by ${data.userId}`
+        `Message ${data.messageId} status updated to ${data.status} by ${userId}`
       );
     } catch (error) {
       client.emit('error', { message: 'Failed to update message status' });
@@ -289,18 +327,6 @@ export class TalkGateway
   }
 
   private extractTokenFromSocket(client: Socket): string | null {
-    // console.log('1>>>>', client);
-    // console.log('2>>>>', client?.handshake);
-    // console.log('3>>>>', client?.handshake?.auth);
-    // console.log('4>>>>', client?.handshake?.auth?.token);
-    // console.log('5>>>>', client?.handshake?.headers);
-    // console.log('6>>>>', client?.handshake?.headers?.authorization);
-    // // Try to get token from headers
-    // const authHeader = client.handshake.headers.authorization;
-    // if (authHeader && authHeader.startsWith('Bearer ')) {
-    //   return authHeader.substring(7);
-    // }
-
     return client?.handshake?.auth?.token;
   }
 
@@ -315,5 +341,10 @@ export class TalkGateway
   // Helper method to send message to conversation room
   sendToConversation(conversationId: string, event: string, data: any) {
     this.server.to(conversationId).emit(event, data);
+  }
+
+  // Helper method to check if user is online
+  isUserOnline(userId: string): boolean {
+    return this.userSockets.has(userId);
   }
 }
